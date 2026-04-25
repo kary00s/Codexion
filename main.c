@@ -92,7 +92,6 @@ int	main(void)
 		printf("Error: consumer failed\n");
 		return (42);
 	}
-	
 	pthread_join(t1, NULL);
 	pthread_join(t2, NULL);
 
