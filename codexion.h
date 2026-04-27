@@ -4,6 +4,9 @@
 #include<stdio.h>
 #include<unistd.h>
 #include<pthread.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/time.h>
 
 typedef struct dgl 
 {
@@ -24,12 +27,12 @@ typedef struct coder
     long  time_to_compile ;
     long  time_to_refactor;
 
-    pthread_t       coder;
-    t_dongle          *right_coder;
-    t_dongle          *left_coder;
+    pthread_t       thread;
+    t_dongle          *right_dongle;
+    t_dongle          *left_dongle;
 }  t_coder;
 
-typedef struct s_scene
+typedef struct s_scene 
 {
     int number_of_coders;
     long die_time;

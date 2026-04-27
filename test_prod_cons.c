@@ -17,7 +17,6 @@ int	arraylen(int *arr)
 		i += 1;
 	return (i);
 }
-
 void	*producer(void *arg)
 {
 	int	*arr = (int *)arg;
@@ -70,7 +69,7 @@ int	main(void)
 	pthread_t	t1, t2;
 
 	int	*arr = malloc(sizeof(int) * 10);
-	
+
 	if (!arr)
 	{
 		printf("Error malloc\n");
