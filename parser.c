@@ -25,14 +25,19 @@ static long ft_atol(char *str)
         exit_all();
     return res;
 }
-void parser(t_scene *scene, char **args)
+void parser(t_scene *scene,int ac, char **args)
 {
-    scene->number_of_coders = ft_atol(args[1]);
-    
-}
-
-int main()
-{
-    long x = ft_atol("    143243");
-    printf("%ld\n",x);
+    if (ac == 8)
+    {
+        scene->number_of_coders = ft_atol(args[1]);
+        scene->time_to_burnout = ft_atol(args[2]);
+        scene->time_to_compile = ft_atol(args[3]);
+        scene->time_to_debug = ft_atol(args[4]);
+        scene->time_to_refactor = ft_atol(args[5]);
+        scene->number_of_compiles_required = ft_atol(args[6]);
+        scene->dongle_cooldown = ft_atol(args[7]);
+        // printf("=======\n");
+    }
+    else
+        exit_all();
 }

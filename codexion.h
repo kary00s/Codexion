@@ -10,7 +10,7 @@
 
 typedef struct dgl 
 {
-    int             dongle_id;
+    long             dongle_id;
     pthread_mutex_t dongle; 
     long dongle_cooldown;
 }             t_dongle;
@@ -19,13 +19,13 @@ typedef struct dgl
 
 typedef struct coder
 {
-    int             coder_id;
-    long            last_dongle_time;
+    long             coder_id;
+    long            last_compile_start;
     
-    long time_to_debug;
-    long time_to_burnout;
-    long  time_to_compile ;
-    long  time_to_refactor;
+    long last_time_to_debug;
+    long last_time_to_burnout;
+    long  last_time_to_compile ;
+    long  last_time_to_refactor;
 
     pthread_t       thread;
     t_dongle          *right_dongle;
@@ -35,20 +35,24 @@ typedef struct coder
 typedef struct s_scene 
 {
     int number_of_coders;
-    long die_time;
-    long act_time;
-    long wait_time;
+    
+    long time_to_debug;
+    long time_to_burnout;
+    long  time_to_compile ;
+    long  time_to_refactor;
+    long number_of_compiles_required;
+    long dongle_cooldown;
     t_dongle *dongle;
     t_coder *coder;
 
-
 } t_scene;
 
-  
 //  number_of_compiles_required // dongle_cooldown 
-// scheduler 
+// scheduler
 
-void parser(t_scene *scene, char **args);
-
-
+long time_to_compile(t_coder *coder, long start_time);
+long get_time_ms();
+void exit_all();
+void coders_creator(t_scene *scene);
+void parser(t_scene *scene,int ac, char **args);
 #endif

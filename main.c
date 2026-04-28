@@ -1,43 +1,39 @@
 #include"codexion.h"
 
-long get_time_ms()
-{
-	struct timeval time;
-	gettimeofday(&time, NULL);
-	return (time.tv_sec * 1000) + (time.tv_usec / 1000) ;
-}
-long theard_time()
-{
-
-}
-
-void *coder_routine(void *arg) {
-    t_coder *coder = (t_coder *)arg;
-    printf("started => %ld %d \n", get_time_ms(), coder->coder_id);
+static void *coder_routine(void *arg) {
+	long start_time = get_time_ms();
+	t_coder *coder = (t_coder *)arg;
+    printf("started => %ld  \n\n", time_to_compile(coder, start_time));
     return NULL;
 }
-void creator(t_coder *coder)
+void coders_creator(t_scene *scene)
 {
-	pthread_create(&(coder->thread), NULL, coder_routine, coder);
-	pthread_join(coder->thread, NULL);
+	int i = 0;
+	while (i < scene->number_of_coders)
+	{
+		scene->coder->coder_id = i;
+		pthread_create(&(scene->coder->thread), NULL, coder_routine, scene->coder);
+		pthread_join(scene->coder->thread, NULL);
+		i++;
+	}
+	
 }
 
 int main(int ac, char *av[])
 {
-	t_scene *scene;
-	t_coder *coder;
-
-	if (ac == 1 )
-	{
-		// 1- parsing the args 
-		// parser(scene, av);	
-		// 2- creating the scene
-		creator(coder);
-		// creator()
-	}
-	else
-	{
-		return 42;
-	}
-	return 0;
+	t_scene *scene = malloc(sizeof(t_scene));
+	// 1- parsing the args 
+	parser(scene, ac, av);	
+	// 2- creating the scene
+	scene->coder = malloc(sizeof(scene->coder->thread) + scene->number_of_coders);
+	coders_creator(scene);
+	
+	
+	// printf("%d\n",scene->number_of_coders);
+    // printf("%ld\n",scene->time_to_burnout);
+    // printf("%ld\n",scene->time_to_compile);
+    // printf("%ld\n",scene->time_to_debug);
+    // printf("%ld\n",scene->time_to_refactor);
+    // printf("%ld\n",scene->number_of_compiles_required);
+    // printf("%ld\n",scene->dongle->dongle_cooldown);
 }
