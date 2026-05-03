@@ -1,7 +1,8 @@
 #include"codexion.h"
-void exit_all()
+
+void exit_all(char *message)
 {
-    printf(" | Exit Process |\n");
+    printf("%s\n", message);
     exit(EXIT_FAILURE);
 }
 static long ft_atol(char *str)
@@ -14,15 +15,18 @@ static long ft_atol(char *str)
         return 42;
 
     while((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')
-        i++;
-    while((((str[i] >= '0') && (str[i] <= '9')) 
-            && (res < 9223372036854775807)))
+    i++;
+    while(str[i])
     {
-        res = 10 * res + str[i] - 48;
+        if (((str[i] >= '0') && (str[i] <= '9')) 
+    && (res < 9223372036854775807))
+            res = 10 * res + str[i] - 48;
+    
+        if(str[i] == '-')
+            exit_all("Args can't be negative");
+
         i++;
     }
-    if(str[i] != '\0')
-        exit_all();
     return res;
 }
 void parser(t_scene *scene,int ac, char **args)
@@ -36,8 +40,7 @@ void parser(t_scene *scene,int ac, char **args)
         scene->time_to_refactor = ft_atol(args[5]);
         scene->number_of_compiles_required = ft_atol(args[6]);
         scene->dongle_cooldown = ft_atol(args[7]);
-        // printf("=======\n");
     }
     else
-        exit_all();
+        exit_all("| ERROR |");
 }
