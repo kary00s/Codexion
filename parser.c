@@ -29,18 +29,22 @@ static long ft_atol(char *str)
     }
     return res;
 }
-void parser(t_scene *scene,int ac, char **args)
+
+t_config *parser(int ac, char **args)
 {
+    t_config *config;
     if (ac == 8)
     {
-        scene->number_of_coders = ft_atol(args[1]);
-        scene->time_to_burnout = ft_atol(args[2]);
-        scene->time_to_compile = ft_atol(args[3]);
-        scene->time_to_debug = ft_atol(args[4]);
-        scene->time_to_refactor = ft_atol(args[5]);
-        scene->number_of_compiles_required = ft_atol(args[6]);
-        scene->dongle_cooldown = ft_atol(args[7]);
+        config->number_of_coders = ft_atol(args[1]);
+        config->time_to_debug = ft_atol(args[4]);
+        config->time_to_burnout = ft_atol(args[2]);
+        config->time_to_compile = ft_atol(args[3]);
+        config->time_to_refactor = ft_atol(args[5]);
+        config->number_of_compiles_required = ft_atol(args[6]);
+        config->dongle_cooldown = ft_atol(args[7]);
+        // representer->config.scheduler = 
     }
     else
         exit_all("| ERROR |");
+    return (config);
 }
