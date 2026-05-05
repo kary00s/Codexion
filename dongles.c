@@ -3,32 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   dongles.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
+/*   By: karim <karim@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:53 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/05 01:17:31 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/05/05 09:47:53 by karim            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-t_dongle **dongles_allocater(int dongles_num)
+static t_dongle **dongles_allocater(t_representer *representer)
 {
     t_dongle **dongles_list;
     int i;
     i = 0;
 
-    dongles_list = (t_dongle **)malloc(sizeof(t_dongle *) * dongles_num);
+    dongles_list = (t_dongle **)malloc(sizeof(t_dongle *) * representer->config->number_of_coders);
     if (!dongles_list)
         return (NULL);
 
-    while(i < dongles_num)
+    while(i < representer->config->number_of_coders)
     {
         dongles_list[i] = (t_dongle *)malloc (sizeof(t_dongle));
         if (!dongles_list[i])
         {
             while (i >= 0)
                 free(dongles_list[i--]);
+            free(dongles_list);
             return NULL;
         }
         i++;
@@ -36,51 +37,62 @@ t_dongle **dongles_allocater(int dongles_num)
     return (dongles_list);
 }
 
-bool initialize_dongles_struct(t_representer *representer) {
+static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
     int i;
-    t_dongle **dongles;
     
     i = 0;
-    dongles = representer->dongles;
-    while (i < representer->config->number_of_coders) {
+    while (i < counter)
+    {
         dongles[i]->is_available = true;
-        if (pthread_mutex_init(&dongles[i]->mutex, NULL)) {
-            while (i > 0) {
-                pthread_mutex_destroy(&dongles[i - 1]->mutex);
-                i--;
-            }
-            return (false);
+
+        if (pthread_mutex_init(&dongles[i]->dongle_mutex, NULL))
+        {
+            dongles_destroyer(dongles, i);
+            return (NULL);
+        }
+        if (pthread_cond_init(&dongles[i]->dongle_cond, NULL))
+        {
+            dongles_destroyer(dongles, i);
+            return (NULL);    
         }
         i++;
     }
-    return true;
+    return (dongles);
 }
 
+void dongles_destroyer(t_dongle **dongles, int counter)
+{
+    int i;
+    i = 0;
+    while(i < counter)
+    {
+        pthread_mutex_destroy(&dongles[i]->dongle_mutex);       
+        pthread_cond_destroy(&dongles[i]->dongle_cond);    
+        i++;
+    }
+}
 
-void dongles_cleaner(t_representer *representer) {
+static void free_dongles(t_representer *representer)
+{
     int i;
 
     i = 0;
-    while (i < representer->config.number_of_coders) {
-        pthread_mutex_destroy(&representer->dongles[i]->mutex);
-        free(representer->dongles[i]);
-        i++;
-    }
+    while((representer->dongles[i] != NULL) && ( i <= representer->config->number_of_coders))
+        free(representer->dongles[i++]);
     free(representer->dongles);
 }
 
-bool init_dongles(t_representer *representer) {
-    int i;
+t_dongle **init_dongles(t_representer *representer)
+{
     t_dongle **dongles;
-    int j;
-    
-    i = 0;
-    j = 0;
-    dongles = ft_allocate_dongles(representer->config.number_of_coders);
+    dongles = dongles_allocater(representer);
     if (!dongles)
-        return false;
-    if (!ft_init_dongles_initial_state(representer))
-        return (ft_clean_dongles(representer), false);
-    representer->dongles = dongles;
-    return true;
+        return (NULL);
+        
+    dongles = initialize_dongles_struct(dongles, representer->config->number_of_coders);
+    if (!dongles)
+        return (free_dongles(representer), NULL);
+
+    
+    return dongles;
 }

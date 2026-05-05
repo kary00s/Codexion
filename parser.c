@@ -1,6 +1,6 @@
 #include"codexion.h"
 
-void exit_all(char *message)
+static void exit_all(char *message)
 {
     printf("%s\n", message);
     exit(EXIT_FAILURE);
@@ -12,8 +12,8 @@ static long ft_atol(char *str)
     long res;
     res = 0;
     if (!str)
-        return 42;
-
+    return 42;
+    
     while((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')
     i++;
     while(str[i])
@@ -23,16 +23,18 @@ static long ft_atol(char *str)
             res = 10 * res + str[i] - 48;
     
         if(str[i] == '-')
-            exit_all("Args can't be negative");
-
+        exit_all("Args can't be negative");
+        
         i++;
     }
+    printf("%ld\n", res);
     return res;
 }
 
 t_config *parser(int ac, char **args)
 {
-    t_config *config;
+    t_config *config = malloc(sizeof(t_config));
+
     if (ac == 8)
     {
         config->number_of_coders = ft_atol(args[1]);
