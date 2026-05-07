@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dongles.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: karim <karim@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:53 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/05 09:47:53 by karim            ###   ########.fr       */
+/*   Updated: 2026/05/07 14:51:02 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ static t_dongle **dongles_allocater(t_representer *representer)
     int i;
     i = 0;
 
-    dongles_list = (t_dongle **)malloc(sizeof(t_dongle *) * representer->config->number_of_coders);
+    dongles_list = (t_dongle **)malloc(sizeof(t_dongle *) * representer->config.number_of_coders);
     if (!dongles_list)
         return (NULL);
 
-    while(i < representer->config->number_of_coders)
+    while(i < representer->config.number_of_coders)
     {
         dongles_list[i] = (t_dongle *)malloc (sizeof(t_dongle));
         if (!dongles_list[i])
@@ -77,7 +77,7 @@ static void free_dongles(t_representer *representer)
     int i;
 
     i = 0;
-    while((representer->dongles[i] != NULL) && ( i <= representer->config->number_of_coders))
+    while((representer->dongles[i] != NULL) && ( i <= representer->config.number_of_coders))
         free(representer->dongles[i++]);
     free(representer->dongles);
 }
@@ -89,7 +89,7 @@ t_dongle **init_dongles(t_representer *representer)
     if (!dongles)
         return (NULL);
         
-    dongles = initialize_dongles_struct(dongles, representer->config->number_of_coders);
+    dongles = initialize_dongles_struct(dongles, representer->config.number_of_coders);
     if (!dongles)
         return (free_dongles(representer), NULL);
 

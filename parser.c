@@ -1,6 +1,6 @@
 #include"codexion.h"
 
-static void exit_all(char *message)
+void exit_all(char *message)
 {
     printf("%s\n", message);
     exit(EXIT_FAILURE);
@@ -27,23 +27,22 @@ static long ft_atol(char *str)
         
         i++;
     }
-    printf("%ld\n", res);
     return res;
 }
 
-t_config *parser(int ac, char **args)
+t_config parser(int ac, char **args)
 {
-    t_config *config = malloc(sizeof(t_config));
+    t_config config;
 
     if (ac == 8)
     {
-        config->number_of_coders = ft_atol(args[1]);
-        config->time_to_debug = ft_atol(args[4]);
-        config->time_to_burnout = ft_atol(args[2]);
-        config->time_to_compile = ft_atol(args[3]);
-        config->time_to_refactor = ft_atol(args[5]);
-        config->number_of_compiles_required = ft_atol(args[6]);
-        config->dongle_cooldown = ft_atol(args[7]);
+        config.number_of_coders = ft_atol(args[1]);
+        config.time_to_debug = ft_atol(args[4]);
+        config.time_to_burnout = ft_atol(args[2]);
+        config.time_to_compile = ft_atol(args[3]);
+        config.time_to_refactor = ft_atol(args[5]);
+        config.number_of_compiles_required = ft_atol(args[6]);
+        config.dongle_cooldown = ft_atol(args[7]);
         // representer->config.scheduler = 
     }
     else

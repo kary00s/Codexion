@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   coders.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: karim <karim@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:43 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/05 10:36:00 by karim            ###   ########.fr       */
+/*   Updated: 2026/05/07 15:40:32 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void free_coders(t_representer *representer)
     int i;
 
     i = 0;
-    while((representer->coders[i] != NULL) && ( i <= representer->config->number_of_coders))
+    while((representer->coders[i] != NULL) && ( i <= representer->config.number_of_coders))
         free(representer->coders[i++]);
     free(representer->coders);
 }
@@ -55,7 +55,7 @@ static void clear_coders(t_representer *representer)
     int i;
 
     i = 0;
-    while (i < representer->config->number_of_coders)
+    while (i < representer->config.number_of_coders)
     {
         pthread_mutex_destroy(&representer->coders[i]->mutex);
         pthread_cond_destroy(&representer->coders[i]->cond);
@@ -66,39 +66,38 @@ static void clear_coders(t_representer *representer)
 
 
 
-static void initialize_coders_struct(t_representer *representer,  t_coder **coder, int counter)
+static void initialize_coders_struct(t_representer *representer, t_coder **coder, int counter)
 {
     int i;
-
     i = 0;
+    representer->coders_counter = 0;
     while (i < counter)
     {
-        coder[i]->config = representer->config;
         coder[i]->coder_id = i;
-        
-        coder[i]->coders_counter = representer->coders_counter;
-        coder[i]->burnout_mutex = &representer->burnout_mutex;
+        representer->coders_counter += 1;
         coder[i]->is_burnouted = representer->is_burnouted;
-        // coder[i] = representer->coders[i];
-        // coder[i]->coder_state = STARTING;
-        pthread_mutex_init(&coder[i]->mutex, NULL);
-        pthread_cond_init(&coder[i]->cond, NULL);
+        if (pthread_mutex_init(&coder[i]->mutex, NULL) != 0)
+            clear_coders(representer);
+        if (pthread_cond_init(&coder[i]->cond, NULL))
+            clear_coders(representer);
+
         i++;
     }
-
+    // return (coder);
 }
 
 
 t_coder **init_coders(t_representer *representer)
 {
     t_coder **coders;
-    coders  = coders_allocater(coders, representer->config->number_of_coders);
+    coders  = coders_allocater(coders, representer->config.number_of_coders);
     if(!coders)
         return (NULL);
     
-    initialize_coders_struct(representer, coders, representer->config->number_of_coders);
-        //fix it later
-        // return(clear_coders(representer), NULL);
+        
+    initialize_coders_struct(representer, coders,representer->config.number_of_coders);
+    if (!coders)
+        return(clear_coders(representer), NULL);
 
     return (coders);
 }

@@ -1,5 +1,5 @@
-#ifndef CODEXION
-#define CODEXION
+#ifndef CODEXION_H
+#define CODEXION_H
 
 #include<stdio.h>
 #include<unistd.h>
@@ -9,11 +9,13 @@
 #include <sys/time.h>
 #include <stdbool.h>
 
-typedef struct s_config t_config;
 typedef struct s_dongle t_dongle;
 typedef struct s_coder t_coder;
 typedef struct s_representer  t_representer;
+typedef struct s_config t_config;
 typedef enum e_coder_state t_coder_state;
+
+
 typedef struct s_dongle
 {
     int             dongle_id;
@@ -28,7 +30,7 @@ typedef struct s_coder
 	int coders_counter;
 	pthread_mutex_t *burnout_mutex;
 	pthread_t thread;
-	t_config *config;
+	// t_config config;
 	t_dongle *left_dongle;
 	t_dongle *right_dongle;
 	t_coder_state *coder_state;
@@ -69,7 +71,7 @@ typedef struct s_config
 typedef struct s_representer
 {
     int coders_counter;
-    t_config *config;
+    t_config config;
     t_dongle **dongles;
     t_coder **coders;
 	pthread_mutex_t burnout_mutex;
@@ -79,11 +81,13 @@ typedef struct s_representer
 
 } t_representer;
 
+void initialize_representer_struct(t_representer *representer ,int ac, char **av);
 int main(int ac, char *av[]);
 void dongles_destroyer(t_dongle **dongles, int counter);
-t_config *parser(int ac, char **args);
+t_config parser(int ac, char **args);
 t_dongle **init_dongles(t_representer *representer);
 t_coder **init_coders(t_representer *representer);
-bool initialize_representer_struct(t_representer *representer ,int ac, char **av);
+
+void exit_all(char *message);
 
 #endif
