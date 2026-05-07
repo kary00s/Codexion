@@ -1,5 +1,30 @@
 #include"codexion.h"
 
+
+void *routine(void *args)
+{	t_representer *representer;
+	representer = (t_representer *)args;
+	pthread_mutex_lock(&representer->mutex);
+	printf("coder created succefully\n");
+	pthread_mutex_unlock(&representer->mutex);
+
+	// pthread_mutex_lock(&representer->mutex);
+	// pthread_cond_signal(&representer->cond);
+	// pthread_mutex_unlock(&representer->mutex);
+	return(NULL);
+}
+void threads_creator(t_representer *representer)
+{
+	int i = 0;
+
+	while (i < representer->config.number_of_coders)
+	{
+		pthread_create(&representer->coders[i]->thread, NULL, routine, (void *)representer);
+		i++;
+	}
+	
+}
+
 int main(int ac, char *av[])
 {
 	t_representer *representer;
@@ -13,5 +38,11 @@ int main(int ac, char *av[])
 	printf("=>%d\n",representer->config.number_of_compiles_required);
 	printf("=>%d\n",representer->config.dongle_cooldown);
 
+
+
+
+
+
+	threads_creator(representer);
 	free_representer_struct(representer);
 }

@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:43 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/07 15:57:11 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/05/07 16:21:16 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,17 +77,15 @@ static void initialize_coders_struct(t_representer *representer, t_coder **coder
 }
 
 
-t_coder **init_coders(t_representer *representer)
+void init_coders(t_representer *representer)
 {
-    t_coder **coders;
-    coders  = coders_allocater(coders, representer->config.number_of_coders);
-    if(!coders)
-        return (NULL);
+    representer->coders  = coders_allocater(representer->coders, representer->config.number_of_coders);
+    if(!representer->coders)
+        exit_all("from coders allocater");
     
         
-    initialize_coders_struct(representer, coders,representer->config.number_of_coders);
-    if (!coders)
-        return(clear_coders(representer), NULL);
+    initialize_coders_struct(representer, representer->coders,representer->config.number_of_coders);
+    if (!representer->coders)
+        clear_coders(representer);
 
-    return (coders);
 }

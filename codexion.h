@@ -86,7 +86,7 @@ int main(int ac, char *av[]);
 void dongles_destroyer(t_dongle **dongles, int counter);
 t_config parser(int ac, char **args);
 void init_dongles(t_representer *representer);
-t_coder **init_coders(t_representer *representer);
+void   init_coders(t_representer *representer);
 
 void exit_all(char *message);
 
