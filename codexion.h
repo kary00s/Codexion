@@ -85,9 +85,15 @@ void initialize_representer_struct(t_representer *representer ,int ac, char **av
 int main(int ac, char *av[]);
 void dongles_destroyer(t_dongle **dongles, int counter);
 t_config parser(int ac, char **args);
-t_dongle **init_dongles(t_representer *representer);
+void init_dongles(t_representer *representer);
 t_coder **init_coders(t_representer *representer);
 
 void exit_all(char *message);
+
+// cleaner file :
+void free_dongles(t_representer *representer);
+void free_representer_struct(t_representer *representer);
+void free_coders(t_representer *representer);
+
 
 #endif

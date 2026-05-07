@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:43 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/07 15:40:32 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/05/07 15:57:11 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,6 @@ static t_coder **coders_allocater(t_coder **coder, int number_of_coders)
     return (coders_list);
 }
 
-
-static void free_coders(t_representer *representer)
-{
-    int i;
-
-    i = 0;
-    while((representer->coders[i] != NULL) && ( i <= representer->config.number_of_coders))
-        free(representer->coders[i++]);
-    free(representer->coders);
-}
 
 
 static void clear_coders(t_representer *representer)

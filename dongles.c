@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:53 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/07 14:51:02 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/05/07 16:04:59 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,27 +72,17 @@ void dongles_destroyer(t_dongle **dongles, int counter)
     }
 }
 
-static void free_dongles(t_representer *representer)
+
+void init_dongles(t_representer *representer)
 {
-    int i;
-
-    i = 0;
-    while((representer->dongles[i] != NULL) && ( i <= representer->config.number_of_coders))
-        free(representer->dongles[i++]);
-    free(representer->dongles);
-}
-
-t_dongle **init_dongles(t_representer *representer)
-{
-    t_dongle **dongles;
-    dongles = dongles_allocater(representer);
-    if (!dongles)
-        return (NULL);
-        
-    dongles = initialize_dongles_struct(dongles, representer->config.number_of_coders);
-    if (!dongles)
-        return (free_dongles(representer), NULL);
-
     
-    return dongles;
+    representer->dongles = dongles_allocater(representer);
+    if (!representer->dongles)
+        exit_all("from dongles allocation");
+        
+    representer->dongles = initialize_dongles_struct(representer->dongles, representer->config.number_of_coders);
+    if (!representer->dongles)
+        free_dongles(representer);
+
+
 }

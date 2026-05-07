@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/07 15:02:09 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/05/07 16:05:24 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void initialize_representer_struct(t_representer *representer ,int ac, char **av)
 {
     representer->config = parser(ac, av);
-    representer->dongles =  init_dongles(representer);
+    init_dongles(representer);
     if (!representer->dongles)
         exit_all("Dongles Allocatoion Error");
     representer->coders = init_coders(representer);

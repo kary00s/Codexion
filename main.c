@@ -13,5 +13,5 @@ int main(int ac, char *av[])
 	printf("=>%d\n",representer->config.number_of_compiles_required);
 	printf("=>%d\n",representer->config.dongle_cooldown);
 
-	free(representer);
+	free_representer_struct(representer);
 }
