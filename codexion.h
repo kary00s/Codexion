@@ -30,7 +30,6 @@ typedef struct s_coder
 	int coders_counter;
 	pthread_mutex_t *burnout_mutex;
 	pthread_t thread;
-	// t_config config;
 	t_dongle *left_dongle;
 	t_dongle *right_dongle;
 	t_coder_state *coder_state;
@@ -81,19 +80,24 @@ typedef struct s_representer
 
 } t_representer;
 
-void initialize_representer_struct(t_representer *representer ,int ac, char **av);
 int main(int ac, char *av[]);
 void dongles_destroyer(t_dongle **dongles, int counter);
 t_config parser(int ac, char **args);
+void exit_all(char *message);
 void init_dongles(t_representer *representer);
 void   init_coders(t_representer *representer);
 
-void exit_all(char *message);
+// monitor file :
+void linker_coders_with_dongles(t_representer *representer);
+void initialize_representer_struct(t_representer *representer ,int ac, char **av);
 
 // cleaner file :
 void free_dongles(t_representer *representer);
 void free_representer_struct(t_representer *representer);
 void free_coders(t_representer *representer);
 
+// timer file:
+long time_to_compile(t_coder *coder, long start_time);
+long get_time_ms();
 
 #endif

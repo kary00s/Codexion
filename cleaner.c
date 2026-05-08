@@ -7,8 +7,6 @@ void free_representer_struct(t_representer *representer)
     free(representer);
 }
 
-
-
 void free_dongles(t_representer *representer)
 {
     int i;

@@ -13,6 +13,18 @@ void *routine(void *args)
 	// pthread_mutex_unlock(&representer->mutex);
 	return(NULL);
 }
+void 	threads_joiner(t_representer *representer)
+{
+	int i;
+	i = 0;
+
+	while (i < representer->config.number_of_coders)
+	{
+		pthread_join(representer->coders[i]->thread, NULL);
+		i++;
+	}
+	
+}
 void threads_creator(t_representer *representer)
 {
 	int i = 0;
@@ -22,8 +34,9 @@ void threads_creator(t_representer *representer)
 		pthread_create(&representer->coders[i]->thread, NULL, routine, (void *)representer);
 		i++;
 	}
-	
+	threads_joiner(representer);
 }
+
 
 int main(int ac, char *av[])
 {
@@ -38,11 +51,9 @@ int main(int ac, char *av[])
 	printf("=>%d\n",representer->config.number_of_compiles_required);
 	printf("=>%d\n",representer->config.dongle_cooldown);
 
-
-
-
-
-
 	threads_creator(representer);
+	linker_coders_with_dongles(representer);
+
+
 	free_representer_struct(representer);
 }

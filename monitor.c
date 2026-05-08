@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/07 16:24:46 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/05/09 00:22:31 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,16 @@ void initialize_representer_struct(t_representer *representer ,int ac, char **av
         pthread_cond_destroy(&representer->cond);
         representer->is_burnouted = false; 
     representer->coders_counter = 0;
+}
+
+void linker_coders_with_dongles(t_representer *representer)
+{
+    int i;
+    i = 0;   
+	while (i < representer->config.number_of_coders)
+	{
+		representer->coders[i]->left_dongle = representer->dongles[i];
+		representer->coders[i]->right_dongle = representer->dongles[(i + 1) % representer->config.number_of_coders];
+		i++;
+	}
 }
