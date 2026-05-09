@@ -37,6 +37,22 @@ void threads_creator(t_representer *representer)
 	threads_joiner(representer);
 }
 
+void compile_coders(t_representer *representer)
+{
+	int i = 0;
+	long start;
+	long time_to_compil;
+	while (i < representer->config.number_of_coders)
+	{
+		printf("%d\n", i);
+		start = get_time_ms();
+		time_to_compil = time_to_compile(representer->coders[i], start);
+		printf("Time to compile coder %d is %ld", i, time_to_compil);
+		i++;
+	}
+	
+}
+
 
 int main(int ac, char *av[])
 {
@@ -53,7 +69,7 @@ int main(int ac, char *av[])
 
 	threads_creator(representer);
 	linker_coders_with_dongles(representer);
-
+	compile_coders(representer);
 
 	free_representer_struct(representer);
 }

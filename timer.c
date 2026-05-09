@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:57:37 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/09 00:40:16 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/05/09 01:58:02 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ long get_time_ms()
 long time_to_compile(t_coder *coder, long start_time)
 {
 	usleep(1000000);
+	
 	long now = get_time_ms();
-	return now - start_time;
+	return (now - start_time);
 }
