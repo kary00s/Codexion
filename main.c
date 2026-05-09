@@ -32,9 +32,9 @@ void threads_creator(t_representer *representer)
 	while (i < representer->config.number_of_coders)
 	{
 		pthread_create(&representer->coders[i]->thread, NULL, routine, (void *)representer);
+		threads_joiner(representer);
 		i++;
 	}
-	threads_joiner(representer);
 }
 
 void compile_coders(t_representer *representer)

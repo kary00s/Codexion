@@ -16,6 +16,21 @@ typedef struct s_config t_config;
 typedef enum e_coder_state t_coder_state;
 
 
+// QUEUE structs :
+typedef struct s_queue_node
+{
+    int id_node;
+    struct s_queue_node *next;
+}   t_queue_node;
+
+typedef struct s_queue
+{
+    t_queue_node *prev;
+    t_queue_node *next;
+}   t_queue;
+
+
+// DONGLES structs :
 typedef struct s_dongle
 {
     int             dongle_id;
@@ -24,6 +39,7 @@ typedef struct s_dongle
 	pthread_cond_t dongle_cond;
 } t_dongle;
 
+// CODERS struct :
 typedef struct s_coder
 {
 	int coder_id;
@@ -38,13 +54,14 @@ typedef struct s_coder
 	bool is_burnouted;
 }	t_coder;
 
-
+// SCHEDULER enum :
 typedef enum enum_scheduer
 {
     FIFO,
     EDF
 }   t_scheduler;
 
+// CODER_STATE enum :
 typedef enum e_coder_state
 {
     STARTING,
@@ -55,6 +72,7 @@ typedef enum e_coder_state
     FINISHING
 }   t_coder_state;
 
+// REPRESENTER structs :
 typedef struct s_config
 {
     int number_of_coders;
@@ -77,9 +95,10 @@ typedef struct s_representer
     bool is_burnouted;
     pthread_mutex_t mutex;
 	pthread_cond_t cond;
-
+    int queue[];
 } t_representer;
 
+// main file :
 int main(int ac, char *av[]);
 void dongles_destroyer(t_dongle **dongles, int counter);
 t_config parser(int ac, char **args);
