@@ -22,7 +22,7 @@ long get_time_ms()
 
 long time_to_compile(t_coder *coder, long start_time)
 {
-	usleep(1000000);
+	// usleep(1000000);
 	
 	long now = get_time_ms();
 	return (now - start_time);

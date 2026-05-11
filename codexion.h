@@ -95,7 +95,7 @@ typedef struct s_representer
     bool is_burnouted;
     pthread_mutex_t mutex;
 	pthread_cond_t cond;
-    int queue[];
+    t_queue *queue;
 } t_representer;
 
 // main file :
@@ -115,8 +115,14 @@ void free_dongles(t_representer *representer);
 void free_representer_struct(t_representer *representer);
 void free_coders(t_representer *representer);
 
+void init_coders(t_representer *representer);
+
+
 // timer file:
 long time_to_compile(t_coder *coder, long start_time);
 long get_time_ms();
+
+// queue file :
+t_queue *queue_filler(t_representer *representer);
 
 #endif

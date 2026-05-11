@@ -75,12 +75,6 @@ static void initialize_coders_struct(t_representer *representer, t_coder **coder
         i++;
     }
 }
-void queue_filler(t_representer *representer, t_queue *queue)
-{
-   
-    
-    
-}
 
 void init_coders(t_representer *representer)
 {
@@ -92,5 +86,4 @@ void init_coders(t_representer *representer)
     initialize_coders_struct(representer, representer->coders,representer->config.number_of_coders);
     if (!representer->coders)
          clear_coders(representer);
-    queue_filler(representer);
 }
