@@ -94,6 +94,7 @@ typedef struct s_representer
 	pthread_mutex_t burnout_mutex;
     bool is_burnouted;
     pthread_mutex_t mutex;
+    bool coders_are_ready;
 	pthread_cond_t cond;
     t_queue *queue;
 } t_representer;

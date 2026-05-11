@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/09 16:49:17 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/05/11 09:48:25 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void initialize_representer_struct(t_representer *representer ,int ac, char **av
     init_coders(representer);
     if (!representer->coders)
         exit_all("Coders Allocatoion Error");
+    representer->coders_are_ready = false;
 
     if(pthread_mutex_init(&representer->burnout_mutex, NULL))
          pthread_mutex_destroy(&representer->burnout_mutex);

@@ -1,13 +1,22 @@
 #include"codexion.h"
 
 
+
+bool stop_coder_routine()
+{
+	if()
+}
+
 void *routine(void *args)
 {	t_representer *representer;
 	representer = (t_representer *)args;
-	pthread_mutex_lock(&representer->mutex);
-	printf("coder created succefully\n");
-	pthread_mutex_unlock(&representer->mutex);
+	while(1)
+	{
+		pthread_mutex_lock(&representer->mutex);
 
+		printf("coder created succefully\n");
+		pthread_mutex_unlock(&representer->mutex);
+	}
 	// pthread_mutex_lock(&representer->mutex);
 	// pthread_cond_signal(&representer->cond);
 	// pthread_mutex_unlock(&representer->mutex);
