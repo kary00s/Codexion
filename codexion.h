@@ -126,4 +126,9 @@ long get_time_ms();
 // queue file :
 t_queue *queue_filler(t_representer *representer);
 
+// droper file :
+void drop_both(t_coder *coder);
+
+// holder file : 
+void coder_hold_both_dongles(t_coder *coder);
 #endif

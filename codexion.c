@@ -1,25 +1,18 @@
 #include"codexion.h"
 
-
-
-bool stop_coder_routine()
-{
-	if()
-}
-
-void *routine(void *args)
+void *routine_coders(void *args)
 {	t_representer *representer;
 	representer = (t_representer *)args;
-	while(1)
+	pthread_mutex_lock(&representer->mutex);
+	while(representer->coders_counter < representer->config.number_of_coders)
 	{
-		pthread_mutex_lock(&representer->mutex);
-
 		printf("coder created succefully\n");
+		pthread_cond_wait(&representer->cond, &representer->mutex);
 		pthread_mutex_unlock(&representer->mutex);
 	}
-	// pthread_mutex_lock(&representer->mutex);
-	// pthread_cond_signal(&representer->cond);
-	// pthread_mutex_unlock(&representer->mutex);
+	pthread_mutex_lock(&representer->mutex);
+	pthread_cond_signal(&representer->cond);
+	pthread_mutex_unlock(&representer->mutex);
 	return(NULL);
 }
 void 	threads_joiner(t_representer *representer)
@@ -40,7 +33,7 @@ void threads_creator(t_representer *representer)
 
 	while (i < representer->config.number_of_coders)
 	{
-		pthread_create(&representer->coders[i]->thread, NULL, routine, (void *)representer);
+		pthread_create(&representer->coders[i]->thread, NULL, routine_coders, (void *)representer);
 		i++;
 	}
 	threads_joiner(representer);
@@ -81,12 +74,6 @@ int main(int ac, char *av[])
 	representer->queue = queue_filler(representer);
 	int i = 0;
 	compile_coders(representer);
-	while (i < representer->config.number_of_coders)
-	{	
-		printf("queue id %d\n", representer->queue->next->id_node);
-		representer->queue->prev = representer->queue->prev->next;
-		i++;	
-	}
 	
 
 	free_representer_struct(representer);
