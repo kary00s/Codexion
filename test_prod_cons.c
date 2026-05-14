@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-
 pthread_mutex_t mutex_var;
 pthread_cond_t cond_var;
 
@@ -17,6 +16,7 @@ int	arraylen(int *arr)
 		i += 1;
 	return (i);
 }
+
 void	*producer(void *arg)
 {
 	int	*arr = (int *)arg;
@@ -51,7 +51,6 @@ void	*consumer(void *arg)
 		pthread_mutex_lock(&mutex_var);
 	}
 	pthread_mutex_unlock(&mutex_var);
-	
 	usleep(500);
 	
 	pthread_mutex_lock(&mutex_var);
@@ -92,5 +91,4 @@ int	main(void)
 	}
 	pthread_join(t1, NULL);
 	pthread_join(t2, NULL);
-
 }

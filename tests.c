@@ -1,20 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<pthread.h>
-
-pthread_cond_t = 
+#include<time.h>
+#include<sys/time.h>
+#include<unistd.h>
+pthread_cond_t cond;
+pthread_mutex_t mutex ;
 void *routine(void *args)
 {
+
     while (1)
     {        
+        pthread_mutex_lock(&mutex);
         printf("created succeffully\n");
-        pthread_cond_wait()
+        pthread_mutex_unlock(&mutex);
+        printf("is running\n");
+        pthread_cond_wait(&cond, &mutex);
+        sleep(1);   
     }
+    return NULL;
 }
 int main(void)
 {
-    pthread_t *thread;
-    long id = pthread_self();
+    pthread_t thread;
+    pthread_t thread1;
+
     pthread_create(&thread, NULL, routine, NULL);
-    printf("%ld\n", id);
+    pthread_create(&thread1, NULL, routine, NULL);
+    pthread_join(thread, NULL);
+    pthread_join(thread1, NULL);
+    
+    return 0;
 }
