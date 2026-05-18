@@ -107,6 +107,12 @@ void exit_all(char *message);
 void init_dongles(t_representer *representer);
 void   init_coders(t_representer *representer);
 
+
+void *routine_coders(void *args);
+void 	threads_joiner(t_representer *representer);
+void routine_all_the_coders(t_representer *representer);
+
+
 // monitor file :
 void linker_coders_with_dongles(t_representer *representer);
 void initialize_representer_struct(t_representer *representer ,int ac, char **av);
