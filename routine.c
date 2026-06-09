@@ -42,7 +42,7 @@ void *routine_coders(void *args)
 	}
     return NULL;
 }
-void 	threads_joiner(t_representer *representer)
+void threads_joiner(t_representer *representer)
 {
 	int i;
 	i = 0;
