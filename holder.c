@@ -18,7 +18,7 @@ static void hold_the_left_dongle(t_coder *coder)
 }
 
 
-void coder_hold_both_dongles(t_coder *coder)
+void hold_both_dongles(t_coder *coder)
 {
 	pthread_mutex_lock(&coder->mutex);
 	hold_the_left_dongle(coder);	

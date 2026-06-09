@@ -16,7 +16,7 @@ static void drop_the_left_dongle(t_coder *coder)
     pthread_mutex_unlock(&coder->left_dongle->dongle_mutex);
 }
 
-void drop_both(t_coder *coder)
+void drop_both_dongles(t_coder *coder)
 {
 	pthread_mutex_lock(&coder->mutex);
 	drop_the_left_dongle(coder);

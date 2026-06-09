@@ -47,6 +47,7 @@ typedef struct s_coder
 	time_t				last_compile;
     t_representer *representer;
 
+    t_config *config;
 	t_dongle *left_dongle;
 	t_dongle *right_dongle;
 	t_coder_state *coder_state;
@@ -109,7 +110,7 @@ void init_dongles(t_representer *representer);
 void   init_coders(t_representer *representer);
 
 
-void *routine_coders(void *args);
+// void *routine_coders(void *args);
 void 	threads_joiner(t_representer *representer);
 void *routine_all_the_coders(void *representer);
 
@@ -117,6 +118,8 @@ void *routine_all_the_coders(void *representer);
 // monitor file :
 void linker_coders_with_dongles(t_representer *representer);
 void initialize_representer_struct(t_representer *representer ,int ac, char **av);
+void init_queue(t_representer *representer);
+void *monitor(void *args);
 
 // cleaner file :
 void free_dongles(t_representer *representer);
@@ -131,11 +134,12 @@ long time_to_compile(t_coder *coder, long start_time);
 long get_time_ms();
 
 // queue file :
-void queue_filler(t_coder *coder, t_queue *queue);
+void queue_filler(t_representer*representer, t_queue *queue);
+void insert_coder_in_queue(t_coder *coder, t_queue *queue);
 
 // droper file :
-void drop_both(t_coder *coder);
+void drop_both_dongles(t_coder *coder);
 
 // holder file : 
-void coder_hold_both_dongles(t_coder *coder);
+void hold_both_dongles(t_coder *coder);
 #endif

@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:43 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/18 22:29:23 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/09 19:29:19 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,4 +83,12 @@ void init_coders(t_representer *representer)
     initialize_coders_struct(representer, representer->coders,representer->config.number_of_coders);
     if (!representer->coders)
          clear_coders(representer);
+}
+
+
+void init_queue(t_representer *representer)
+{
+    representer->queue = malloc(sizeof(t_queue *) * representer->config.number_of_coders);
+    if (!representer->queue)
+        exit_all("Eroooooooooooor");
 }
