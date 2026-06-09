@@ -17,17 +17,13 @@ typedef enum e_coder_state t_coder_state;
 
 
 // QUEUE structs :
-typedef struct s_queue_node
-{
-    int id_node;
-    struct s_queue_node *next;
-}   t_queue_node;
-
 typedef struct s_queue
 {
-    t_queue_node *prev;
-    t_queue_node *next;
-}   t_queue;
+    t_coder         **coders;
+    int             size;
+    int             capacity;
+    pthread_mutex_t mutex_queue;
+} t_queue;
 
 
 // DONGLES structs :
@@ -46,6 +42,11 @@ typedef struct s_coder
 	int coders_counter;
 	pthread_mutex_t *burnout_mutex;
 	pthread_t thread;
+    time_t				deadline;
+	time_t				access;	
+	time_t				last_compile;
+    t_representer *representer;
+
 	t_dongle *left_dongle;
 	t_dongle *right_dongle;
 	t_coder_state *coder_state;
@@ -110,7 +111,7 @@ void   init_coders(t_representer *representer);
 
 void *routine_coders(void *args);
 void 	threads_joiner(t_representer *representer);
-void routine_all_the_coders(t_representer *representer);
+void *routine_all_the_coders(void *representer);
 
 
 // monitor file :
@@ -130,7 +131,7 @@ long time_to_compile(t_coder *coder, long start_time);
 long get_time_ms();
 
 // queue file :
-t_queue *queue_filler(t_representer *representer);
+void queue_filler(t_coder *coder, t_queue *queue);
 
 // droper file :
 void drop_both(t_coder *coder);

@@ -8,9 +8,10 @@ void threads_creator(t_representer *representer)
 	{
 		if (representer->coders[i]->coder_id % 2 == 0)
 			coder_hold_both_dongles(representer->coders[i]);
-		pthread_create(&representer->coders[i]->thread, NULL, routine_coders, (void *)representer);
+		pthread_create(&representer->coders[i]->thread, NULL, routine_all_the_coders, (void *)representer);
 		i++;
 	}
+	
 }
 
 
@@ -24,8 +25,5 @@ int main(int ac, char *av[])
 	threads_creator(representer);
 	threads_joiner(representer);
 	
-	
-	
-	representer->queue = queue_filler(representer);
 	free_representer_struct(representer);
 }

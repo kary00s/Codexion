@@ -1,34 +1,46 @@
 #include "codexion.h"
 
-
-static int enqueue(t_queue *queue, int coder_id)
+void queue_up(t_queue *queue, int index)
 {
-    t_queue_node *node = malloc(sizeof(t_queue_node));
-    if (!node)
-        return -1;
-    node->id_node = coder_id;
-    node->next = NULL;
+    int parent;
 
-    if (queue->next == NULL)
+    while (index > 0)
     {
-        queue->prev = node; // front
-        queue->next = node; // rear
+        parent = (index - 1) / 2;
+        if (queue)
+        {
+            if (queue->coders[parent]->deadline <= queue->coders[index]->deadline)
+                break;
+        }
+        else  // fifo
+        {
+            if (queue->coders[parent]->access <= queue->coders[index]->access)
+                break;
+        }
+        // swap_coders(&queue->coders[parent], &queue->coders[index]);
+        index = parent;
     }
-
-    return 0;
 }
 
-t_queue *queue_filler(t_representer *representer)
+void queue_filler(t_coder *coder, t_queue *queue)
 {
-    t_queue *queue = malloc(sizeof(t_queue));
-    if (!queue)
-        return NULL;
-    queue->prev = NULL;
-    queue->next = NULL;
 
-    for (int i = 0; i < representer->config.number_of_coders; i++)
+    pthread_mutex_lock(&queue->mutex_queue);
+
+    // don't insert if full or already in heap
+    if (queue->size >= queue->capacity )
     {
-        enqueue(queue, representer->coders[i]->coder_id);
+        pthread_mutex_unlock(&queue->mutex_queue);
+        return ;
     }
-    return queue;
+
+    // stamp arrival time NOW, under the mutex
+    coder->access = get_time_ms();
+
+    queue->coders[queue->size] = coder;
+    queue_up(queue, queue->size);
+    queue->size++;
+
+    pthread_mutex_unlock(&queue->mutex_queue);
 }
+
