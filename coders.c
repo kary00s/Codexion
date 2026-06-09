@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:43 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/18 22:25:20 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/05/18 22:29:23 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,6 @@ static t_coder **coders_allocater(t_coder **coder, int number_of_coders)
     }
     return (coders_list);
 }
-
-
 
 static void clear_coders(t_representer *representer)
 {
