@@ -3,33 +3,27 @@
 void ft_compiling(t_coder *coder,  t_queue *queue)
 {
 	
-	// enqueue coder to waiting queue
 	insert_coder_in_queue(coder, queue);
-
+	
 	pthread_mutex_lock(&coder->mutex);
-	while (coder->coder_state == WAITING) {
+	while (coder->coder_state == WAITING) 
 		pthread_cond_wait(&coder->cond, &coder->mutex);
-	}
+
 	pthread_mutex_unlock(&coder->mutex);
 	
-	// wait for dongle to coldown
 	pthread_mutex_lock(&coder->mutex);
-	// check last releast time of dongles and wait the coldown
-	while(time_to_compile(coder, coder->last_compile) < coder->config->dongle_cooldown)
+
+	while(time_calculator(coder, coder->last_compile) < coder->config->dongle_cooldown)
 		usleep(100);
 	printf(" %ld coder is compiling\n", coder->coder_id);
 
-
-	// log coder id compiling
-	
-	// after finish compiling change the state of dongles to be available for another coder
 	coder->last_compile = get_time_ms();
-	// release the dongles and set when they got released
+
 	drop_both_dongles(coder);
 
-	// change coder state to debuging
 	coder->coder_state = DEBUGING;
 }
+
 void ft_debuging(t_coder *coder) {
 	// print coder debuging 
 	printf(" %ld coder is debuging\n", coder->coder_id);
@@ -39,7 +33,6 @@ void ft_debuging(t_coder *coder) {
 
 	// change coder state to refactoring
 	coder->coder_state = REFACTORING;
-
 }
 
 void ft_refactoring(t_coder *coder) {
@@ -76,25 +69,5 @@ void threads_joiner(t_representer *representer)
 		pthread_join(representer->coders[i]->thread, NULL);
 		i++;
 	}
+	pthread_join(representer->monitor, NULL);
 }
-
-
-
-
-
-
-// void ft_compile()
-// {
-// 	printf("is compiling\n");
-// 	usleep(1000000);
-// }
-// static void ft_debug()
-// {
-// 	printf("is debugging\n");
-// 	usleep(1000000);
-// }
-// static void ft_refactor()
-// {
-// 	printf("is refactoring\n");
-// 	usleep(1000000);
-// }

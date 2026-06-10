@@ -99,27 +99,52 @@ typedef struct s_representer
     bool coders_are_ready;
 	pthread_cond_t cond;
     t_queue *queue;
+    t_monitor *monitor;
+    t_manager *manager;
 } t_representer;
 
-// main file :
+typedef struct s_manager
+{
+    pthread_t *manager;
+    pthread_cond_t cond_manager;    
+    pthread_mutex_t mutex_manager; 
+} t_manager;
+
+typedef struct s_monitor
+{
+    pthread_t *monitor;
+    pthread_cond_t cond_monitor;    
+    pthread_mutex_t mutex_monitor; 
+
+} t_monitor ;
+
+// codexion file :
 int main(int ac, char *av[]);
 void dongles_destroyer(t_dongle **dongles, int counter);
 t_config parser(int ac, char **args);
 void exit_all(char *message);
+
+// dongles filr :
 void init_dongles(t_representer *representer);
+
+// coders file :
 void   init_coders(t_representer *representer);
-
-
-// void *routine_coders(void *args);
-void 	threads_joiner(t_representer *representer);
+void threads_joiner(t_representer *representer);
 void *routine_all_the_coders(void *representer);
 
 
 // monitor file :
 void linker_coders_with_dongles(t_representer *representer);
-void initialize_representer_struct(t_representer *representer ,int ac, char **av);
-void init_queue(t_representer *representer);
-void *monitor(void *args);
+void *monitor_home(void *args);
+void monitor_joiner(t_monitor *monitor);
+void monitor_creator(t_representer *representer);
+
+// manager_file :
+void *manager_home(void *args);
+void manager_joiner(t_manager *manager);
+void manager_creator(t_representer *representer);
+t_coder *peek_a_coder(t_queue *queue, int index);
+
 
 // cleaner file :
 void free_dongles(t_representer *representer);
@@ -130,11 +155,10 @@ void init_coders(t_representer *representer);
 
 
 // timer file:
-long time_to_compile(t_coder *coder, long start_time);
+long time_calculator(t_coder *coder, long start_time);
 long get_time_ms();
 
 // queue file :
-void queue_filler(t_representer*representer, t_queue *queue);
 void insert_coder_in_queue(t_coder *coder, t_queue *queue);
 
 // droper file :
@@ -142,4 +166,10 @@ void drop_both_dongles(t_coder *coder);
 
 // holder file : 
 void hold_both_dongles(t_coder *coder);
+
+
+// initializer file:
+void *initializer_queue(t_representer *representer, t_queue *queue);
+void initialize_representer_struct(t_representer *representer ,int ac, char **av);
+
 #endif

@@ -11,7 +11,9 @@ SRC = codexion.c\
 	timer.c\
 	queue.c\
 	routine.c\
-	holder.c
+	holder.c\
+	initializer.c\
+	manager.c\
 
 OBG = $(SRC:.c=.o)
 

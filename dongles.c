@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:53 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/05/07 16:04:59 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/10 17:33:17 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
     return (dongles);
 }
 
-void dongles_destroyer(t_dongle **dongles, int counter)
+static void dongles_destroyer(t_dongle **dongles, int counter)
 {
     int i;
     i = 0;
