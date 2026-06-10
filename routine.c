@@ -26,39 +26,49 @@ void ft_compiling(t_coder *coder,  t_queue *queue)
 
 void ft_debuging(t_coder *coder) {
 	// print coder debuging 
-	printf(" %ld coder is debuging\n", coder->coder_id);
-
-	// sleep the time of debuging
-	usleep(coder->config->time_to_debug);
-
-	// change coder state to refactoring
-	coder->coder_state = REFACTORING;
+	if (coder->coder_state == DEBUGING)
+	{		
+		printf(" %ld coder is debuging\n", coder->coder_id);
+		
+		// sleep the time of debuging
+		usleep(coder->config->time_to_debug);
+		
+		// change coder state to refactoring
+		coder->coder_state = REFACTORING;
+	}
 }
 
 void ft_refactoring(t_coder *coder) {
 	// log coder refactoring
-	printf(" %ld coder is debuging\n", coder->coder_id);
+	if(coder->coder_state == REFACTORING)
+	{
+		printf(" %ld coder is debuging\n", coder->coder_id);
 
-	// sleep time of refactoring
-	usleep(coder->config->time_to_refactor);
+		// sleep time of refactoring
+		usleep(coder->config->time_to_refactor);
 
-	// change coder state to waiting
-	coder->coder_state = WAITING;
-
+		// change coder state to waiting
+		coder->coder_state = WAITING;
+	}
 }
 void *routine_all_the_coders(void *rpster)
 {
 	t_representer *representer ;
 	representer = (t_representer *)rpster;
+	t_coder *coder;
+	int i = 0;
 	while(1) {
-		queue_filler(representer, representer->queue);
-		representer->coders_are_ready = true;
-		pthread_cond_broadcast(&representer->cond);
-		pthread_mutex_unlock(&representer->mutex);
-		printf("All coders are ready, starting work!\n");
+		if (i == representer->queue->size)
+            i = 0;
+		coder = peek_a_coder(representer->queue, i);
+		ft_compiling(coder, representer->queue);
+		ft_debuging(coder);
+		ft_refactoring(coder);
+		i++;
 	}
 	return NULL;
 }
+
 void threads_joiner(t_representer *representer)
 {
 	int i;
