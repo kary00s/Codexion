@@ -169,7 +169,7 @@ void hold_both_dongles(t_coder *coder);
 
 
 // initializer file:
-void initializer_queue(t_representer *representer, t_queue *queue);
+void *initializer_queue(t_representer *representer);
 void initialize_representer_struct(t_representer *representer ,int ac, char **av);
 
 #endif

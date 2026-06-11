@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 14:52:28 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/11 16:05:23 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/11 16:31:18 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void initialize_representer_struct(t_representer *representer ,int ac, char **av
     if (!representer->coders)
         exit_all("Coders Allocatoion Error");
     representer->coders_are_ready = false;
-    initializer_queue(representer, representer->queue);
+    representer->queue = initializer_queue(representer);
     
     if(pthread_mutex_init(&representer->burnout_mutex, NULL))
          pthread_mutex_destroy(&representer->burnout_mutex);
@@ -34,8 +34,11 @@ void initialize_representer_struct(t_representer *representer ,int ac, char **av
     representer->coders_counter = 0;
 }
 
-void initializer_queue(t_representer *representer, t_queue *queue)
+void *initializer_queue(t_representer *representer)
 {
+    t_queue *queue;
     queue->capacity = representer->config.number_of_coders;
+    queue = malloc(sizeof(queue) * queue->capacity);
     pthread_mutex_init(&queue->mutex_queue, NULL);
+    return queue;
 }

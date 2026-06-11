@@ -57,9 +57,10 @@ void *routine_all_the_coders(void *rpster)
 	representer = (t_representer *)rpster;
 	t_coder *coder;
 	int i = 0;
+	
 	while(1) {
 		if (i == representer->queue->size)
-            i = 0;
+			i = 0;
 		coder = peek_a_coder(representer->queue, i);
 		ft_compiling(coder, representer->queue);
 		ft_debuging(coder);

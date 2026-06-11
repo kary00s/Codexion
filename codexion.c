@@ -3,10 +3,12 @@
 void threads_creator(t_representer *representer)
 {
 	int i = 0;
+	
 	while (i < representer->config.number_of_coders)
 		pthread_create(&representer->coders[i++]->thread, NULL, routine_all_the_coders, (void *)representer);
-}	
-
+	// {	printf("====  %d ====\n" , i);
+	// }	
+}
 int main(int ac, char *av[])
 {
 	t_representer *representer;
@@ -15,6 +17,7 @@ int main(int ac, char *av[])
 	initialize_representer_struct(representer, ac, av);
 	linker_coders_with_dongles(representer);
 	threads_creator(representer);
+	printf("==========\n");
 
 	monitor_creator(representer);
 	manager_creator(representer);
