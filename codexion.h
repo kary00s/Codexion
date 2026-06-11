@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <stdbool.h>
+typedef struct s_manager t_manager;
 
 typedef struct s_dongle t_dongle;
 typedef struct s_coder t_coder;
@@ -87,6 +88,14 @@ typedef struct s_config
     t_scheduler scheduler;
 } t_config; 
 
+typedef struct s_monitor
+{
+    pthread_t monitor;
+    pthread_cond_t cond_monitor;    
+    pthread_mutex_t mutex_monitor; 
+
+} t_monitor ;
+
 typedef struct s_representer
 {
     int coders_counter;
@@ -105,18 +114,11 @@ typedef struct s_representer
 
 typedef struct s_manager
 {
-    pthread_t *manager;
+    pthread_t manager;
     pthread_cond_t cond_manager;    
     pthread_mutex_t mutex_manager; 
 } t_manager;
 
-typedef struct s_monitor
-{
-    pthread_t *monitor;
-    pthread_cond_t cond_monitor;    
-    pthread_mutex_t mutex_monitor; 
-
-} t_monitor ;
 
 // codexion file :
 int main(int ac, char *av[]);
@@ -151,8 +153,6 @@ void free_dongles(t_representer *representer);
 void free_representer_struct(t_representer *representer);
 void free_coders(t_representer *representer);
 
-void init_coders(t_representer *representer);
-
 
 // timer file:
 long time_calculator(t_coder *coder, long start_time);
@@ -169,7 +169,7 @@ void hold_both_dongles(t_coder *coder);
 
 
 // initializer file:
-void *initializer_queue(t_representer *representer, t_queue *queue);
+void initializer_queue(t_representer *representer, t_queue *queue);
 void initialize_representer_struct(t_representer *representer ,int ac, char **av);
 
 #endif

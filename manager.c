@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:06:35 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/10 18:49:36 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/11 16:04:49 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 void manager_creator(t_representer *representer)
 {
-    if (pthread_create(&representer->manager, NULL, &manager_home, representer))
+    if (pthread_create(&(representer->manager->manager), NULL, &manager_home, representer))
     exit_all("Error: manager thread failed\n");
 }
 
@@ -49,7 +49,7 @@ void *manager_home(void *args)
             pthread_mutex_unlock(&coder->right_dongle->dongle_mutex);
             
             pthread_mutex_lock(&coder->mutex);
-            coder->coder_state = COMPILING;
+            *(coder->coder_state) = COMPILING;
             pthread_cond_broadcast(&coder->cond);
             pthread_mutex_unlock(&coder->mutex);
         }

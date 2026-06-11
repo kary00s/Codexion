@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:53 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/10 17:33:17 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/11 15:10:54 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,18 @@ static t_dongle **dongles_allocater(t_representer *representer)
     return (dongles_list);
 }
 
+void dongles_destroyer(t_dongle **dongles, int counter)
+{
+    int i;
+    i = 0;
+    while(i < counter)
+    {
+        pthread_mutex_destroy(&dongles[i]->dongle_mutex);       
+        pthread_cond_destroy(&dongles[i]->dongle_cond);    
+        i++;
+    }
+}
+
 static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
     int i;
     
@@ -60,17 +72,6 @@ static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
     return (dongles);
 }
 
-static void dongles_destroyer(t_dongle **dongles, int counter)
-{
-    int i;
-    i = 0;
-    while(i < counter)
-    {
-        pthread_mutex_destroy(&dongles[i]->dongle_mutex);       
-        pthread_cond_destroy(&dongles[i]->dongle_cond);    
-        i++;
-    }
-}
 
 
 void init_dongles(t_representer *representer)

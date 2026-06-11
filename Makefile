@@ -12,6 +12,7 @@ SRC = codexion.c\
 	queue.c\
 	routine.c\
 	holder.c\
+	droper.c\
 	initializer.c\
 	manager.c\
 

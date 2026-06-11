@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/10 18:50:56 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/11 15:29:56 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 void monitor_creator(t_representer *representer)
 {
-	if (pthread_create(&representer->monitor, NULL, &monitor_home, representer))
-    exit_all("Error: monitor thread failed\n");
+	if (pthread_create(&(representer->monitor->monitor), NULL, monitor_home, representer))
+    	exit_all("Error: monitor thread failed\n");
 }
 
 void monitor_joiner(t_monitor *monitor)
@@ -45,9 +45,7 @@ void *monitor_home(void *args)
 		i++;
 	}
 	
-	
 }
-
 
 void linker_coders_with_dongles(t_representer *representer)
 {

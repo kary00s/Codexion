@@ -14,11 +14,10 @@ int main(int ac, char *av[])
 
 	initialize_representer_struct(representer, ac, av);
 	linker_coders_with_dongles(representer);
-
 	threads_creator(representer);
+
 	monitor_creator(representer);
 	manager_creator(representer);
-
 
 	threads_joiner(representer);
 	monitor_joiner(representer->monitor);
