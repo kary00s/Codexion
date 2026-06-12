@@ -102,12 +102,12 @@ typedef struct s_representer
     t_config config;
     t_dongle **dongles;
     t_coder **coders;
-	pthread_mutex_t burnout_mutex;
-    bool is_burnouted;
-    pthread_mutex_t mutex;
     bool coders_are_ready;
-	pthread_cond_t cond;
+    bool is_burnouted;
     t_queue *queue;
+    pthread_mutex_t mutex;
+	pthread_mutex_t burnout_mutex;
+	pthread_cond_t cond;
     t_monitor *monitor;
     t_manager *manager;
 } t_representer;
@@ -125,17 +125,21 @@ int main(int ac, char *av[]);
 void dongles_destroyer(t_dongle **dongles, int counter);
 t_config parser(int ac, char **args);
 void exit_all(char *message);
+void threads_creator(t_representer *representer);
+
 
 // dongles filr :
 void init_dongles(t_representer *representer);
 
 // coders file :
 void   init_coders(t_representer *representer);
+
 void threads_joiner(t_representer *representer);
 void *routine_all_the_coders(void *representer);
 
 
 // monitor file :
+t_monitor *monitor_initializer(void);
 void linker_coders_with_dongles(t_representer *representer);
 void *monitor_home(void *args);
 void monitor_joiner(t_monitor *monitor);
@@ -146,6 +150,7 @@ void *manager_home(void *args);
 void manager_joiner(t_manager *manager);
 void manager_creator(t_representer *representer);
 t_coder *peek_a_coder(t_queue *queue, int index);
+t_manager *manager_initializer(void);
 
 
 // cleaner file :
@@ -160,6 +165,7 @@ long get_time_ms();
 
 // queue file :
 void insert_coder_in_queue(t_coder *coder, t_queue *queue);
+void insert_all_coders_in_queue(t_representer *representer, t_queue *queue);
 
 // droper file :
 void drop_both_dongles(t_coder *coder);

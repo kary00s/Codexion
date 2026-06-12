@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 14:52:28 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/11 16:31:18 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/12 03:43:46 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void initialize_representer_struct(t_representer *representer ,int ac, char **av)
 {
+    representer->coders_counter = 0;
     representer->config = parser(ac, av);
     init_dongles(representer);
     if (!representer->dongles)
@@ -22,6 +23,7 @@ void initialize_representer_struct(t_representer *representer ,int ac, char **av
     if (!representer->coders)
         exit_all("Coders Allocatoion Error");
     representer->coders_are_ready = false;
+    representer->is_burnouted = false;
     representer->queue = initializer_queue(representer);
     
     if(pthread_mutex_init(&representer->burnout_mutex, NULL))
@@ -30,8 +32,12 @@ void initialize_representer_struct(t_representer *representer ,int ac, char **av
         pthread_mutex_destroy(&representer->mutex);
     if(pthread_cond_init(&representer->cond, NULL))
         pthread_cond_destroy(&representer->cond);
-        representer->is_burnouted = false; 
-    representer->coders_counter = 0;
+    representer->monitor = monitor_initializer();
+    if(!representer->monitor)
+        exit_all("Monitor Creation Error");
+    representer->manager = manager_initializer();
+    if (!representer->manager)
+        exit_all("Manager Creation Error");
 }
 
 void *initializer_queue(t_representer *representer)
