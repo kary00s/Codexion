@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/12 04:25:13 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/13 00:18:45 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ void *monitor_home(void *args)
 	int waiting_time;
 	t_coder *coder;
 	int i = 0;
-	while (1)
+	if(representer->coders_are_ready == true)
 	{
-		if(representer->coders_are_ready == true)
+		while (1)
 		{
 		    if (i == representer->queue->size)
 	            i = 0;
@@ -50,21 +50,11 @@ void *monitor_home(void *args)
 			// send a segnal to manager to exit 
 			if(waiting_time > representer->config.time_to_burnout)
 				representer->is_burnouted =  true;
+			usleep(100);
+			i++;
 		}
-		usleep(100);
-		i++;
 	}
+	return NULL;
 	
 }
 
-void linker_coders_with_dongles(t_representer *representer)
-{
-	int i;
-	i = 0;   
-	while (i < representer->config.number_of_coders)
-	{
-		representer->coders[i]->left_dongle = representer->dongles[i];
-		representer->coders[i]->right_dongle = representer->dongles[(i + 1) % representer->config.number_of_coders];
-		i++;
-	}
-}

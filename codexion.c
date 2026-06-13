@@ -9,16 +9,15 @@ int main(int ac, char *av[])
 	linker_coders_with_dongles(representer);
 	
 
-	insert_all_coders_in_queue(representer, representer->queue);
 	threads_creator(representer);
-	printf("xxxxxxxxxxx\n");
 	threads_joiner(representer);
 	
+	insert_all_coders_in_queue(representer, representer->queue);
+	printf("xxxxxxxxxxx\n");
 	
 	monitor_creator(representer);
 	manager_creator(representer);
 	manager_joiner(representer->manager);
 	monitor_joiner(representer->monitor);
-
 	free_representer_struct(representer);
 }

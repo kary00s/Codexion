@@ -1,16 +1,13 @@
 #include"codexion.h"
 
-void ft_compiling(t_coder *coder,  t_queue *queue)
+void ft_compiling(t_coder *coder)
 {
-	
-	// insert_coder_in_queue(coder, queue);
-	
 	pthread_mutex_lock(&coder->mutex);
-	while (*(coder->coder_state) == WAITING) 
-		pthread_cond_wait(&coder->cond, &coder->mutex);
-	printf("hereeeeeeeeeeeee => %d\n", coder->coder_id);
+	
+	
+		printf("hereeeeeeeeeeeee => %d\n", coder->coder_id);
+	printf("Coder %d\n", coder->coder_id);
 
-	pthread_mutex_unlock(&coder->mutex);
 	
 	pthread_mutex_lock(&coder->mutex);
 
@@ -24,17 +21,22 @@ void ft_compiling(t_coder *coder,  t_queue *queue)
 
 	*(coder->coder_state) = DEBUGING;
 }
+bool coder_must_wait(t_coder *coder)
+{
+	while (*(coder->coder_state) == WAITING) 
+		pthread_cond_wait(&coder->cond, &coder->mutex);
+	pthread_mutex_unlock(&coder->mutex);
+	return 
+}
+
 
 void ft_debuging(t_coder *coder) {
-	// print coder debuging 
 	if (*(coder->coder_state) == DEBUGING)
 	{		
 		printf(" %d coder is debuging\n", coder->coder_id);
 		
-		// sleep the time of debuging
 		usleep(coder->config->time_to_debug);
 		
-		// change coder state to refactoring
 		*(coder->coder_state) = REFACTORING;
 	}
 }
@@ -54,21 +56,19 @@ void ft_refactoring(t_coder *coder) {
 }
 void *routine_all_the_coders(void *rpster)
 {
-	t_representer *representer ;
-	representer = (t_representer *)rpster;
+	t_coder *coder ;
+	coder = (t_coder *)rpster;
 	int i = 0;
-	
+	// i have here a problem
 	while(1) {
-		if(representer->coders_are_ready == true)
-		{
-			ft_compiling(representer->coders[i], representer->queue);
-			printf("the coder %d\n", representer->coders[i]->coder_id);
-			ft_debuging(representer->coders[i]);
-			ft_refactoring(representer->coders[i]);
-		}
-		if (i == representer->queue->size)
-			i = 0;
+		
+		ft_compiling(coder);
+		ft_debuging(coder);
+		ft_refactoring(coder);
+		printf("%d\n", i);  // representer->queue->size);
 		i++;
+		// if (i >= representer->queue->size)
+			// i = 0;
 	}
 	return NULL;
 }
@@ -77,10 +77,11 @@ void threads_creator(t_representer *representer)
 {
 	int i = 0;
 	
+	// everything works untill here
 	while (i < representer->config.number_of_coders)
 	{
-		pthread_create(&representer->coders[i]->thread, NULL, routine_all_the_coders, (void *)representer);
-		// printf("karim taeeeeeeeee\n");
+		pthread_create(&representer->coders[i]->thread, NULL, routine_all_the_coders, (void *)representer->coders[i]);
+		// printf("coder %d\n", representer->coders[i]->coder_id);
 		i++;
 	}
 }

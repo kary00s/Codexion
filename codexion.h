@@ -135,7 +135,7 @@ void init_dongles(t_representer *representer);
 void   init_coders(t_representer *representer);
 
 void threads_joiner(t_representer *representer);
-void *routine_all_the_coders(void *representer);
+void *routine_all_the_coders(void *arg);
 
 
 // monitor file :
