@@ -49,10 +49,10 @@ void insert_all_coders_in_queue(t_representer *representer, t_queue *queue)
         pthread_mutex_lock(&queue->mutex_queue);
         representer->coders[i]->access = get_time_ms();
         queue->coders[queue->size] = representer->coders[i];
-        // printf("xxxxxxxxxxxxxxxaaaaaaaaaa\n");
+        printf("xxxxxxxxxxxxxxxaaaaaaaaaa\n");
         queue->size++;
         pthread_mutex_unlock(&queue->mutex_queue);
         i++;
     }
-    // representer->coders_are_ready = true;
+    representer->coders_are_ready = true;
 }

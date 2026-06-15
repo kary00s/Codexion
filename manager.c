@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:06:35 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/12 23:29:50 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/15 00:36:00 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,33 +43,42 @@ void *manager_home(void *args)
     int i = 0;      
     while (1)
 	{    
-        // printf("======hna==\n");
-        coder = peek_a_coder(representer->queue, i);
-        if (coder != NULL && coder->left_dongle->is_available == true && coder->right_dongle->is_available == true)
-        {
-            pthread_mutex_lock(&coder->left_dongle->dongle_mutex);
-            coder->left_dongle->is_available = false;
-            pthread_mutex_unlock(&coder->left_dongle->dongle_mutex);
-            
-            pthread_mutex_lock(&coder->right_dongle->dongle_mutex);
-            coder->right_dongle->is_available = false;
-            pthread_mutex_unlock(&coder->right_dongle->dongle_mutex);
-            
+        coder = peek_a_coder(representer);
+        if (coder == NULL) {
             pthread_mutex_lock(&coder->mutex);
             *(coder->coder_state) = COMPILING;
             pthread_cond_broadcast(&coder->cond);
             pthread_mutex_unlock(&coder->mutex);
+            i++;         
+         } 
+         else {
+            usleep(300);  
         }
-        if (i == representer->queue->size)
-        i = 0;
-        usleep(300);
-        i++;
     }
+ 
     return NULL;    
 }
 
 
-t_coder *peek_a_coder(t_queue *queue ,int index)
+t_coder *peek_a_coder(t_representer *representer)
 {
-    return queue->coders[index];
+    t_coder *coder;
+    int i = 0;
+    if (representer->queue->size == 0)
+        return NULL;
+    // lock queue    
+    pthread_mutex_lock(&representer->queue->mutex_queue);
+    while (i < representer->queue->size)
+    {
+        
+        if (are_dongles_available(representer->coders[i]))
+        {
+            // pop up the coder from queue
+            pthread_mutex_unlock(&representer->queue->mutex_queue);
+            return representer->coders[i];
+        }
+        i++;
+    }
+    pthread_mutex_unlock(&representer->queue->mutex_queue);
+    return coder;
 }

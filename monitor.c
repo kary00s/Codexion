@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/13 00:18:45 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/14 22:55:51 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void *monitor_home(void *args)
 		{
 		    if (i == representer->queue->size)
 	            i = 0;
-			coder = peek_a_coder(representer->queue, i);
+			coder = peek_a_coder(representer);
 			waiting_time = time_calculator(coder, coder->last_compile); 
 			
 			// send a segnal to manager to exit 

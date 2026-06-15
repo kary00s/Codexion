@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:53 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/11 22:59:27 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/15 01:05:31 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,36 @@ static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
     return (dongles);
 }
 
+static bool is_dongle_available(t_dongle *dongle) {
+    bool is_available;
+    is_available = false;
+    pthread_mutex_lock(&dongle->dongle_mutex);
+    if (dongle->is_available)
+        is_available = true;
+    pthread_mutex_unlock(&dongle->dongle_mutex);
+    return is_available;
+}
 
+static void make_dongles_unavailable(t_coder *coder)
+{
+    pthread_mutex_lock(&coder->left_dongle->dongle_mutex);
+    coder->left_dongle->is_available = false;
+    pthread_mutex_unlock(&coder->left_dongle->dongle_mutex);
+
+    pthread_mutex_lock(&coder->right_dongle->dongle_mutex);
+    coder->right_dongle->is_available = false;
+    pthread_mutex_unlock(&coder->right_dongle->dongle_mutex);
+}
+
+bool are_dongles_available(t_coder *coder)
+{
+    if (is_dongle_available(coder->left_dongle) && is_dongle_available(coder->right_dongle))
+    {
+        make_dongles_unavailable(coder);
+        return true;    
+    }
+    return false;            
+}
 
 void init_dongles(t_representer *representer)
 {
@@ -84,6 +113,4 @@ void init_dongles(t_representer *representer)
     representer->dongles = initialize_dongles_struct(representer->dongles, representer->config.number_of_coders);
     if (!representer->dongles)
         free_dongles(representer);
-
-
 }

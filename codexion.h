@@ -125,16 +125,17 @@ int main(int ac, char *av[]);
 void dongles_destroyer(t_dongle **dongles, int counter);
 t_config parser(int ac, char **args);
 void exit_all(char *message);
-void threads_creator(t_representer *representer);
+void coders_creator(t_representer *representer);
 
 
-// dongles filr :
+// dongles file :
 void init_dongles(t_representer *representer);
+bool are_dongles_available(t_coder *coder);
 
 // coders file :
 void   init_coders(t_representer *representer);
 
-void threads_joiner(t_representer *representer);
+void coders_joiner(t_representer *representer);
 void *routine_all_the_coders(void *arg);
 
 
@@ -149,7 +150,7 @@ void monitor_creator(t_representer *representer);
 void *manager_home(void *args);
 void manager_joiner(t_manager *manager);
 void manager_creator(t_representer *representer);
-t_coder *peek_a_coder(t_queue *queue, int index);
+t_coder *peek_a_coder(t_representer *representer);
 t_manager *manager_initializer(void);
 
 
