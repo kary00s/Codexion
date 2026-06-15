@@ -10,13 +10,13 @@ int main(int ac, char *av[])
 	
 
 	coders_creator(representer);
-	// monitor_creator(representer);
-	// manager_creator(representer);
+	monitor_creator(representer);
+	manager_creator(representer);
 	
 	
 	coders_joiner(representer);
 	printf("hereeeeeeeeeeeee \n");
-	// manager_joiner(representer->manager);
-	// monitor_joiner(representer->monitor);
+	manager_joiner(representer->manager);
+	monitor_joiner(representer->monitor);
 	free_representer_struct(representer);
 }
