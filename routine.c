@@ -2,26 +2,38 @@
 
 void ft_compiling(t_coder *coder)
 {
-	pthread_mutex_lock(&coder->representer->queue->mutex_queue);
-	insert_coder_in_queue(coder, coder->representer->queue);
+	t_queue *queue;
+	queue  = coder->representer->queue;
+	pthread_mutex_lock(&queue->mutex_queue);
+	pthread_mutex_lock(&coder->mutex);
 	
-	while(time_calculator(coder, coder->last_compile) < coder->config->dongle_cooldown)
-		usleep(100);
-	pthread_mutex_unlock(&coder->representer->queue->mutex_queue);
+	printf("=================== here is the compiling test ========================\n");
+	insert_coder_in_queue(coder, coder->representer);
+    
+	pthread_mutex_unlock(&coder->mutex);
+	pthread_mutex_unlock(&queue->mutex_queue);
 
+	
+	while(time_calculator(coder, coder->representer->coders[0]->last_compile) < coder->representer->config.dongle_cooldown)
+		coder_must_wait(coder);
+	
+	pthread_mutex_lock(&coder->mutex);
 	coder->last_compile = get_time_ms();
-
+	pthread_mutex_unlock(&coder->mutex);
+	
 	drop_both_dongles(coder);
 
 	*(coder->coder_state) = DEBUGING;
-	printf("compiling is done\n");
 }
-bool coder_must_wait(t_coder *coder)
+void coder_must_wait(t_coder *coder)
 {
+	pthread_mutex_lock(&coder->mutex);
+
 	while (*(coder->coder_state) == WAITING) 
 		pthread_cond_wait(&coder->cond, &coder->mutex);
 	pthread_mutex_unlock(&coder->mutex);
-	return false;
+	pthread_mutex_unlock(&coder->mutex);
+
 }
 
 
@@ -48,11 +60,14 @@ void *routine_all_the_coders(void *arg)
 {
 	t_coder *coder ;
 	coder = (t_coder *)arg;
-	while(1) {
+	while (1) {
+		pthread_mutex_lock(&coder->mutex);
+		ft_compiling(coder);
+		printf("============ here is the routine test  ============\n");
 		
-		// ft_compiling(coder);
 		// ft_debuging(coder);
 		// ft_refactoring(coder);
+		pthread_mutex_unlock(&coder->mutex);
 	}
 	return NULL;
 }
@@ -65,7 +80,7 @@ void coders_creator(t_representer *representer)
 	while (i < representer->config.number_of_coders)
 	{
 		pthread_create(&representer->coders[i]->thread, NULL, routine_all_the_coders, (void *)representer->coders[i]);
-		printf("coder %d\n", representer->coders[i]->coder_id);
+		// printf("here is the coders creation test\n");
 		i++;
 	}
 }
@@ -77,7 +92,6 @@ void coders_joiner(t_representer *representer)
 	
 	while (i < representer->config.number_of_coders)
 	{
-		printf("coder raqm %d\n", representer->config.number_of_coders);
 		pthread_join(representer->coders[i]->thread, NULL);
 		i++;
 	}

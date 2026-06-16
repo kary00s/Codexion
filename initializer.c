@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 14:52:28 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/15 00:44:39 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/15 21:05:22 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void initialize_representer_struct(t_representer *representer ,int ac, char **av
     representer->config = parser(ac, av);
     representer->coders_are_ready = false;
     representer->is_burnouted = false;
-    representer->queue = initializer_queue(representer);
     
     init_dongles(representer);
     if (!representer->dongles)
@@ -26,6 +25,8 @@ void initialize_representer_struct(t_representer *representer ,int ac, char **av
     init_coders(representer);
     if (!representer->coders)
         exit_all("Coders Allocatoion Error");
+    representer->queue = initializer_queue(representer);
+
     if(pthread_mutex_init(&representer->burnout_mutex, NULL))
          pthread_mutex_destroy(&representer->burnout_mutex);
     if(pthread_mutex_init(&representer->mutex, NULL))
@@ -53,6 +54,7 @@ void linker_coders_with_dongles(t_representer *representer)
 void *initializer_queue(t_representer *representer)
 {
     t_queue *queue;
+    queue->coders = representer->coders;
     queue->capacity = representer->config.number_of_coders;
     queue = malloc(sizeof(queue) * queue->capacity);
     queue->size = 0 ;

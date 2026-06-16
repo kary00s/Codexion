@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:06:35 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/15 20:15:51 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/16 09:45:38 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@
 
 void manager_creator(t_representer *representer)
 {
-        
+
+    // printf("test manager here\n");
+    
     if (pthread_create(&representer->manager->manager, NULL, &manager_home, representer))
         exit_all("manager creation error\n");
 }
@@ -40,9 +42,11 @@ void *manager_home(void *args)
     t_representer *representer;
     representer = (t_representer *)args;
     t_coder *coder;
-    int i = 0;      
+    int i = 0;   
+       
     while (1)
-	{    
+	{
+            
         coder = peek_a_coder(representer);
         if (coder != NULL) {
             pthread_mutex_lock(&coder->mutex);
@@ -50,10 +54,9 @@ void *manager_home(void *args)
             pthread_cond_broadcast(&coder->cond);
             pthread_mutex_unlock(&coder->mutex);
             i++;         
-         } 
-         else {
+        } 
+        else
             usleep(300);  
-        }
     }
  
     return NULL;    
@@ -66,7 +69,6 @@ t_coder *peek_a_coder(t_representer *representer)
     int i = 0;
     if (representer->queue->size == 0)
         return NULL;
-    // lock queue    
     pthread_mutex_lock(&representer->queue->mutex_queue);
     while (i < representer->queue->size)
     {

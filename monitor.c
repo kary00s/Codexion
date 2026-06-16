@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/14 22:55:51 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/16 09:40:27 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ t_monitor *monitor_initializer(void)
 		return NULL;
 	return monitor;
 }
+
 void monitor_joiner(t_monitor *monitor)
 {
 	pthread_join(monitor->monitor, NULL);

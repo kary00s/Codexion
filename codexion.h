@@ -41,9 +41,8 @@ typedef struct s_coder
 {
 	int coder_id;
 	int coders_counter;
-	pthread_mutex_t *burnout_mutex;
+	pthread_mutex_t burnout_mutex;
 	pthread_t thread;
-    time_t				deadline;
 	time_t				access;	
 	time_t				last_compile;
     t_representer *representer;
@@ -120,6 +119,9 @@ typedef struct s_manager
 } t_manager;
 
 
+
+void coder_must_wait(t_coder *coder);
+
 // codexion file :
 int main(int ac, char *av[]);
 void dongles_destroyer(t_dongle **dongles, int counter);
@@ -165,8 +167,8 @@ long time_calculator(t_coder *coder, long start_time);
 long get_time_ms();
 
 // queue file :
-void insert_coder_in_queue(t_coder *coder, t_queue *queue);
-void insert_all_coders_in_queue(t_representer *representer, t_queue *queue);
+void insert_coder_in_queue(t_coder *coder, t_representer *representer);
+// void insert_all_coders_in_queue(t_representer *representer, t_queue *queue);
 
 // droper file :
 void drop_both_dongles(t_coder *coder);
@@ -174,6 +176,7 @@ void drop_both_dongles(t_coder *coder);
 // holder file : 
 void hold_both_dongles(t_coder *coder);
 
+void swap_coders(t_coder *parent_coder, t_coder *child_coder);
 
 // initializer file:
 void *initializer_queue(t_representer *representer);

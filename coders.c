@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:43 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/12 01:13:14 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/15 20:38:12 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static void initialize_coders_struct(t_representer *representer, t_coder **coder
     int i;
     i = 0;
     representer->coders_counter = 0;
-
+    
     while (i < counter)
     {
         coder[i]->coder_id = i;
@@ -68,7 +68,7 @@ static void initialize_coders_struct(t_representer *representer, t_coder **coder
             clear_coders(representer);
         if (pthread_cond_init(&coder[i]->cond, NULL))
             clear_coders(representer);
-        
+        coder[i]->representer = representer;     
         i++;
     }
 }
