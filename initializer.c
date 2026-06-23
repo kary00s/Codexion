@@ -12,10 +12,12 @@
 
 #include "codexion.h"
 
-void initialize_representer_struct(t_representer *representer ,int ac, char **av)
+t_representer *initialize_representer_struct(t_representer *representer ,int ac, char **av)
 {
-    representer->coders_counter = 0;
+
+    representer = (t_representer *)malloc(sizeof(t_representer));
     representer->config = parser(ac, av);
+    representer->coders_counter = 0;
     representer->coders_are_ready = false;
     representer->is_burnouted = false;
     
@@ -39,24 +41,30 @@ void initialize_representer_struct(t_representer *representer ,int ac, char **av
     representer->manager = manager_initializer();
     if (!representer->manager)
         exit_all("Manager Creation Error");
+    return representer;
 }
-void linker_coders_with_dongles(t_representer *representer)
+t_representer *linker_coders_with_dongles(t_representer *representer)
 {
 	int i;
-	i = 0;   
-	while (i < representer->config.number_of_coders)
+	i = 0;
+    
+    printf("number of coders %d\n", representer->config.number_of_coders);
+    while (i < representer->config.number_of_coders)
 	{
-		representer->coders[i]->left_dongle = representer->dongles[i];
+        // printf("number of coders %d\n", representer->config.number_of_coders);  
+        representer->coders[i]->left_dongle = representer->dongles[i];
 		representer->coders[i]->right_dongle = representer->dongles[(i + 1) % representer->config.number_of_coders];
 		i++;
 	}
+    return representer;
 }
-void *initializer_queue(t_representer *representer)
+t_queue *initializer_queue(t_representer *representer)
 {
     t_queue *queue;
+
+    queue = malloc(sizeof(queue) * queue->capacity);
     queue->coders = representer->coders;
     queue->capacity = representer->config.number_of_coders;
-    queue = malloc(sizeof(queue) * queue->capacity);
     queue->size = 0 ;
     pthread_mutex_init(&queue->mutex_queue, NULL);
     return queue;

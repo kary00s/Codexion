@@ -143,7 +143,7 @@ void *routine_all_the_coders(void *arg);
 
 // monitor file :
 t_monitor *monitor_initializer(void);
-void linker_coders_with_dongles(t_representer *representer);
+t_representer *linker_coders_with_dongles(t_representer *representer);
 void *monitor_home(void *args);
 void monitor_joiner(t_monitor *monitor);
 void monitor_creator(t_representer *representer);
@@ -179,7 +179,7 @@ void hold_both_dongles(t_coder *coder);
 void swap_coders(t_coder *parent_coder, t_coder *child_coder);
 
 // initializer file:
-void *initializer_queue(t_representer *representer);
-void initialize_representer_struct(t_representer *representer ,int ac, char **av);
+t_queue *initializer_queue(t_representer *representer);
+t_representer *initialize_representer_struct(t_representer *representer ,int ac, char **av);
 
 #endif

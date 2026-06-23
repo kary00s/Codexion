@@ -12,7 +12,6 @@
 
 #include "codexion.h"
 
-
 void monitor_creator(t_representer *representer)
 {
 	if (pthread_create(&representer->monitor->monitor, NULL, &monitor_home, representer))
@@ -43,14 +42,17 @@ void *monitor_home(void *args)
 	{
 		while (1)
 		{
-		    if (i == representer->queue->size)
-	            i = 0;
+			printf("coder id\n");
+			if (i >= representer->queue->size)
+			i = 0;
 			coder = peek_a_coder(representer);
-			waiting_time = time_calculator(coder, coder->last_compile); 
+			if(coder == NULL)
+				continue;
 			
-			// send a segnal to manager to exit 
+			waiting_time = time_calculator(coder, coder->last_compile); 
 			if(waiting_time > representer->config.time_to_burnout)
 				representer->is_burnouted =  true;
+			// send a segnal to manager to exit 
 			usleep(100);
 			i++;
 		}

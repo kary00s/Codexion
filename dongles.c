@@ -56,6 +56,7 @@ static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
     while (i < counter)
     {
         dongles[i]->is_available = true;
+        dongles[i]->dongle_id = i;
 
         if (pthread_mutex_init(&dongles[i]->dongle_mutex, NULL))
         {
@@ -100,7 +101,7 @@ bool are_dongles_available(t_coder *coder)
         make_dongles_unavailable(coder);
         return true;    
     }
-    return false;            
+    return false;   
 }
 
 void init_dongles(t_representer *representer)

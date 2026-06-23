@@ -13,7 +13,6 @@ void shift_queue_up(t_queue *queue, int index)
         index = parent;
     }
 }
-
 void swap_coders(t_coder *parent_coder, t_coder *child_coder)
 {
     t_coder *swp;
@@ -25,12 +24,14 @@ void swap_coders(t_coder *parent_coder, t_coder *child_coder)
 void insert_coder_in_queue(t_coder *coder, t_representer *representer)
 {
     coder->access = get_time_ms();
-	printf("==> inserting coder to queue test \n");
     representer->coders[representer->queue->size] = coder;
-    shift_queue_up(representer->queue, representer->queue->size);
+    // shift_queue_up(representer->queue, representer->queue->size);
+	printf("==> inserting coder to queue test \n");
     
     representer->queue->size++;
-
+    if (representer->config.number_of_coders == representer->queue->size)
+        representer->coders_are_ready = true;
+    // printf("==> all coders are ready to compile \n");    
 }
 
 

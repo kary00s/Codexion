@@ -13,9 +13,6 @@
 
 #include "codexion.h"
 
-
-
-
 void manager_creator(t_representer *representer)
 {
 
@@ -72,13 +69,13 @@ t_coder *peek_a_coder(t_representer *representer)
     pthread_mutex_lock(&representer->queue->mutex_queue);
     while (i < representer->queue->size)
     {
-        
         if (are_dongles_available(representer->coders[i]))
         {
             // pop up the coder from queue
             pthread_mutex_unlock(&representer->queue->mutex_queue);
             return representer->coders[i];
         }
+        printf("coder id: %d\n", representer->coders[i]->coder_id);
         i++;
     }
     pthread_mutex_unlock(&representer->queue->mutex_queue);
