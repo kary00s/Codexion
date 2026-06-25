@@ -22,6 +22,7 @@ void swap_coders(t_coder *parent_coder, t_coder *child_coder)
 }
 
 void insert_coder_in_queue(t_coder *coder, t_queue *queue)
+{
     pthread_mutex_lock(&coder->queue->mutex_queue);
     coder->access = get_time_ms();
     queue->coders[queue->size] = coder;

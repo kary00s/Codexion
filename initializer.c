@@ -36,45 +36,48 @@ bool initialize_representer_struct(t_representer *representer ,int ac, char **av
     representer->coders_counter = 0;
     representer->coders_are_ready = false;
     representer->is_burnouted = false;
+    representer->queue = initializer_queue(representer);
     
     init_dongles(representer);
     if (!representer->dongles)
-        exit_all("Dongles Allocatoion Error");
+        return false;
     init_coders(representer);
     if (!representer->coders)
-        exit_all("Coders Allocatoion Error");
-    representer->queue = initializer_queue(representer);
+        return false;
+        
+    if (!init_representer_mutexs_conds(representer))
+        return false;
     representer->monitor = monitor_initializer();
     if(!representer->monitor)
-        exit_all("Monitor Creation Error");
+        return false;
+
     representer->manager = manager_initializer();
     if (!representer->manager)
-        exit_all("Manager Creation Error");
+        return false;
     return true;
 }
 
-t_representer *linker_coders_with_dongles(t_representer *representer)
+void linker_coders_with_dongles(t_representer *representer)
 {
 	int i;
-	i = 0;
-    
+	i = 0;    
     printf("number of coders %d\n", representer->config.number_of_coders);
     while (i < representer->config.number_of_coders)
 	{
-        // printf("number of coders %d\n", representer->config.number_of_coders);  
         representer->coders[i]->left_dongle = representer->dongles[i];
 		representer->coders[i]->right_dongle = representer->dongles[(i + 1) % representer->config.number_of_coders];
 		i++;
 	}
-    return representer;
 }
 t_queue *initializer_queue(t_representer *representer)
 {
     t_queue *queue;
 
-    queue = malloc(sizeof(t_queue) * queue->capacity);
+    queue = malloc(sizeof(t_queue));
+    if(queue == NULL)
+        return NULL;
+    queue->capacity = representer->config.number_of_coders; 
     queue->coders = representer->coders;
-    queue->capacity = representer->config.number_of_coders;
     queue->size = 0 ;
     return queue;
 }

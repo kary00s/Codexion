@@ -6,7 +6,7 @@ void ft_compiling(t_coder *coder)
 	t_queue *queue;
 	
 	insert_coder_in_queue(coder, coder->queue);
-  hold_both_dongles(coder);
+  	hold_both_dongles(coder);
 	pthread_mutex_lock(&coder->mutex);
 	coder->last_compile = get_time_ms();
 	printf(" %d coder is compiling\n", coder->coder_id);	
@@ -17,14 +17,14 @@ void ft_compiling(t_coder *coder)
 	*(coder->coder_state) = DEBUGING;
 }
 
-void coder_must_wait(t_coder *coder)
-{
-	pthread_mutex_lock(&coder->mutex);
-	while (*(coder->coder_state) == WAITING) 
-		pthread_cond_wait(&coder->cond, &coder->mutex);
-	pthread_mutex_unlock(&coder->mutex);
+// void coder_must_wait(t_coder *coder)
+// {
+// 	pthread_mutex_lock(&coder->mutex);
+// 	while (*(coder->coder_state) == WAITING) 
+// 		pthread_cond_wait(&coder->cond, &coder->mutex);
+// 	pthread_mutex_unlock(&coder->mutex);
 
-}
+// }
 
 
 void ft_debuging(t_coder *coder) {
@@ -50,11 +50,11 @@ void *routine_all_the_coders(void *arg)
 {
 	t_coder *coder ;
 	coder = (t_coder *)arg;
-	// while (1) {
-	// 	ft_compiling(coder);		
-	// 	ft_debuging(coder);
-	// 	ft_refactoring(coder);
-	// }
+	while (1) {
+		ft_compiling(coder);		
+		ft_debuging(coder);
+		ft_refactoring(coder);
+	}
 	return NULL;
 }
 

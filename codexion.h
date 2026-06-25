@@ -45,8 +45,8 @@ typedef struct s_coder
 	pthread_t thread;
 	time_t				access;	
 	time_t				last_compile;
-  t_queue *queue;
-  t_config *config;
+    t_queue *queue;
+    t_config *config;
 	t_dongle *left_dongle;
 	t_dongle *right_dongle;
 	t_coder_state *coder_state;
@@ -150,7 +150,6 @@ void *routine_all_the_coders(void *arg);
 
 // monitor file :
 t_monitor *monitor_initializer(void);
-t_representer *linker_coders_with_dongles(t_representer *representer);
 void *monitor_home(void *args);
 void monitor_joiner(t_monitor *monitor);
 void monitor_creator(t_representer *representer);
@@ -187,7 +186,8 @@ void swap_coders(t_coder *parent_coder, t_coder *child_coder);
 
 // initializer file:
 t_queue *initializer_queue(t_representer *representer);
-t_representer *initialize_representer_struct(t_representer *representer ,int ac, char **av);
+bool initialize_representer_struct(t_representer *representer ,int ac, char **av);
+void linker_coders_with_dongles(t_representer *representer);
 
 
 // mutex_cond_utils:

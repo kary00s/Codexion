@@ -19,10 +19,12 @@ void hold_both_dongles(t_coder *coder)
 {
 	hold_dongle(coder->left_dongle);	
 	hold_dongle(coder->right_dongle);
-  pthread_mutex_lock(coder->print_mutex);
-  printf("time %d has taken dongle\n", coder->coder_id);
-  printf("time %d has taken dongle\n", coder->coder_id);
-  pthread_mutex_lock(coder->print_mutex);
+    
+    
+    pthread_mutex_lock(coder->print_mutex);
+    printf("time %d has taken dongle\n", coder->coder_id);
+    printf("time %d has taken dongle\n", coder->coder_id);
+    pthread_mutex_lock(coder->print_mutex);
 }
 
 void drop_both_dongles(t_coder *coder)
