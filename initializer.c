@@ -73,7 +73,7 @@ t_queue *initializer_queue(t_representer *representer)
 {
     t_queue *queue;
 
-    queue = malloc(sizeof(t_queue));
+    queue = malloc(sizeof(t_queue) * representer->config.number_of_coders);
     if(queue == NULL)
         return NULL;
     queue->capacity = representer->config.number_of_coders; 
