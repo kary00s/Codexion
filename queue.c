@@ -21,17 +21,12 @@ void swap_coders(t_coder *parent_coder, t_coder *child_coder)
     child_coder = swp;
 }
 
-void insert_coder_in_queue(t_coder *coder, t_representer *representer)
-{
+void insert_coder_in_queue(t_coder *coder, t_queue *queue)
+    pthread_mutex_lock(&coder->queue->mutex_queue);
     coder->access = get_time_ms();
-    representer->coders[representer->queue->size] = coder;
-    // shift_queue_up(representer->queue, representer->queue->size);
-	printf("==> inserting coder to queue test \n");
-    
-    representer->queue->size++;
-    if (representer->config.number_of_coders == representer->queue->size)
-        representer->coders_are_ready = true;
-    // printf("==> all coders are ready to compile \n");    
+    queue->coders[queue->size] = coder;
+    queue->size++;
+    pthread_mutex_lock(&coder->queue->mutex_queue);
 }
 
 

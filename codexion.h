@@ -45,15 +45,15 @@ typedef struct s_coder
 	pthread_t thread;
 	time_t				access;	
 	time_t				last_compile;
-    t_representer *representer;
-
-    t_config *config;
+  t_queue *queue;
+  t_config *config;
 	t_dongle *left_dongle;
 	t_dongle *right_dongle;
 	t_coder_state *coder_state;
 	pthread_mutex_t mutex;
 	pthread_cond_t cond;
 	bool is_burnouted;
+  pthread_mutex_t *print_mutex;
 }	t_coder;
 
 // SCHEDULER enum :
@@ -95,6 +95,12 @@ typedef struct s_monitor
 
 } t_monitor ;
 
+
+typedef struct s_mutex_cond {
+  pthread_mutex_t mutex;
+  pthread_cond_t cond;
+} t_mutex_cond;
+
 typedef struct s_representer
 {
     int coders_counter;
@@ -104,11 +110,12 @@ typedef struct s_representer
     bool coders_are_ready;
     bool is_burnouted;
     t_queue *queue;
-    pthread_mutex_t mutex;
-	pthread_mutex_t burnout_mutex;
-	pthread_cond_t cond;
+    t_mutex_cond m_c;
     t_monitor *monitor;
     t_manager *manager;
+    pthread_mutex_t print_mutex;
+    int ready_coders_counter;
+    t_mutex_cond ready_coders_counter_m_c;
 } t_representer;
 
 typedef struct s_manager
@@ -167,7 +174,7 @@ long time_calculator(t_coder *coder, long start_time);
 long get_time_ms();
 
 // queue file :
-void insert_coder_in_queue(t_coder *coder, t_representer *representer);
+void insert_coder_in_queue(t_coder *coder, t_queue *queue);
 // void insert_all_coders_in_queue(t_representer *representer, t_queue *queue);
 
 // droper file :
@@ -181,5 +188,10 @@ void swap_coders(t_coder *parent_coder, t_coder *child_coder);
 // initializer file:
 t_queue *initializer_queue(t_representer *representer);
 t_representer *initialize_representer_struct(t_representer *representer ,int ac, char **av);
+
+
+// mutex_cond_utils:
+bool init_mutex_cond(t_mutex_cond *mutex_cond);
+void destroy_mutex_cond(t_mutex_cond *mutex_cond);
 
 #endif

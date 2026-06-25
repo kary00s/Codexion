@@ -1,18 +1,12 @@
 #include"codexion.h"
 
+
 void ft_compiling(t_coder *coder)
 {
 	t_queue *queue;
-	queue  = coder->representer->queue;
-	pthread_mutex_lock(&queue->mutex_queue);
 	
-	insert_coder_in_queue(coder, coder->representer);
-   
-	pthread_mutex_unlock(&queue->mutex_queue);
-	
-	while(time_calculator(coder, coder->representer->coders[0]->last_compile) < coder->representer->config.dongle_cooldown)
-		coder_must_wait(coder);
-	
+	insert_coder_in_queue(coder, coder->queue);
+  hold_both_dongles(coder);
 	pthread_mutex_lock(&coder->mutex);
 	coder->last_compile = get_time_ms();
 	printf(" %d coder is compiling\n", coder->coder_id);	
@@ -22,6 +16,7 @@ void ft_compiling(t_coder *coder)
 
 	*(coder->coder_state) = DEBUGING;
 }
+
 void coder_must_wait(t_coder *coder)
 {
 	pthread_mutex_lock(&coder->mutex);
@@ -55,17 +50,11 @@ void *routine_all_the_coders(void *arg)
 {
 	t_coder *coder ;
 	coder = (t_coder *)arg;
-	while (1) {
-
-		pthread_mutex_lock(&coder->mutex);
-		
-		ft_compiling(coder);		
-		printf("============ here is the routine test  ============\n");
-		ft_debuging(coder);
-		ft_refactoring(coder);
-
-		pthread_mutex_unlock(&coder->mutex);
-	}
+	// while (1) {
+	// 	ft_compiling(coder);		
+	// 	ft_debuging(coder);
+	// 	ft_refactoring(coder);
+	// }
 	return NULL;
 }
 

@@ -35,28 +35,28 @@ void *monitor_home(void *args)
 {
 	t_representer *representer;
 	representer = (t_representer *)args;
-	int waiting_time;
+	// int waiting_time;
 	t_coder *coder;
-	int i = 0;
-	if(representer->coders_are_ready == true)
-	{
-		while (1)
-		{
-			printf("coder id\n");
-			if (i >= representer->queue->size)
-			i = 0;
-			coder = peek_a_coder(representer);
-			if(coder == NULL)
-				continue;
-			
-			waiting_time = time_calculator(coder, coder->last_compile); 
-			if(waiting_time > representer->config.time_to_burnout)
-				representer->is_burnouted =  true;
-			// send a segnal to manager to exit 
-			usleep(100);
-			i++;
-		}
-	}
+	// int i = 0;
+	// if(representer->coders_are_ready == true)
+	// {
+	// 	while (1)
+	// 	{
+	// 		printf("coder id\n");
+	// 		if (i >= representer->queue->size)
+	// 		i = 0;
+	// 		coder = peek_a_coder(representer);
+	// 		if(coder == NULL)
+	// 			continue;
+	// 		
+	// 		waiting_time = time_calculator(coder, coder->last_compile); 
+	// 		if(waiting_time > representer->config.time_to_burnout)
+	// 			representer->is_burnouted =  true;
+	// 		// send a segnal to manager to exit 
+	// 		usleep(100);
+	// 		i++;
+	// 	}
+	// }
 	return NULL;
 	
 }

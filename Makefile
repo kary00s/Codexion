@@ -11,10 +11,10 @@ SRC = codexion.c\
 	timer.c\
 	queue.c\
 	routine.c\
-	holder.c\
-	droper.c\
+	dongles_manager.c \
 	initializer.c\
 	manager.c\
+	mutex_cond_utils.c\
 
 OBG = $(SRC:.c=.o)
 

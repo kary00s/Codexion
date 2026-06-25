@@ -11,11 +11,27 @@
 /* ************************************************************************** */
 
 #include "codexion.h"
+#include <pthread.h>
 
-t_representer *initialize_representer_struct(t_representer *representer ,int ac, char **av)
+
+bool init_representer_mutexs_conds(t_representer *representer) {
+  if (pthread_mutex_init(&representer->print_mutex, NULL) != 0)
+    return false;
+  if (init_mutex_cond(&representer->ready_coders_counter_m_c)) {
+    pthread_mutex_destroy(&representer->print_mutex);
+    return false;
+  }
+  if (pthread_mutex_init(&representer->queue->mutex_queue, NULL) != 0)
+  {
+    pthread_mutex_destroy(&representer->print_mutex);
+    destroy_mutex_cond(&representer->ready_coders_counter_m_c);
+    return false;
+  }
+  return true;
+}
+
+bool initialize_representer_struct(t_representer *representer ,int ac, char **av)
 {
-
-    representer = (t_representer *)malloc(sizeof(t_representer));
     representer->config = parser(ac, av);
     representer->coders_counter = 0;
     representer->coders_are_ready = false;
@@ -28,21 +44,15 @@ t_representer *initialize_representer_struct(t_representer *representer ,int ac,
     if (!representer->coders)
         exit_all("Coders Allocatoion Error");
     representer->queue = initializer_queue(representer);
-
-    if(pthread_mutex_init(&representer->burnout_mutex, NULL))
-         pthread_mutex_destroy(&representer->burnout_mutex);
-    if(pthread_mutex_init(&representer->mutex, NULL))
-        pthread_mutex_destroy(&representer->mutex);
-    if(pthread_cond_init(&representer->cond, NULL))
-        pthread_cond_destroy(&representer->cond);
     representer->monitor = monitor_initializer();
     if(!representer->monitor)
         exit_all("Monitor Creation Error");
     representer->manager = manager_initializer();
     if (!representer->manager)
         exit_all("Manager Creation Error");
-    return representer;
+    return true;
 }
+
 t_representer *linker_coders_with_dongles(t_representer *representer)
 {
 	int i;
@@ -62,10 +72,9 @@ t_queue *initializer_queue(t_representer *representer)
 {
     t_queue *queue;
 
-    queue = malloc(sizeof(queue) * queue->capacity);
+    queue = malloc(sizeof(t_queue) * queue->capacity);
     queue->coders = representer->coders;
     queue->capacity = representer->config.number_of_coders;
     queue->size = 0 ;
-    pthread_mutex_init(&queue->mutex_queue, NULL);
     return queue;
 }

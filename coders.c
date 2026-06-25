@@ -53,7 +53,7 @@ static void clear_coders(t_representer *representer)
 
 
 
-static void initialize_coders_struct(t_representer *representer, t_coder **coder, int counter)
+static void initialize_coders_struct(t_representer *representer, t_coder **coders, int counter)
 {
     int i;
     i = 0;
@@ -61,14 +61,15 @@ static void initialize_coders_struct(t_representer *representer, t_coder **coder
     
     while (i < counter)
     {
-        coder[i]->coder_id = i;
+        coders[i]->coder_id = i;
         representer->coders_counter += 1;
-        coder[i]->is_burnouted = representer->is_burnouted;
-        if (pthread_mutex_init(&coder[i]->mutex, NULL) != 0)
+        coders[i]->is_burnouted = representer->is_burnouted;
+        if (pthread_mutex_init(&coders[i]->mutex, NULL) != 0)
             clear_coders(representer);
-        if (pthread_cond_init(&coder[i]->cond, NULL))
+        if (pthread_cond_init(&coders[i]->cond, NULL))
             clear_coders(representer);
-        coder[i]->representer = representer;     
+        coders[i]->queue = representer->queue;     
+        coders[i]->print_mutex = &representer->print_mutex;
         i++;
     }
 }

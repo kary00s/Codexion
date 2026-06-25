@@ -9,31 +9,39 @@
 /*   Updated: 2026/06/10 15:07:51 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "codexion.h"
 
-
-static void hold_the_right_dongle(t_coder *coder)
-{
-    pthread_mutex_lock(&coder->right_dongle->dongle_mutex);
-    printf("%d %d has taken a dongle\n", coder->right_dongle->dongle_id, coder->coder_id);
-    coder->right_dongle->is_available = false;
-    pthread_mutex_unlock(&coder->right_dongle->dongle_mutex);
-}
-
-static void hold_the_left_dongle(t_coder *coder)
-{
-	pthread_mutex_lock(&coder->left_dongle->dongle_mutex);
-	(coder->left_dongle->is_available) = false;
-	printf("%d %d has taken a dongle\n", coder->left_dongle->dongle_id, coder->coder_id);
-	pthread_mutex_unlock(&coder->left_dongle->dongle_mutex);
-}
+static void drop_dongle(t_dongle *dongle);
+static void hold_dongle(t_dongle *dongle);
 
 
 void hold_both_dongles(t_coder *coder)
 {
-	pthread_mutex_lock(&coder->mutex);
-	hold_the_left_dongle(coder);	
-	hold_the_right_dongle(coder);
-	pthread_mutex_unlock(&coder->mutex);
+	hold_dongle(coder->left_dongle);	
+	hold_dongle(coder->right_dongle);
+  pthread_mutex_lock(coder->print_mutex);
+  printf("time %d has taken dongle\n", coder->coder_id);
+  printf("time %d has taken dongle\n", coder->coder_id);
+  pthread_mutex_lock(coder->print_mutex);
+}
+
+void drop_both_dongles(t_coder *coder)
+{
+	drop_dongle(coder->right_dongle);
+	drop_dongle(coder->left_dongle);
+}
+
+static void hold_dongle(t_dongle *dongle)
+{
+    pthread_mutex_lock(&dongle->dongle_mutex);
+    dongle->is_available = false;
+    pthread_mutex_unlock(&dongle->dongle_mutex);
+}
+
+
+static void drop_dongle(t_dongle *dongle)
+{
+    pthread_mutex_lock(&dongle->dongle_mutex);
+    dongle->is_available = true;
+    pthread_mutex_unlock(&dongle->dongle_mutex);
 }
