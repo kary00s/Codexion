@@ -2,15 +2,56 @@
 #include <pthread.h>
 
 static bool wait_for_simulation_to_start(t_coder *coder);
+static void compiling(t_coder *coder, t_queue *queue) ;
+static void debuging(t_coder *coder);
+static void refactoring(t_coder *coder);
+
+
 
 void *routine_all_the_coders(void *arg) {
   t_coder *coder;
   coder = (t_coder *)arg;
   wait_for_simulation_to_start(coder);
-  pthread_mutex_lock(coder->print_mutex);
-  printf("the coder is starting now id: %d\n", coder->coder_id);
-  pthread_mutex_unlock(coder->print_mutex);
+  while (1)
+  {
+    pthread_mutex_lock(coder->print_mutex);
+    printf("the coder is starting now id: %d\n", coder->coder_id);
+    pthread_mutex_unlock(coder->print_mutex);
+
+
+    compiling(coder, coder->queue);
+    refactoring(coder);
+    debuging(coder);
+  }
+
   return NULL;
+}
+static void refactoring(t_coder *coder)
+{
+  pthread_mutex_lock(coder->print_mutex);
+  printf("coder %d is refactoring\n", coder->coder_id);
+  coder->coder_state = WAITING;
+  pthread_mutex_unlock(coder->print_mutex);
+ 
+}
+
+static void debuging(t_coder *coder)
+{
+  pthread_mutex_lock(coder->print_mutex);
+  printf("coder %d is debuging\n", coder->coder_id);
+  coder->coder_state = REFACTORING;
+  pthread_mutex_unlock(coder->print_mutex);
+
+}
+static void compiling(t_coder *coder, t_queue *queue)
+{
+  // are_dongles_available(coder);
+
+  pthread_mutex_lock(coder->print_mutex);
+  printf("coder %d is compiling\n", coder->coder_id);
+  coder->coder_state = DEBUGING;
+  pthread_mutex_unlock(coder->print_mutex);
+
 }
 
 static bool wait_for_simulation_to_start(t_coder *coder) {
@@ -26,7 +67,8 @@ static bool wait_for_simulation_to_start(t_coder *coder) {
   return true;
 }
 
-bool coders_creator(t_representer *representer) {
+bool coders_creator(t_representer *representer) 
+{
   int i = 0;
 
   while (i < representer->config.number_of_coders) {

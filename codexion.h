@@ -54,8 +54,8 @@ typedef enum e_coder_state
 {
     STARTING,
     WAITING,
-    DEBUGING,
     COMPILING,
+    DEBUGING,
     REFACTORING,
     FINISHING
 }   t_coder_state;
@@ -139,6 +139,7 @@ void coders_joiner(t_representer *representer);
 void *routine_all_the_coders(void *arg);
 
 
+
 // monitor file :
 void *monitor_home(void *args);
 bool monitor_creator(t_representer *representer);
@@ -151,6 +152,7 @@ bool manager_creator(t_representer *representer);
 t_coder *peek_a_coder(t_representer *representer);
 t_manager *manager_initializer(void);
 
+t_coder **coders_allocater(int number_of_coders);
 
 // cleaner file :
 void free_dongles(t_representer *representer);
@@ -163,6 +165,7 @@ long get_time_ms();
 
 // queue file :
 void insert_coder_in_queue(t_coder *coder, t_queue *queue);
+
 // void insert_all_coders_in_queue(t_representer *representer, t_queue *queue);
 
 // droper file :

@@ -38,10 +38,10 @@ bool initialize_representer_struct(t_representer *representer, int ac,
   representer->coders_are_ready = false;
   representer->is_burnouted = false;
   representer->ready_coders_counter = 0;
-  // if (!initializer_queue(representer)) {
-  //   // TODO: clean the mutexes and conds
-  //   return false;
-  // }
+  if (!initializer_queue(representer)) {
+    // TODO: clean the mutexes and conds
+    return false;
+  }
   if (!init_dongles(representer)) {
     // TODO: destroy the mutexes and conds
     // TODO: destroy the mutexes and cond for queue and free memory
@@ -61,8 +61,12 @@ static bool initializer_queue(t_representer *representer) {
   if (queue == NULL)
     return false;
   queue->capacity = representer->config.number_of_coders;
-  queue->coders = representer->coders;
-  representer->queue = queue;
   queue->size = 0;
+  queue->coders = coders_allocater(queue->capacity);
+  if (queue->coders == NULL) {
+    free(queue);
+    return false;
+  }
+  representer->queue = queue;
   return true;
 }

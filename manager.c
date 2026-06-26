@@ -33,18 +33,18 @@ void *manager_home(void *args) {
   t_coder *coder;
   int i = 0;
 
-  // while (1) {
-  //
-  //   coder = peek_a_coder(representer);
-  //   if (coder != NULL) {
-  //     pthread_mutex_lock(&coder->mutex);
-  //     *(coder->coder_state) = COMPILING;
-  //     pthread_cond_broadcast(&coder->cond);
-  //     pthread_mutex_unlock(&coder->mutex);
-  //     i++;
-  //   } else
-  //     usleep(300);
-  // }
+  while (1) {
+  
+    coder = peek_a_coder(representer);
+    if (coder != NULL) {
+      pthread_mutex_lock(&coder->mutex_cond.mutex);
+      coder->coder_state = COMPILING;
+      pthread_cond_broadcast(&coder->mutex_cond.cond);
+      pthread_mutex_unlock(&coder->mutex_cond.mutex);
+      i++;
+    } else
+      usleep(300);
+  }
 
   return NULL;
 }

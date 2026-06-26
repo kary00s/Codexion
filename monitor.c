@@ -61,6 +61,7 @@ static void allow_to_coders_to_start(t_representer *representer) {
     gettimeofday(&coders[i]->last_compile, NULL);
     pthread_cond_broadcast(&coders[i]->mutex_cond.cond);
     pthread_mutex_unlock(&coders[i]->mutex_cond.mutex);
+    insert_coder_in_queue(coders[i], representer->queue);
     i++;
   }
 }

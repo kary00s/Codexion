@@ -15,7 +15,7 @@
 static void free_coders(t_coder **coders, int n);
 static void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
                                        int number_of_coders);
-static t_coder **coders_allocater(int number_of_coders);
+t_coder **coders_allocater(int number_of_coders);
 static void initialize_coders_struct(t_representer *representer);
 static bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders);
 static void clear_coders(t_coder **coders, int n);
@@ -36,7 +36,7 @@ bool init_coders(t_representer *representer) {
   return true;
 }
 
-static t_coder **coders_allocater(int number_of_coders) {
+t_coder **coders_allocater(int number_of_coders) {
   t_coder **coders_list;
   int i;
 
