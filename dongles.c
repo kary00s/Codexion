@@ -15,13 +15,12 @@
 static t_dongle **dongles_allocater(t_representer *representer) {
   t_dongle **dongles_list;
   int i;
-  i = 0;
 
   dongles_list = (t_dongle **)malloc(sizeof(t_dongle *) *
                                      representer->config.number_of_coders);
   if (!dongles_list)
     return (NULL);
-
+  i = 0;
   while (i < representer->config.number_of_coders) {
     dongles_list[i] = (t_dongle *)malloc(sizeof(t_dongle));
     if (!dongles_list[i]) {

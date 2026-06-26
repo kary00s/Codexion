@@ -17,15 +17,15 @@ static bool initializer_queue(t_representer *representer);
 bool init_representer_mutexs_conds(t_representer *representer) {
   if (pthread_mutex_init(&representer->print_mutex, NULL) != 0)
     return false;
-  if (init_mutex_cond(&representer->ready_coders_counter_m_c)) {
+  if (!init_mutex_cond(&representer->ready_coders_counter_m_c)) {
     pthread_mutex_destroy(&representer->print_mutex);
     return false;
   }
-  if (pthread_mutex_init(&representer->queue->mutex_queue, NULL) != 0) {
-    pthread_mutex_destroy(&representer->print_mutex);
-    destroy_mutex_cond(&representer->ready_coders_counter_m_c);
-    return false;
-  }
+  // if (pthread_mutex_init(&representer->queue->mutex_queue, NULL) != 0) {
+  //   pthread_mutex_destroy(&representer->print_mutex);
+  //   destroy_mutex_cond(&representer->ready_coders_counter_m_c);
+  //   return false;
+  // }
   return true;
 }
 
@@ -37,10 +37,11 @@ bool initialize_representer_struct(t_representer *representer, int ac,
   representer->coders_counter = 0;
   representer->coders_are_ready = false;
   representer->is_burnouted = false;
-  if (!initializer_queue(representer)) {
-    // TODO: clean the mutexes and conds
-    return false;
-  }
+  representer->ready_coders_counter = 0;
+  // if (!initializer_queue(representer)) {
+  //   // TODO: clean the mutexes and conds
+  //   return false;
+  // }
   if (!init_dongles(representer)) {
     // TODO: destroy the mutexes and conds
     // TODO: destroy the mutexes and cond for queue and free memory
@@ -50,14 +51,13 @@ bool initialize_representer_struct(t_representer *representer, int ac,
     // TODO: free dongles and destroy the mutex in representer and queue
     return false;
   }
-
   return true;
 }
 
 static bool initializer_queue(t_representer *representer) {
   t_queue *queue;
 
-  queue = malloc(sizeof(t_queue) * representer->config.number_of_coders);
+  queue = malloc(sizeof(t_queue));
   if (queue == NULL)
     return false;
   queue->capacity = representer->config.number_of_coders;

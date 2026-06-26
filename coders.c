@@ -21,20 +21,18 @@ static bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders);
 static void clear_coders(t_coder **coders, int n);
 
 bool init_coders(t_representer *representer) {
-  t_coder **coders;
   int number_of_coders;
 
   number_of_coders = representer->config.number_of_coders;
   representer->coders = coders_allocater(number_of_coders);
   if (!representer->coders)
     return false;
-  coders = representer->coders;
-  if (init_coders_mutexes_conds(coders, number_of_coders)) {
-    free_coders(coders, number_of_coders);
+  if (!init_coders_mutexes_conds(representer->coders, number_of_coders)) {
+    free_coders(representer->coders, number_of_coders);
     return false;
   }
   initialize_coders_struct(representer);
-  linker_coders_with_dongles(coders, representer->dongles, number_of_coders);
+  // linker_coders_with_dongles(coders, representer->dongles, number_of_coders);
   return true;
 }
 
@@ -82,6 +80,7 @@ static void initialize_coders_struct(t_representer *representer) {
     coders[i]->ready_coders_counter = &representer->ready_coders_counter;
     coders[i]->ready_coders_counter_m_c =
         &representer->ready_coders_counter_m_c;
+    coders[i]->coder_state = STARTING;
     i++;
   }
 }

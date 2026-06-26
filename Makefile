@@ -21,7 +21,7 @@ OBG = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBG)
-	$(CC) $(FLAGS) $(OBG) -o $(NAME) 
+	$(CC) $(FLAGS) $(OBG) -o $(NAME)  -pthread
 
 %.o: %.c codexion.h
 	$(CC) $(FLAGS) -c $< -o $@ 
@@ -31,3 +31,6 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
+
+re: fclean all
+

@@ -85,7 +85,7 @@ typedef struct s_coder
   t_config *config;
 	t_dongle *left_dongle;
 	t_dongle *right_dongle;
-	t_coder_state *coder_state;
+	t_coder_state coder_state;
   t_mutex_cond mutex_cond;
 	bool is_burnouted;
   pthread_mutex_t *print_mutex;
@@ -108,6 +108,7 @@ typedef struct s_representer
     int ready_coders_counter;
     t_mutex_cond ready_coders_counter_m_c;
     pthread_t monitor;
+    pthread_t manager;
     pthread_cond_t cond_monitor;    
     pthread_mutex_t mutex_monitor; 
 } t_representer;
@@ -122,7 +123,7 @@ int main(int ac, char *av[]);
 void dongles_destroyer(t_dongle **dongles, int counter);
 t_config parser(int ac, char **args);
 void exit_all(char *message);
-void coders_creator(t_representer *representer);
+bool coders_creator(t_representer *representer);
 
 
 // dongles file :
@@ -139,11 +140,12 @@ void *routine_all_the_coders(void *arg);
 // monitor file :
 void *monitor_home(void *args);
 bool monitor_creator(t_representer *representer);
+void monitor_joiner(pthread_t *monitor);
 
 // manager_file :
 void *manager_home(void *args);
-void manager_joiner(t_manager *manager);
-void manager_creator(t_representer *representer);
+void manager_joiner(pthread_t manager);
+bool manager_creator(t_representer *representer);
 t_coder *peek_a_coder(t_representer *representer);
 t_manager *manager_initializer(void);
 
