@@ -1,6 +1,7 @@
 #ifndef CODEXION_H
 #define CODEXION_H
 
+#include <bits/types/struct_timeval.h>
 #include<stdio.h>
 #include<unistd.h>
 #include<pthread.h>
@@ -80,7 +81,7 @@ typedef struct s_coder
 	pthread_mutex_t burnout_mutex;
 	pthread_t thread;
 	time_t				access;	
-	time_t				last_compile;
+	struct timeval last_compile;
   t_queue *queue;
   t_config *config;
 	t_dongle *left_dongle;
@@ -102,6 +103,7 @@ typedef struct s_representer
     t_coder **coders;
     bool coders_are_ready;
     bool is_burnouted;
+    struct timeval start_time;
     t_queue *queue;
     t_mutex_cond m_c;
     pthread_mutex_t print_mutex;

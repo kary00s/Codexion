@@ -7,6 +7,9 @@ void *routine_all_the_coders(void *arg) {
   t_coder *coder;
   coder = (t_coder *)arg;
   wait_for_simulation_to_start(coder);
+  pthread_mutex_lock(coder->print_mutex);
+  printf("the coder is starting now id: %d\n", coder->coder_id);
+  pthread_mutex_unlock(coder->print_mutex);
   return NULL;
 }
 
@@ -15,6 +18,11 @@ static bool wait_for_simulation_to_start(t_coder *coder) {
   (*coder->ready_coders_counter)++;
   pthread_cond_broadcast(&coder->ready_coders_counter_m_c->cond);
   pthread_mutex_unlock(&coder->ready_coders_counter_m_c->mutex);
+
+  pthread_mutex_lock(&coder->mutex_cond.mutex);
+  while (coder->coder_state == STARTING)
+    pthread_cond_wait(&coder->mutex_cond.cond, &coder->mutex_cond.mutex);
+  pthread_mutex_unlock(&coder->mutex_cond.mutex);
   return true;
 }
 

@@ -11,8 +11,10 @@
 /* ************************************************************************** */
 
 #include "codexion.h"
+#include <sys/time.h>
 
 static bool wait_for_coders_to_start(t_representer *representer);
+static void allow_to_coders_to_start(t_representer *representer);
 
 bool monitor_creator(t_representer *representer) {
   if (pthread_create(&representer->monitor, NULL, &monitor_home, representer))
@@ -29,6 +31,7 @@ void *monitor_home(void *args) {
   t_representer *representer;
   representer = (t_representer *)args;
   wait_for_coders_to_start(representer);
+  allow_to_coders_to_start(representer);
 
   return NULL;
 }
@@ -43,4 +46,21 @@ static bool wait_for_coders_to_start(t_representer *representer) {
   pthread_mutex_unlock(&representer->ready_coders_counter_m_c.mutex);
   printf("all cooders are ready %d\n", representer->ready_coders_counter);
   return true;
+}
+
+static void allow_to_coders_to_start(t_representer *representer) {
+  int i;
+  t_coder **coders;
+
+  i = 0;
+  coders = representer->coders;
+  gettimeofday(&representer->start_time, NULL);
+  while (i < representer->config.number_of_coders) {
+    pthread_mutex_lock(&coders[i]->mutex_cond.mutex);
+    coders[i]->coder_state = WAITING;
+    gettimeofday(&coders[i]->last_compile, NULL);
+    pthread_cond_broadcast(&coders[i]->mutex_cond.cond);
+    pthread_mutex_unlock(&coders[i]->mutex_cond.mutex);
+    i++;
+  }
 }
