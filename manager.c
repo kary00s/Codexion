@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:06:35 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/27 04:22:21 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/27 06:12:57 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@ void *manager_home(void *args) {
   while (1) 
   {
     coder = peek_a_coder(representer);
+    
     if (coder != NULL) {
       pthread_mutex_lock(&coder->mutex_cond.mutex);
       coder->coder_state = COMPILING;
       pthread_cond_broadcast(&coder->mutex_cond.cond);
       pthread_mutex_unlock(&coder->mutex_cond.mutex);
-      
       i++;
     } 
     else
@@ -59,6 +59,7 @@ t_coder *peek_a_coder(t_representer *representer) {
     {
       // pop up the coder from queue
       coder = representer->coders[i];
+      hold_both_dongles(coder);
       break;
     }
     i++;

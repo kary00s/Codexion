@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:07:49 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/27 03:54:52 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/27 05:18:21 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void hold_both_dongles(t_coder *coder)
     
     
     pthread_mutex_lock(coder->print_mutex);
-    printf("time %d has taken dongle\n", coder->coder_id);
+    printf("time %d has taken dongle\n",coder->coder_id);
     printf("time %d has taken dongle\n", coder->coder_id);
     pthread_mutex_lock(coder->print_mutex);
 }

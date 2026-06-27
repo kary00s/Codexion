@@ -120,7 +120,7 @@ void coder_must_wait(t_coder *coder);
 // codexion file :
 int main(int ac, char *av[]);
 void dongles_destroyer(t_dongle **dongles, int counter);
-t_config parser(int ac, char **args);
+bool parser(int ac, char **args, t_representer *representer);
 void exit_all(char *message);
 bool coders_creator(t_representer *representer);
 

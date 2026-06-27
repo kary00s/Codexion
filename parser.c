@@ -26,7 +26,7 @@ static long ft_atol(char *str) {
   return res;
 }
 
-t_config parser(int ac, char **args) {
+bool parser(int ac, char **args, t_representer *s_representer) {
   t_config config;
   if (ac == 8) {
     config.number_of_coders = ft_atol(args[1]);
@@ -38,5 +38,7 @@ t_config parser(int ac, char **args) {
     config.dongle_cooldown = ft_atol(args[7]);
     // representer->config.scheduler =
   }
-  return (config);
+  else 
+    return false;
+  return true;
 }
