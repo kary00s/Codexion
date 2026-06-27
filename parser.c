@@ -25,10 +25,19 @@ static long ft_atol(char *str) {
   }
   return res;
 }
+int ft_strcmp(char *s1, char *s2)
+{
+  int i;
+  i = 0;
 
-bool parser(int ac, char **args, t_representer *s_representer) {
+  while (s1[i] && s2[i] && (s1[i] - s2[i] == 0))
+    i++;
+  return (s1[i] - s2[i]);
+}
+
+bool parser(int ac, char **args, t_representer *representer) {
   t_config config;
-  if (ac == 8) {
+  if (ac == 9) {
     config.number_of_coders = ft_atol(args[1]);
     config.time_to_debug = ft_atol(args[4]);
     config.time_to_burnout = ft_atol(args[2]);
@@ -36,7 +45,15 @@ bool parser(int ac, char **args, t_representer *s_representer) {
     config.time_to_refactor = ft_atol(args[5]);
     config.number_of_compiles_required = ft_atol(args[6]);
     config.dongle_cooldown = ft_atol(args[7]);
-    // representer->config.scheduler =
+    if (ft_strcmp(args[8], "edf") == 0)
+      config.scheduler = EDF;
+    else if (ft_strcmp(args[8], "fifo") == 0)
+      config.scheduler = FIFO;
+    else
+    {
+      printf("the schudeler must be 'edf' of 'fifo' \n");
+      return false;
+    }
   }
   else 
     return false;

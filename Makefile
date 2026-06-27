@@ -21,7 +21,8 @@ OBG = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBG)
-	$(CC) $(FLAGS) $(OBG) -o $(NAME)  -pthread -fsanitize=thread -g3
+	$(CC) $(FLAGS) $(OBG) -o $(NAME)  
+#-pthread -fsanitize=thread -g3
 
 %.o: %.c codexion.h
 	$(CC) $(FLAGS) -c $< -o $@ 

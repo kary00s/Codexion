@@ -29,7 +29,7 @@ typedef struct s_queue
     int             capacity;
     pthread_mutex_t mutex_queue;
 } t_queue;
-
++
 
 // DONGLES structs :
 typedef struct s_dongle
@@ -181,5 +181,9 @@ bool initialize_representer_struct(t_representer *representer ,int ac, char **av
 // mutex_cond_utils:
 bool init_mutex_cond(t_mutex_cond *mutex_cond);
 void destroy_mutex_cond(pthread_mutex_t *mutex, pthread_cond_t *cond);
+
+void pop_coder_from_queue(t_representer *representer, int i);
+
+void shift_queue_down(t_queue *queue, int i);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:06:35 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/27 06:12:57 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/27 11:45:16 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,20 +31,20 @@ void *manager_home(void *args) {
   t_coder *coder;
   int i = 0;
 
-  while (1) 
-  {
-    coder = peek_a_coder(representer);
+  // while (1) 
+  // {
+  //   coder = peek_a_coder(representer);
     
-    if (coder != NULL) {
-      pthread_mutex_lock(&coder->mutex_cond.mutex);
-      coder->coder_state = COMPILING;
-      pthread_cond_broadcast(&coder->mutex_cond.cond);
-      pthread_mutex_unlock(&coder->mutex_cond.mutex);
-      i++;
-    } 
-    else
-      usleep(100);
-  }
+  //   if (coder != NULL) {
+  //     pthread_mutex_lock(&coder->mutex_cond.mutex);
+  //     coder->coder_state = COMPILING;
+  //     pthread_cond_broadcast(&coder->mutex_cond.cond);
+  //     pthread_mutex_unlock(&coder->mutex_cond.mutex);
+  //     i++;
+  //   } 
+  //   else
+  //     usleep(100);
+  // }
   return NULL;
 }
 
@@ -60,6 +60,7 @@ t_coder *peek_a_coder(t_representer *representer) {
       // pop up the coder from queue
       coder = representer->coders[i];
       hold_both_dongles(coder);
+      pop_coder_from_queue(representer, i);
       break;
     }
     i++;
