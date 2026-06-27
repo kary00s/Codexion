@@ -29,24 +29,7 @@ void insert_coder_in_queue(t_coder *coder, t_queue *queue)
     pthread_mutex_unlock(&coder->queue->mutex_queue);
 
     pthread_mutex_lock(&coder->mutex_cond.mutex); 
-    printf("coder %d is inserted to queue\n", coder->coder_id);
+    // printf("coder %d is inserted to queue\n", coder->coder_id);
     pthread_mutex_unlock(&coder->mutex_cond.mutex);   
 
 }
-// void insert_all_coders_in_queue(t_representer *representer, t_queue *queue)
-// {
-// 
-    // int i;
-    // i = 0;
-    // printf("size = %d\n", queue->size);
-    // while (i < representer->config.number_of_coders)
-    // {
-        // pthread_mutex_lock(&queue->mutex_queue);
-        // representer->coders[i]->access = get_time_ms();
-        // queue->coders[queue->size] = representer->coders[i];
-        // queue->size++;
-        // pthread_mutex_unlock(&queue->mutex_queue);
-        // i++;
-    // }
-    // representer->coders_are_ready = true;
-// }

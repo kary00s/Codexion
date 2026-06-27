@@ -28,7 +28,6 @@ static long ft_atol(char *str) {
 
 t_config parser(int ac, char **args) {
   t_config config;
-
   if (ac == 8) {
     config.number_of_coders = ft_atol(args[1]);
     config.time_to_debug = ft_atol(args[4]);
@@ -38,7 +37,6 @@ t_config parser(int ac, char **args) {
     config.number_of_compiles_required = ft_atol(args[6]);
     config.dongle_cooldown = ft_atol(args[7]);
     // representer->config.scheduler =
-  } else
-    exit_all("| ERROR |");
+  }
   return (config);
 }

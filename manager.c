@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:06:35 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/16 09:45:38 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/27 04:22:21 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 void *manager_home(void *args);
 bool manager_creator(t_representer *representer) {
-
-  // printf("test manager here\n");
 
   if (pthread_create(&representer->manager, NULL, &manager_home, representer))
     return false;
@@ -33,35 +31,36 @@ void *manager_home(void *args) {
   t_coder *coder;
   int i = 0;
 
-  while (1) {
-  
+  while (1) 
+  {
     coder = peek_a_coder(representer);
     if (coder != NULL) {
       pthread_mutex_lock(&coder->mutex_cond.mutex);
       coder->coder_state = COMPILING;
       pthread_cond_broadcast(&coder->mutex_cond.cond);
       pthread_mutex_unlock(&coder->mutex_cond.mutex);
+      
       i++;
-    } else
-      usleep(300);
+    } 
+    else
+      usleep(100);
   }
-
   return NULL;
 }
 
 t_coder *peek_a_coder(t_representer *representer) {
   t_coder *coder;
   int i = 0;
-  if (representer->queue->size == 0)
-    return NULL;
+  coder = NULL;
   pthread_mutex_lock(&representer->queue->mutex_queue);
-  while (i < representer->queue->size) {
-    if (are_dongles_available(representer->coders[i])) {
+  while (i < representer->queue->size) 
+  {
+    if (are_dongles_available(representer->coders[i])) 
+    {
       // pop up the coder from queue
-      pthread_mutex_unlock(&representer->queue->mutex_queue);
-      return representer->coders[i];
+      coder = representer->coders[i];
+      break;
     }
-    printf("coder id: %d\n", representer->coders[i]->coder_id);
     i++;
   }
   pthread_mutex_unlock(&representer->queue->mutex_queue);

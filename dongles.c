@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:53 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/15 01:05:31 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/27 04:29:35 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void dongles_destroyer(t_dongle **dongles, int counter) {
   int i;
   i = 0;
   while (i < counter) {
-    pthread_mutex_destroy(&dongles[i]->dongle_mutex);
-    pthread_cond_destroy(&dongles[i]->dongle_cond);
+    pthread_mutex_destroy(&dongles[i]->dongle_m_c.mutex);
+    pthread_cond_destroy(&dongles[i]->dongle_m_c.cond);
     i++;
   }
 }
@@ -51,12 +51,11 @@ static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
   while (i < counter) {
     dongles[i]->is_available = true;
     dongles[i]->dongle_id = i;
-
-    if (pthread_mutex_init(&dongles[i]->dongle_mutex, NULL)) {
+    if (pthread_mutex_init(&dongles[i]->dongle_m_c.mutex, NULL)) {
       dongles_destroyer(dongles, i);
       return (NULL);
     }
-    if (pthread_cond_init(&dongles[i]->dongle_cond, NULL)) {
+    if (pthread_cond_init(&dongles[i]->dongle_m_c.cond, NULL)) {
       dongles_destroyer(dongles, i);
       return (NULL);
     }
@@ -68,29 +67,32 @@ static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
 static bool is_dongle_available(t_dongle *dongle) {
   bool is_available;
   is_available = false;
-  pthread_mutex_lock(&dongle->dongle_mutex);
+  
+  pthread_mutex_lock(&dongle->dongle_m_c.mutex);
   if (dongle->is_available)
+  {
+    dongle->is_available = false;
     is_available = true;
-  pthread_mutex_unlock(&dongle->dongle_mutex);
+  }
+  pthread_mutex_unlock(&dongle->dongle_m_c.mutex);
   return is_available;
 }
 
 static void make_dongles_unavailable(t_coder *coder) {
-  pthread_mutex_lock(&coder->left_dongle->dongle_mutex);
+  pthread_mutex_lock(&coder->left_dongle->dongle_m_c.mutex);
   coder->left_dongle->is_available = false;
-  pthread_mutex_unlock(&coder->left_dongle->dongle_mutex);
+  pthread_mutex_unlock(&coder->left_dongle->dongle_m_c.mutex);
 
-  pthread_mutex_lock(&coder->right_dongle->dongle_mutex);
+  pthread_mutex_lock(&coder->right_dongle->dongle_m_c.mutex);
   coder->right_dongle->is_available = false;
-  pthread_mutex_unlock(&coder->right_dongle->dongle_mutex);
+  pthread_mutex_unlock(&coder->right_dongle->dongle_m_c.mutex);
 }
 
 bool are_dongles_available(t_coder *coder) {
+  
   if (is_dongle_available(coder->left_dongle) &&
-      is_dongle_available(coder->right_dongle)) {
-    make_dongles_unavailable(coder);
+  is_dongle_available(coder->right_dongle))
     return true;
-  }
   return false;
 }
 

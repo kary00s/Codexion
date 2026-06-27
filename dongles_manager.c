@@ -1,16 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   holder.c                                           :+:      :+:    :+:   */
+/*   dongles_manager.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:07:49 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/10 15:07:51 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/27 03:54:52 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "codexion.h"
 
+
+#include"codexion.h"
 static void drop_dongle(t_dongle *dongle);
 static void hold_dongle(t_dongle *dongle);
 
@@ -35,15 +36,15 @@ void drop_both_dongles(t_coder *coder)
 
 static void hold_dongle(t_dongle *dongle)
 {
-    pthread_mutex_lock(&dongle->dongle_mutex);
+    pthread_mutex_lock(&dongle->dongle_m_c.mutex);
     dongle->is_available = false;
-    pthread_mutex_unlock(&dongle->dongle_mutex);
+    pthread_mutex_unlock(&dongle->dongle_m_c.mutex);
 }
 
 
 static void drop_dongle(t_dongle *dongle)
 {
-    pthread_mutex_lock(&dongle->dongle_mutex);
+    pthread_mutex_lock(&dongle->dongle_m_c.mutex);
     dongle->is_available = true;
-    pthread_mutex_unlock(&dongle->dongle_mutex);
+    pthread_mutex_unlock(&dongle->dongle_m_c.mutex);
 }

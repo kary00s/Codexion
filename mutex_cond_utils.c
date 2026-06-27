@@ -11,8 +11,7 @@ bool init_mutex_cond(t_mutex_cond *mutex_cond) {
   return true;
 }
 
-void destroy_mutex_cond(t_mutex_cond *mutex_cond) {
-  printf("hello karim\n");
-  pthread_mutex_destroy(&mutex_cond->mutex);
-  pthread_cond_destroy(&mutex_cond->cond);
+void destroy_mutex_cond(pthread_mutex_t *mutex, pthread_cond_t *cond) {
+  pthread_mutex_destroy(mutex);
+  pthread_cond_destroy(cond);
 }

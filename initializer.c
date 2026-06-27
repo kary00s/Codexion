@@ -6,26 +6,35 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 14:52:28 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/15 21:05:22 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/27 02:39:07 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
 static bool initializer_queue(t_representer *representer);
+static bool init_queue_mutexs_conds(t_representer *representer);
 
-bool init_representer_mutexs_conds(t_representer *representer) {
+
+bool init_representer_mutexs_conds(t_representer *representer)
+{
   if (pthread_mutex_init(&representer->print_mutex, NULL) != 0)
     return false;
   if (!init_mutex_cond(&representer->ready_coders_counter_m_c)) {
     pthread_mutex_destroy(&representer->print_mutex);
     return false;
   }
-  // if (pthread_mutex_init(&representer->queue->mutex_queue, NULL) != 0) {
-  //   pthread_mutex_destroy(&representer->print_mutex);
-  //   destroy_mutex_cond(&representer->ready_coders_counter_m_c);
-  //   return false;
-  // }
+  return true;
+}
+
+static bool init_queue_mutexs_conds(t_representer *representer) 
+{
+  if (pthread_mutex_init(&representer->queue->mutex_queue, NULL) != 0) {
+    pthread_mutex_destroy(&representer->print_mutex);
+    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex
+                        , &representer->ready_coders_counter_m_c.cond);
+    return false;
+  }
   return true;
 }
 
@@ -38,17 +47,29 @@ bool initialize_representer_struct(t_representer *representer, int ac,
   representer->coders_are_ready = false;
   representer->is_burnouted = false;
   representer->ready_coders_counter = 0;
-  if (!initializer_queue(representer)) {
-    // TODO: clean the mutexes and conds
+
+  if (!initializer_queue(representer) || !init_queue_mutexs_conds(representer)) 
+  {
+    pthread_mutex_destroy(&representer->print_mutex);
+    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex, 
+                        &representer->ready_coders_counter_m_c.cond);
     return false;
   }
   if (!init_dongles(representer)) {
-    // TODO: destroy the mutexes and conds
-    // TODO: destroy the mutexes and cond for queue and free memory
+    pthread_mutex_destroy(&representer->print_mutex);
+    pthread_mutex_destroy(&representer->queue->mutex_queue);
+    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex, 
+                        &representer->ready_coders_counter_m_c.cond);
+    free(representer->queue);
     return false;
   }
+  
   if (!init_coders(representer)) {
-    // TODO: free dongles and destroy the mutex in representer and queue
+    free_dongles(representer);
+    pthread_mutex_destroy(&representer->print_mutex);
+    pthread_mutex_destroy(&representer->queue->mutex_queue);
+    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex, 
+                        &representer->ready_coders_counter_m_c.cond);
     return false;
   }
   return true;

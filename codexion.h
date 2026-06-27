@@ -36,11 +36,8 @@ typedef struct s_dongle
 {
     int             dongle_id;
     bool is_available;
-   	pthread_mutex_t dongle_mutex;
-	pthread_cond_t dongle_cond;
+   	t_mutex_cond dongle_m_c;
 } t_dongle;
-
-// CODERS struct :
 
 // SCHEDULER enum :
 typedef enum enum_scheduer
@@ -138,6 +135,9 @@ bool   init_coders(t_representer *representer);
 void coders_joiner(t_representer *representer);
 void *routine_all_the_coders(void *arg);
 
+void free_coders(t_representer *representer) ;
+void free_dongles(t_representer *representer); 
+
 
 
 // monitor file :
@@ -150,13 +150,11 @@ void *manager_home(void *args);
 void manager_joiner(pthread_t manager);
 bool manager_creator(t_representer *representer);
 t_coder *peek_a_coder(t_representer *representer);
-t_manager *manager_initializer(void);
 
 t_coder **coders_allocater(int number_of_coders);
 
 // cleaner file :
-void free_dongles(t_representer *representer);
-void free_representer_struct(t_representer *representer);
+void destroy_mutex_coders(t_coder **coders, int n) ;
 
 
 // timer file:
@@ -182,6 +180,6 @@ bool initialize_representer_struct(t_representer *representer ,int ac, char **av
 
 // mutex_cond_utils:
 bool init_mutex_cond(t_mutex_cond *mutex_cond);
-void destroy_mutex_cond(t_mutex_cond *mutex_cond);
+void destroy_mutex_cond(pthread_mutex_t *mutex, pthread_cond_t *cond);
 
 #endif

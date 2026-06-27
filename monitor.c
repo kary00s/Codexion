@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/16 09:40:27 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/27 04:19:25 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 #include <sys/time.h>
 
 static bool wait_for_coders_to_start(t_representer *representer);
-static void allow_to_coders_to_start(t_representer *representer);
+static void allow_coders_to_start(t_representer *representer);
+
 
 bool monitor_creator(t_representer *representer) {
   if (pthread_create(&representer->monitor, NULL, &monitor_home, representer))
@@ -30,8 +31,9 @@ void monitor_joiner(pthread_t *monitor) {
 void *monitor_home(void *args) {
   t_representer *representer;
   representer = (t_representer *)args;
+  
   wait_for_coders_to_start(representer);
-  allow_to_coders_to_start(representer);
+  allow_coders_to_start(representer);
 
   return NULL;
 }
@@ -44,11 +46,10 @@ static bool wait_for_coders_to_start(t_representer *representer) {
                       &representer->ready_coders_counter_m_c.mutex);
   }
   pthread_mutex_unlock(&representer->ready_coders_counter_m_c.mutex);
-  printf("all cooders are ready %d\n", representer->ready_coders_counter);
   return true;
 }
 
-static void allow_to_coders_to_start(t_representer *representer) {
+static void allow_coders_to_start(t_representer *representer) {
   int i;
   t_coder **coders;
 
@@ -56,12 +57,13 @@ static void allow_to_coders_to_start(t_representer *representer) {
   coders = representer->coders;
   gettimeofday(&representer->start_time, NULL);
   while (i < representer->config.number_of_coders) {
+    insert_coder_in_queue(coders[i], representer->queue);
     pthread_mutex_lock(&coders[i]->mutex_cond.mutex);
     coders[i]->coder_state = WAITING;
     gettimeofday(&coders[i]->last_compile, NULL);
     pthread_cond_broadcast(&coders[i]->mutex_cond.cond);
     pthread_mutex_unlock(&coders[i]->mutex_cond.mutex);
-    insert_coder_in_queue(coders[i], representer->queue);
+  
     i++;
   }
 }
