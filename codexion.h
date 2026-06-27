@@ -29,7 +29,6 @@ typedef struct s_queue
     int             capacity;
     pthread_mutex_t mutex_queue;
 } t_queue;
-+
 
 // DONGLES structs :
 typedef struct s_dongle
@@ -156,7 +155,6 @@ t_coder **coders_allocater(int number_of_coders);
 // cleaner file :
 void destroy_mutex_coders(t_coder **coders, int n) ;
 
-
 // timer file:
 long time_calculator(t_coder *coder, long start_time);
 long get_time_ms();
@@ -177,12 +175,12 @@ void swap_coders(t_coder *parent_coder, t_coder *child_coder);
 // initializer file:
 bool initialize_representer_struct(t_representer *representer ,int ac, char **av);
 
-
 // mutex_cond_utils:
 bool init_mutex_cond(t_mutex_cond *mutex_cond);
+
 void destroy_mutex_cond(pthread_mutex_t *mutex, pthread_cond_t *cond);
 
-void pop_coder_from_queue(t_representer *representer, int i);
+bool pop_coder_from_queue(t_representer *representer, int i);
 
 void shift_queue_down(t_queue *queue, int i);
 

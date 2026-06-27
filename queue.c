@@ -25,6 +25,7 @@ void swap_coders(t_coder *parent_coder, t_coder *child_coder)
 void shift_queue_down(t_queue *queue, int i)
 {
 
+
 }
 bool pop_coder_from_queue(t_representer *representer, int i)
 {
@@ -44,6 +45,7 @@ bool pop_coder_from_queue(t_representer *representer, int i)
     
     return true;    
 }
+
 void insert_coder_in_queue(t_coder *coder, t_queue *queue)
 {
     pthread_mutex_lock(&coder->queue->mutex_queue);
@@ -51,8 +53,7 @@ void insert_coder_in_queue(t_coder *coder, t_queue *queue)
     queue->size++;
     pthread_mutex_unlock(&coder->queue->mutex_queue);
 
-    // pthread_mutex_lock(&coder->mutex_cond.mutex); 
+    // pthread_mutex_lock(&coder->mutex_cond.mutex);
     // printf("coder %d is inserted to queue\n", coder->coder_id);
-    // pthread_mutex_u  nlock(&coder->mutex_cond.mutex);   
-
+    // pthread_mutex_u  nlock(&coder->mutex_cond.mutex);
 }
