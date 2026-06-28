@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 14:52:28 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/27 05:56:08 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/28 03:28:50 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,11 @@ static bool init_queue_mutexs_conds(t_representer *representer)
 
 bool initialize_representer_struct(t_representer *representer, int ac, char **av) {
   if(!parser(ac, av, representer))
+  {
     return false;
+  }
+  
+
   if (!init_representer_mutexs_conds(representer))
     return false;
   representer->coders_counter = 0;
@@ -72,6 +76,8 @@ bool initialize_representer_struct(t_representer *representer, int ac, char **av
                         &representer->ready_coders_counter_m_c.cond);
     return false;
   }
+  linker_coders_with_dongles(representer->coders, representer->dongles, representer->config.number_of_coders);
+
   return true;
 }
 

@@ -33,9 +33,11 @@ typedef struct s_queue
 // DONGLES structs :
 typedef struct s_dongle
 {
-    int             dongle_id;
-    bool is_available;
-   	t_mutex_cond dongle_m_c;
+    int           dongle_id;
+    long          time_cooldown;
+    bool          is_available;
+    bool is_cold;
+   	t_mutex_cond  dongle_m_c;
 } t_dongle;
 
 // SCHEDULER enum :
@@ -117,6 +119,7 @@ typedef struct s_representer
 void coder_must_wait(t_coder *coder);
 
 // codexion file :
+
 int main(int ac, char *av[]);
 void dongles_destroyer(t_dongle **dongles, int counter);
 bool parser(int ac, char **args, t_representer *representer);
@@ -146,7 +149,7 @@ void monitor_joiner(pthread_t *monitor);
 
 // manager_file :
 void *manager_home(void *args);
-void manager_joiner(pthread_t manager);
+void manager_joiner(pthread_t *manager);
 bool manager_creator(t_representer *representer);
 t_coder *peek_a_coder(t_representer *representer);
 
@@ -156,8 +159,13 @@ t_coder **coders_allocater(int number_of_coders);
 void destroy_mutex_coders(t_coder **coders, int n) ;
 
 // timer file:
-long time_calculator(t_coder *coder, long start_time);
+long time_calculator(struct timeval start);
+
+long timeval_to_ms(struct timeval t);
 long get_time_ms();
+
+int timeval_less(struct timeval a, struct timeval b);
+
 
 // queue file :
 void insert_coder_in_queue(t_coder *coder, t_queue *queue);
@@ -168,7 +176,7 @@ void insert_coder_in_queue(t_coder *coder, t_queue *queue);
 void drop_both_dongles(t_coder *coder);
 
 // holder file : 
-void hold_both_dongles(t_coder *coder);
+bool hold_both_dongles(t_coder *coder);
 
 void swap_coders(t_coder *parent_coder, t_coder *child_coder);
 
@@ -179,8 +187,11 @@ bool initialize_representer_struct(t_representer *representer ,int ac, char **av
 bool init_mutex_cond(t_mutex_cond *mutex_cond);
 
 void destroy_mutex_cond(pthread_mutex_t *mutex, pthread_cond_t *cond);
-
+void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
+                                       int number_of_coders) ;
 bool pop_coder_from_queue(t_representer *representer, int i);
+bool wait_for_simulation_to_start(t_coder *coder);
+bool wait_for_coders_to_start(t_representer *representer);
 
 void shift_queue_down(t_queue *queue, int i);
 

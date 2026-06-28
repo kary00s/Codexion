@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:43 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/27 04:28:10 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/28 03:41:17 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void free_previous_coders(t_coder **coders, int n) ;
 
-static void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
+void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
                                        int number_of_coders);
 t_coder **coders_allocater(int number_of_coders);
 static void initialize_coders_struct(t_representer *representer);
@@ -32,7 +32,6 @@ bool init_coders(t_representer *representer) {
     return false;
   }
   initialize_coders_struct(representer);
-  linker_coders_with_dongles(representer->coders, representer->dongles, number_of_coders);
   return true;
 }
 
@@ -83,6 +82,7 @@ static void initialize_coders_struct(t_representer *representer) {
     coders[i]->coder_state = STARTING;
     i++;
   }
+
 }
 
 static bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders) {
@@ -98,7 +98,7 @@ static bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders) {
   return true;
 }
 
-static void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
+void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
                                        int number_of_coders) {
   int i;
   i = 0;

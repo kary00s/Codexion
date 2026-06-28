@@ -57,5 +57,8 @@ bool parser(int ac, char **args, t_representer *representer) {
   }
   else 
     return false;
+
+  representer->config = config;
+
   return true;
 }

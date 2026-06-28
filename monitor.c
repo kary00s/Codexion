@@ -6,14 +6,14 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/27 04:19:25 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/28 04:35:19 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 #include <sys/time.h>
 
-static bool wait_for_coders_to_start(t_representer *representer);
+bool wait_for_coders_to_start(t_representer *representer);
 static void allow_coders_to_start(t_representer *representer);
 
 
@@ -32,13 +32,16 @@ void *monitor_home(void *args) {
   t_representer *representer;
   representer = (t_representer *)args;
   
-  wait_for_coders_to_start(representer);
-  allow_coders_to_start(representer);
-
+  if (representer->coders_are_ready == false)
+  {
+    wait_for_coders_to_start(representer);
+    allow_coders_to_start(representer);
+  }
+  
   return NULL;
 }
 
-static bool wait_for_coders_to_start(t_representer *representer) {
+bool wait_for_coders_to_start(t_representer *representer) {
   pthread_mutex_lock(&representer->ready_coders_counter_m_c.mutex);
   while (representer->ready_coders_counter !=
          representer->config.number_of_coders) {
@@ -66,4 +69,5 @@ static void allow_coders_to_start(t_representer *representer) {
   
     i++;
   }
+  representer->coders_are_ready = true;
 }

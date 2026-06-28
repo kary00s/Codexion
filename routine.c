@@ -1,7 +1,7 @@
 #include "codexion.h"
 #include <pthread.h>
 
-static bool wait_for_simulation_to_start(t_coder *coder);
+bool wait_for_simulation_to_start(t_coder *coder);
 static void compiling(t_coder *coder, t_queue *queue) ;
 static void debuging(t_coder *coder);
 static void refactoring(t_coder *coder);
@@ -13,15 +13,13 @@ void *routine_all_the_coders(void *arg) {
   coder = (t_coder *)arg;
   wait_for_simulation_to_start(coder);
   // while (1)
-  // {
+//  {
     // pthread_mutex_lock(coder->print_mutex);
-    // printf("the coder is starting now id: %d\n", coder->coder_id);
     // pthread_mutex_unlock(coder->print_mutex);
-
-    
     compiling(coder, coder->queue);
-    refactoring(coder);
     debuging(coder);
+    refactoring(coder);
+    // break;
   // }
 
   return NULL;
@@ -30,6 +28,7 @@ static void refactoring(t_coder *coder)
 {
   if (coder->coder_state == REFACTORING)
   {
+
     pthread_mutex_lock(coder->print_mutex);
     printf("coder %d is refactoring\n", coder->coder_id);
     coder->coder_state = WAITING;
@@ -52,6 +51,8 @@ static void compiling(t_coder *coder, t_queue *queue)
   // are_dongles_available(coder);
   if (coder->coder_state == COMPILING)
   {
+    
+    printf("coder is compiling\n");
     pthread_mutex_lock(coder->print_mutex);
     printf("coder %d is compiling\n", coder->coder_id);
     coder->coder_state = DEBUGING;
@@ -59,7 +60,7 @@ static void compiling(t_coder *coder, t_queue *queue)
   }
 }
 
-static bool wait_for_simulation_to_start(t_coder *coder) {
+bool wait_for_simulation_to_start(t_coder *coder) {
   pthread_mutex_lock(&coder->ready_coders_counter_m_c->mutex);
   (*coder->ready_coders_counter)++;
   pthread_cond_broadcast(&coder->ready_coders_counter_m_c->cond);
@@ -75,7 +76,7 @@ static bool wait_for_simulation_to_start(t_coder *coder) {
 bool coders_creator(t_representer *representer) 
 {
   int i = 0;
-
+  
   while (i < representer->config.number_of_coders) {
     if (pthread_create(&representer->coders[i]->thread, NULL,
                        routine_all_the_coders, representer->coders[i]) != 0) {
@@ -90,7 +91,6 @@ bool coders_creator(t_representer *representer)
 void coders_joiner(t_representer *representer) {
   int i;
   i = 0;
-
   while (i < representer->config.number_of_coders) {
     pthread_join(representer->coders[i]->thread, NULL);
     i++;

@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:53 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/27 04:29:35 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/28 06:08:01 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
   while (i < counter) {
     dongles[i]->is_available = true;
     dongles[i]->dongle_id = i;
+    dongles[i]->time_cooldown = 0;
     if (pthread_mutex_init(&dongles[i]->dongle_m_c.mutex, NULL)) {
       dongles_destroyer(dongles, i);
       return (NULL);
@@ -89,10 +90,12 @@ static void make_dongles_unavailable(t_coder *coder) {
 }
 
 bool are_dongles_available(t_coder *coder) {
-  
+  printf("coder %d left => %d and right => %d\n", coder->coder_id, coder->left_dongle->dongle_id, coder->right_dongle->dongle_id);
   if (is_dongle_available(coder->left_dongle) &&
   is_dongle_available(coder->right_dongle))
     return true;
+  else
+    make_dongles_unavailable(coder);
   return false;
 }
 

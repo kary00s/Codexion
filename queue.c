@@ -22,11 +22,39 @@ void swap_coders(t_coder *parent_coder, t_coder *child_coder)
     parent_coder = child_coder;
     child_coder = swp;
 }
+
+
 void shift_queue_down(t_queue *queue, int i)
 {
+	int		right;
+	int		left;
+	int		smallest;
 
-
+    while (1)
+    {
+        right = i * 2 + 2;
+        left = i * 2 + 1;
+        smallest = i;
+        
+        if (left < queue->size &&
+            timeval_less(queue->coders[left]->last_compile,
+                    queue->coders[smallest]->last_compile))
+            smallest = left;
+    
+        if (right < queue->size &&
+            timeval_less(queue->coders[right]->last_compile,
+                    queue->coders[smallest]->last_compile))
+            smallest = right;
+        
+        if (smallest == i)
+            break;
+        
+        swap_coders(queue->coders[i], queue->coders[smallest]);
+        i = smallest;
+    }
 }
+
+
 bool pop_coder_from_queue(t_representer *representer, int i)
 {
     t_coder *coder;
@@ -53,7 +81,4 @@ void insert_coder_in_queue(t_coder *coder, t_queue *queue)
     queue->size++;
     pthread_mutex_unlock(&coder->queue->mutex_queue);
 
-    // pthread_mutex_lock(&coder->mutex_cond.mutex);
-    // printf("coder %d is inserted to queue\n", coder->coder_id);
-    // pthread_mutex_u  nlock(&coder->mutex_cond.mutex);
 }
