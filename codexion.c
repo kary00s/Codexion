@@ -4,6 +4,7 @@
 int main(int ac, char *av[])
 {
   t_representer representer;
+  
   if (!initialize_representer_struct(&representer, ac, av))
   {
     return 0;  
@@ -17,7 +18,6 @@ int main(int ac, char *av[])
     free_dongles(&representer);
     return 0;
   }
-
   if (!monitor_creator(&representer)) {
     // TODO: stop the running coders and free the resources
     
@@ -30,6 +30,7 @@ int main(int ac, char *av[])
   if (!coders_creator(&representer)) {
     return 0;
   }
+  printf("=== all good untill here ===\n");
   
   coders_joiner(&representer);
   monitor_joiner(&representer.monitor);

@@ -67,8 +67,9 @@ bool pop_coder_from_queue(t_representer *representer, int i)
     swap_coders(coder, queue->coders[queue->size - 1]);
     queue->size--;
     if (representer->config.scheduler == 0)
-        shift_queue_down(queue, i);
-    // else
+        {
+            shift_queue_down(queue, i);
+        }
         // edf must be here akhona
     
     return true;    
@@ -80,5 +81,4 @@ void insert_coder_in_queue(t_coder *coder, t_queue *queue)
     queue->coders[queue->size] = coder;
     queue->size++;
     pthread_mutex_unlock(&coder->queue->mutex_queue);
-
 }

@@ -34,10 +34,11 @@ typedef struct s_queue
 typedef struct s_dongle
 {
     int           dongle_id;
-    long          time_cooldown;
+    long          last_reste;
     bool          is_available;
-    bool is_cold;
-   	t_mutex_cond  dongle_m_c;
+    bool          is_cold;
+    struct timeval cooldown_timer;
+   	t_mutex_cond   dongle_m_c;
 } t_dongle;
 
 // SCHEDULER enum :
@@ -130,6 +131,9 @@ bool coders_creator(t_representer *representer);
 // dongles file :
 bool init_dongles(t_representer *representer);
 bool are_dongles_available(t_coder *coder);
+ bool is_dongle_ready(t_dongle *dongle, long time_to_cooldown);
+bool is_the_dongle_cold(t_dongle *dongle, long time_cooldown);
+void make_dongles_unavailable(t_dongle *dongle);
 
 // coders file :
 bool   init_coders(t_representer *representer);
@@ -151,7 +155,7 @@ void monitor_joiner(pthread_t *monitor);
 void *manager_home(void *args);
 void manager_joiner(pthread_t *manager);
 bool manager_creator(t_representer *representer);
-t_coder *peek_a_coder(t_representer *representer);
+t_coder *catch_coder(t_representer *representer);
 
 t_coder **coders_allocater(int number_of_coders);
 
@@ -159,7 +163,6 @@ t_coder **coders_allocater(int number_of_coders);
 void destroy_mutex_coders(t_coder **coders, int n) ;
 
 // timer file:
-long time_calculator(struct timeval start);
 
 long timeval_to_ms(struct timeval t);
 long get_time_ms();
@@ -192,6 +195,8 @@ void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
 bool pop_coder_from_queue(t_representer *representer, int i);
 bool wait_for_simulation_to_start(t_coder *coder);
 bool wait_for_coders_to_start(t_representer *representer);
+
+long timeval_to_ms(struct timeval time);
 
 void shift_queue_down(t_queue *queue, int i);
 

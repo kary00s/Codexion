@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:53 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/28 06:08:01 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/29 06:14:32 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,56 +51,72 @@ static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
   while (i < counter) {
     dongles[i]->is_available = true;
     dongles[i]->dongle_id = i;
-    dongles[i]->time_cooldown = 0;
+    dongles[i]->last_reste = 0;
+    dongles[i]->is_available = true;
     if (pthread_mutex_init(&dongles[i]->dongle_m_c.mutex, NULL)) {
       dongles_destroyer(dongles, i);
+      printf("dongle error \n");
       return (NULL);
     }
     if (pthread_cond_init(&dongles[i]->dongle_m_c.cond, NULL)) {
       dongles_destroyer(dongles, i);
+      printf("dongle error \n");
       return (NULL);
     }
     i++;
   }
   return (dongles);
 }
-
-static bool is_dongle_available(t_dongle *dongle) {
-  bool is_available;
-  is_available = false;
+bool is_the_dongle_cold(t_dongle *dongle, long time_cooldown)
+{
+  long right_now;
+  long time_usage ;
   
-  pthread_mutex_lock(&dongle->dongle_m_c.mutex);
-  if (dongle->is_available)
-  {
-    dongle->is_available = false;
-    is_available = true;
-  }
-  pthread_mutex_unlock(&dongle->dongle_m_c.mutex);
-  return is_available;
-}
-
-static void make_dongles_unavailable(t_coder *coder) {
-  pthread_mutex_lock(&coder->left_dongle->dongle_m_c.mutex);
-  coder->left_dongle->is_available = false;
-  pthread_mutex_unlock(&coder->left_dongle->dongle_m_c.mutex);
-
-  pthread_mutex_lock(&coder->right_dongle->dongle_m_c.mutex);
-  coder->right_dongle->is_available = false;
-  pthread_mutex_unlock(&coder->right_dongle->dongle_m_c.mutex);
-}
-
-bool are_dongles_available(t_coder *coder) {
-  printf("coder %d left => %d and right => %d\n", coder->coder_id, coder->left_dongle->dongle_id, coder->right_dongle->dongle_id);
-  if (is_dongle_available(coder->left_dongle) &&
-  is_dongle_available(coder->right_dongle))
-    return true;
-  else
-    make_dongles_unavailable(coder);
+  right_now = get_time_ms();
+  time_usage = right_now - dongle->last_reste;
+  if ((time_usage) > (time_cooldown))
+      return true;
   return false;
 }
 
-bool init_dongles(t_representer *representer) {
+bool is_dongle_ready(t_dongle *dongle, long time_to_cooldown) {
+  bool its_ready;
+  its_ready = false;
 
+  
+  pthread_mutex_lock(&dongle->dongle_m_c.mutex);
+  if ( (dongle->is_available)
+  && (is_the_dongle_cold(dongle, time_to_cooldown)))
+    its_ready = true;
+  pthread_mutex_unlock(&dongle->dongle_m_c.mutex);
+  return its_ready;
+}
+
+
+bool are_dongles_available(t_coder *coder) {
+  
+  if  (    (is_dongle_ready(coder->left_dongle, coder->config->dongle_cooldown))
+  && (is_dongle_ready(coder->right_dongle, coder->config->dongle_cooldown))
+)
+{
+  make_dongles_unavailable(coder->left_dongle);
+  make_dongles_unavailable(coder->right_dongle);
+  return true;
+}
+  return false;
+}
+
+void make_dongles_unavailable(t_dongle *dongle)
+{
+  pthread_mutex_lock(&dongle->dongle_m_c.mutex);
+  dongle->is_cold = false; 
+  dongle->is_available = false;                   
+  pthread_mutex_unlock(&dongle->dongle_m_c.mutex);
+  
+}
+  // TODO: coder->right_dongle->last_reste = get_time_ms() + ;
+bool init_dongles(t_representer *representer)
+{
   representer->dongles = dongles_allocater(representer);
   if (!representer->dongles)
     return false;

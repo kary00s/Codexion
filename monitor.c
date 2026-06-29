@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/28 04:35:19 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/29 06:56:27 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,10 @@ void *monitor_home(void *args) {
   
   if (representer->coders_are_ready == false)
   {
+    
     wait_for_coders_to_start(representer);
     allow_coders_to_start(representer);
+
   }
   
   return NULL;
@@ -44,12 +46,14 @@ void *monitor_home(void *args) {
 bool wait_for_coders_to_start(t_representer *representer) {
   pthread_mutex_lock(&representer->ready_coders_counter_m_c.mutex);
   while (representer->ready_coders_counter !=
-         representer->config.number_of_coders) {
-    pthread_cond_wait(&representer->ready_coders_counter_m_c.cond,
-                      &representer->ready_coders_counter_m_c.mutex);
-  }
+         representer->config.number_of_coders) 
+      {
+        pthread_cond_wait(&representer->ready_coders_counter_m_c.cond,
+            &representer->ready_coders_counter_m_c.mutex);
+      }
   pthread_mutex_unlock(&representer->ready_coders_counter_m_c.mutex);
-  return true;
+  return true;\
+
 }
 
 static void allow_coders_to_start(t_representer *representer) {

@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 15:06:35 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/28 06:04:27 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/29 06:57:49 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,34 +32,33 @@ void *manager_home(void *args) {
 
   while (1) 
   {
-    coder = peek_a_coder(representer);
-    if (coder != NULL) {      
-      printf("coder id %d \n", coder->coder_id);
+    coder = catch_coder(representer);
+    if (coder != NULL && coder->coder_state == WAITING) { 
       pthread_mutex_lock(&coder->mutex_cond.mutex);
       coder->coder_state = COMPILING;
       pthread_cond_broadcast(&coder->mutex_cond.cond);
       pthread_mutex_unlock(&coder->mutex_cond.mutex);
-    } 
+    }
     else
-      usleep(100);
+      usleep(10);
   }
   return NULL;
 }
 
-t_coder *peek_a_coder(t_representer *representer) {
+t_coder *catch_coder(t_representer *representer) {
   t_coder *coder;
   int i = 0;
   coder = NULL;
+  
   pthread_mutex_lock(&representer->queue->mutex_queue);
-  while (i < representer->queue->size) 
+  while (i < representer->queue->size)
   {
     if (are_dongles_available(representer->coders[i])) 
     {
-      // pop up the coder from queue
       coder = representer->coders[i];
-
       pop_coder_from_queue(representer, i);
-      break;
+      pthread_mutex_unlock(&representer->queue->mutex_queue);
+      return coder;
     }
     i++;
   }

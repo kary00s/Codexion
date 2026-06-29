@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:56:43 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/28 03:41:17 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/06/29 05:01:39 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ bool init_coders(t_representer *representer) {
   representer->coders = coders_allocater(number_of_coders);
   if (!representer->coders)
     return false;
+  initialize_coders_struct(representer);
   if (!init_coders_mutexes_conds(representer->coders, number_of_coders)) {
     free_coders(representer);
     return false;
   }
-  initialize_coders_struct(representer);
   return true;
 }
 
@@ -72,6 +72,7 @@ static void initialize_coders_struct(t_representer *representer) {
   i = 0;
   coders = representer->coders;
   while (i < representer->config.number_of_coders) {
+    coders[i]->config = &representer->config;
     coders[i]->coder_id = i;
     coders[i]->is_burnouted = representer->is_burnouted;
     coders[i]->queue = representer->queue;
