@@ -11,9 +11,9 @@ SRC = codexion.c\
 	timer.c\
 	queue.c\
 	routine.c\
-	dongles_manager.c \
+	dongles_controller.c \
 	initializer.c\
-	manager.c\
+	controller.c\
 	mutex_cond_utils.c\
 
 OBG = $(SRC:.c=.o)

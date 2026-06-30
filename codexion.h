@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <stdbool.h>
-typedef struct s_manager t_manager;
+typedef struct s_controller t_controller;
 
 typedef struct s_dongle t_dongle;
 typedef struct s_coder t_coder;
@@ -109,95 +109,17 @@ typedef struct s_representer
     int ready_coders_counter;
     t_mutex_cond ready_coders_counter_m_c;
     pthread_t monitor;
-    pthread_t manager;
+    pthread_t controller;
     pthread_cond_t cond_monitor;    
     pthread_mutex_t mutex_monitor; 
 } t_representer;
 
-
-
-
-void coder_must_wait(t_coder *coder);
-
-// codexion file :
-
-int main(int ac, char *av[]);
-void dongles_destroyer(t_dongle **dongles, int counter);
-bool parser(int ac, char **args, t_representer *representer);
-void exit_all(char *message);
-bool coders_creator(t_representer *representer);
-
-
-// dongles file :
-bool init_dongles(t_representer *representer);
-bool are_dongles_available(t_coder *coder);
- bool is_dongle_ready(t_dongle *dongle, long time_to_cooldown);
-bool is_the_dongle_cold(t_dongle *dongle, long time_cooldown);
-void make_dongles_unavailable(t_dongle *dongle);
-
-// coders file :
-bool   init_coders(t_representer *representer);
-
-void coders_joiner(t_representer *representer);
-void *routine_all_the_coders(void *arg);
-
+// ============= Cleaner ====================>
+void free_dongles(t_representer *representer);
 void free_coders(t_representer *representer) ;
-void free_dongles(t_representer *representer); 
 
 
 
-// monitor file :
-void *monitor_home(void *args);
-bool monitor_creator(t_representer *representer);
-void monitor_joiner(pthread_t *monitor);
-
-// manager_file :
-void *manager_home(void *args);
-void manager_joiner(pthread_t *manager);
-bool manager_creator(t_representer *representer);
-t_coder *catch_coder(t_representer *representer);
-
+bool init_coders(t_representer *representer) ;
 t_coder **coders_allocater(int number_of_coders);
-
-// cleaner file :
-void destroy_mutex_coders(t_coder **coders, int n) ;
-
-// timer file:
-
-long timeval_to_ms(struct timeval t);
-long get_time_ms();
-
-int timeval_less(struct timeval a, struct timeval b);
-
-
-// queue file :
-void insert_coder_in_queue(t_coder *coder, t_queue *queue);
-
-// void insert_all_coders_in_queue(t_representer *representer, t_queue *queue);
-
-// droper file :
-void drop_both_dongles(t_coder *coder);
-
-// holder file : 
-bool hold_both_dongles(t_coder *coder);
-
-void swap_coders(t_coder *parent_coder, t_coder *child_coder);
-
-// initializer file:
-bool initialize_representer_struct(t_representer *representer ,int ac, char **av);
-
-// mutex_cond_utils:
-bool init_mutex_cond(t_mutex_cond *mutex_cond);
-
-void destroy_mutex_cond(pthread_mutex_t *mutex, pthread_cond_t *cond);
-void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
-                                       int number_of_coders) ;
-bool pop_coder_from_queue(t_representer *representer, int i);
-bool wait_for_simulation_to_start(t_coder *coder);
-bool wait_for_coders_to_start(t_representer *representer);
-
-long timeval_to_ms(struct timeval time);
-
-void shift_queue_down(t_queue *queue, int i);
-
-#endif
+static void initialize_coders_struct(t_representer *representer);

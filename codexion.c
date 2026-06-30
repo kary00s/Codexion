@@ -10,9 +10,8 @@ int main(int ac, char *av[])
     return 0;  
   }
   
-  if (!manager_creator(&representer)) {
+  if (!controller_creator(&representer)) {
     // TODO: stop the running coders and free the resources
-    
     destroy_mutex_coders(&(*representer.coders), representer.config.number_of_coders);
     free_coders(&representer);
     free_dongles(&representer);
@@ -30,10 +29,9 @@ int main(int ac, char *av[])
   if (!coders_creator(&representer)) {
     return 0;
   }
-  printf("=== all good untill here ===\n");
   
   coders_joiner(&representer);
   monitor_joiner(&representer.monitor);
-  manager_joiner(&representer.manager);
+  controller_joiner(&representer.controller);
   
 }
