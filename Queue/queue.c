@@ -66,10 +66,10 @@ bool pop_coder_from_queue(t_representer *representer, int i)
     swap_coders(coder, queue->coders[queue->size - 1]);
     queue->size--;
     if (representer->config.scheduler == 0)
-        {
-            shift_queue_down(queue, i);
-        }
-        // edf must be here akhona
+    {
+        shift_queue_down(queue, i);
+    }
+    //else  edf must be here akhona
     
     return true;    
 }

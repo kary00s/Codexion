@@ -134,15 +134,17 @@ void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles, int number
 bool	coder_waiting_dongles(t_coder *coder);
 
 // ============= Controller ====================>
+//=> controller.c
 bool controller_creator(t_representer *representer);
 void *controller_home(void *args) ;
 void controller_joiner(pthread_t *controller);
 t_coder *catch_coder(t_representer *representer);
-
+//=> routine.c
+void coders_joiner(t_representer *representer);
 void *routine_all_the_coders(void *arg);
 bool wait_for_simulation_to_start(t_coder *coder);
-void coders_joiner(t_representer *representer);
 void action_simulator(t_coder *coder, t_coder_state state);
+void print_action(t_coder *coder);
 
 // ============= Dongles ====================>
 bool hold_both_dongles(t_coder *coder);

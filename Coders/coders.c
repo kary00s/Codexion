@@ -72,8 +72,7 @@ bool coders_creator(t_representer *representer)
   int i = 0;
   
   while (i < representer->config.number_of_coders) {
-    if (pthread_create(&representer->coders[i]->thread, NULL,
-                       routine_all_the_coders, representer->coders[i]) != 0) {
+    if (pthread_create(&representer->coders[i]->thread, NULL, routine_all_the_coders, representer->coders[i]) != 0) {
       // TODO: stop the running codders
       return false;
     }

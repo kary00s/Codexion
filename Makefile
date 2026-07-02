@@ -5,16 +5,16 @@ CC = cc
 SRC = ./Main/codexion.c\
 	timer.c\
 	./Parser/parser.c\
+	./Dongles/dongles_controller.c \
 	./Dongles/dongles.c\
-	./Monitor/monitor.c\
 	./Coders/coders.c\
 	./Coders/coders_controller.c\
+	./Controller/routine.c\
+	./Controller/controller.c\
+	./Monitor/monitor.c\
 	./Cleaner/cleaner.c\
 	./Queue/queue.c\
-	./Controller/routine.c\
-	./Dongles/dongles_controller.c \
 	./Initializer/initializer.c\
-	./Controller/controller.c\
 	./Mutexs/mutex_cond_utils.c\
 
 OBG = $(SRC:.c=.o)
