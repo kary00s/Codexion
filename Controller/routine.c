@@ -1,4 +1,4 @@
-#include "codexion.h"
+#include "../codexion.h"
 #include <pthread.h>
 
 bool wait_for_simulation_to_start(t_coder *coder);
@@ -8,7 +8,8 @@ static void refactoring(t_coder *coder);
 
 
 
-void *routine_all_the_coders(void *arg) {
+void *routine_all_the_coders(void *arg)
+{
   t_coder *coder;
   coder = (t_coder *)arg;
   wait_for_simulation_to_start(coder);
@@ -39,22 +40,20 @@ static void debuging(t_coder *coder)
   {
     pthread_mutex_lock(coder->print_mutex);
     printf("coder %d is debuging\n", coder->coder_id);
-    
     pthread_mutex_unlock(coder->print_mutex);
-    
+
     pthread_mutex_lock(&coder->mutex_cond.mutex);
     coder->coder_state = REFACTORING;
     pthread_mutex_unlock(&coder->mutex_cond.mutex);
 
-
   }
-
 }
+
 static void compiling(t_coder *coder, t_queue *queue)
 {
   if (coder->coder_state == COMPILING && are_dongles_available(coder))
   {
-    hold_both_dongles(coder); 
+    hold_both_dongles(coder);
     pthread_mutex_lock(coder->print_mutex);
     printf("coder %d is compiling\n", coder->coder_id);
     coder->coder_state = DEBUGING;
@@ -64,7 +63,8 @@ static void compiling(t_coder *coder, t_queue *queue)
   }
 }
 
-bool wait_for_simulation_to_start(t_coder *coder) {
+bool wait_for_simulation_to_start(t_coder *coder) 
+{
   pthread_mutex_lock(&coder->ready_coders_counter_m_c->mutex);
   (*coder->ready_coders_counter)++;
   pthread_cond_broadcast(&coder->ready_coders_counter_m_c->cond);
@@ -77,22 +77,8 @@ bool wait_for_simulation_to_start(t_coder *coder) {
   return true;
 }
 
-bool coders_creator(t_representer *representer) 
-{
-  int i = 0;
-  
-  while (i < representer->config.number_of_coders) {
-    if (pthread_create(&representer->coders[i]->thread, NULL,
-                       routine_all_the_coders, representer->coders[i]) != 0) {
-      // TODO: stop the running codders
-      return false;
-    }
-    i++;
-  }
-  return true;
-}
-
-void coders_joiner(t_representer *representer) {
+void coders_joiner(t_representer *representer)
+ {
   int i;
   i = 0;
   while (i < representer->config.number_of_coders) {

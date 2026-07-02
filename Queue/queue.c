@@ -1,4 +1,4 @@
-#include "codexion.h"
+#include "../codexion.h"
 
 void shift_queue_up(t_queue *queue, int index)
 {
@@ -15,6 +15,7 @@ void shift_queue_up(t_queue *queue, int index)
     }
     pthread_mutex_unlock(&queue->mutex_queue);
 }
+
 void swap_coders(t_coder *parent_coder, t_coder *child_coder)
 {
     t_coder *swp;
@@ -22,7 +23,6 @@ void swap_coders(t_coder *parent_coder, t_coder *child_coder)
     parent_coder = child_coder;
     child_coder = swp;
 }
-
 
 void shift_queue_down(t_queue *queue, int i)
 {
@@ -53,7 +53,6 @@ void shift_queue_down(t_queue *queue, int i)
         i = smallest;
     }
 }
-
 
 bool pop_coder_from_queue(t_representer *representer, int i)
 {

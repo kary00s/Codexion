@@ -3,18 +3,18 @@ FLAGS = -pthread
 CC = cc
 
 SRC = codexion.c\
-	parser.c\
-	dongles.c\
-	monitor.c\
-	coders.c\
-	cleaner.c\
+	./Parser/parser.c\
+	./Dongles/dongles.c\
+	./Monitor/monitor.c\
+	./Coders/coders.c\
+	./Cleaner/cleaner.c\
 	timer.c\
-	queue.c\
-	routine.c\
-	dongles_controller.c \
-	initializer.c\
-	controller.c\
-	mutex_cond_utils.c\
+	./Queue/queue.c\
+	./Controller/routine.c\
+	./Dongles/dongles_controller.c \
+	./Initializer/initializer.c\
+	./Controller/controller.c\
+	./Mutexs/mutex_cond_utils.c\
 
 OBG = $(SRC:.c=.o)
 

@@ -13,7 +13,7 @@ int main(int ac, char *av[])
   if (!controller_creator(&representer)) {
     // TODO: stop the running coders and free the resources
     destroy_mutex_coders(&(*representer.coders), representer.config.number_of_coders);
-    free_coders(&representer);
+    free_coders(&representer);  
     free_dongles(&representer);
     return 0;
   }

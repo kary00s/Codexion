@@ -1,5 +1,5 @@
 
-#include "codexion.h"
+#include "../codexion.h"
 
 static t_dongle **dongles_allocater(t_representer *representer) {
   t_dongle **dongles_list;
@@ -23,7 +23,8 @@ static t_dongle **dongles_allocater(t_representer *representer) {
   return (dongles_list);
 }
 
-void dongles_destroyer(t_dongle **dongles, int counter) {
+void dongles_destroyer(t_dongle **dongles, int counter)
+{
   int i;
   i = 0;
   while (i < counter) {
@@ -68,7 +69,8 @@ bool is_the_dongle_cold(t_dongle *dongle, long time_cooldown)
   return false;
 }
 
-bool is_dongle_ready(t_dongle *dongle, long time_to_cooldown) {
+bool is_dongle_ready(t_dongle *dongle, long time_to_cooldown) 
+{
   bool its_ready;
   its_ready = false;
 
@@ -82,7 +84,8 @@ bool is_dongle_ready(t_dongle *dongle, long time_to_cooldown) {
 }
 
 
-bool are_dongles_available(t_coder *coder) {
+bool are_dongles_available(t_coder *coder)
+{
   
   if  (    (is_dongle_ready(coder->left_dongle, coder->config->dongle_cooldown))
   && (is_dongle_ready(coder->right_dongle, coder->config->dongle_cooldown))

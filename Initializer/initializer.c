@@ -6,11 +6,11 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 14:52:28 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/29 04:50:40 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/02 03:05:12 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "codexion.h"
+#include "../codexion.h"
 
 static bool initializer_queue(t_representer *representer);
 static bool init_queue_mutexs_conds(t_representer *representer);
@@ -27,18 +27,8 @@ bool init_representer_mutexs_conds(t_representer *representer)
   return true;
 }
 
-static bool init_queue_mutexs_conds(t_representer *representer) 
+bool initialize_representer_struct(t_representer *representer, int ac, char **av) 
 {
-  if (pthread_mutex_init(&representer->queue->mutex_queue, NULL) != 0) {
-    pthread_mutex_destroy(&representer->print_mutex);
-    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex
-                        , &representer->ready_coders_counter_m_c.cond);
-    return false;
-  }
-  return true;
-}
-
-bool initialize_representer_struct(t_representer *representer, int ac, char **av) {
   if(!parser(ac, av, representer))
     return false;
   
@@ -75,6 +65,18 @@ bool initialize_representer_struct(t_representer *representer, int ac, char **av
   }
   linker_coders_with_dongles(representer->coders, representer->dongles, representer->config.number_of_coders);
 
+  return true;
+}
+
+
+static bool init_queue_mutexs_conds(t_representer *representer) 
+{
+  if (pthread_mutex_init(&representer->queue->mutex_queue, NULL) != 0) {
+    pthread_mutex_destroy(&representer->print_mutex);
+    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex
+                        , &representer->ready_coders_counter_m_c.cond);
+    return false;
+  }
   return true;
 }
 

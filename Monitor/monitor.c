@@ -6,11 +6,11 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/06/29 06:56:27 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/01 06:02:45 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "codexion.h"
+#include "../codexion.h"
 #include <sys/time.h>
 
 bool wait_for_coders_to_start(t_representer *representer);
@@ -43,7 +43,8 @@ void *monitor_home(void *args) {
   return NULL;
 }
 
-bool wait_for_coders_to_start(t_representer *representer) {
+bool wait_for_coders_to_start(t_representer *representer)
+ {
   pthread_mutex_lock(&representer->ready_coders_counter_m_c.mutex);
   while (representer->ready_coders_counter !=
          representer->config.number_of_coders) 

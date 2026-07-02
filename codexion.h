@@ -119,7 +119,74 @@ void free_dongles(t_representer *representer);
 void free_coders(t_representer *representer) ;
 
 
-
+// ============= Coders ====================>
+bool coders_creator(t_representer *representer) ; 
 bool init_coders(t_representer *representer) ;
 t_coder **coders_allocater(int number_of_coders);
-static void initialize_coders_struct(t_representer *representer);
+void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles, int number_of_coders);
+void free_previous_coders(t_coder **coders, int n) ;
+
+// ============= Controller ====================>
+bool controller_creator(t_representer *representer);
+void *controller_home(void *args) ;
+void controller_joiner(pthread_t *controller);
+t_coder *catch_coder(t_representer *representer);
+
+void *routine_all_the_coders(void *arg);
+bool wait_for_simulation_to_start(t_coder *coder);
+void coders_joiner(t_representer *representer);
+
+// ============= Dongles ====================>
+bool hold_both_dongles(t_coder *coder);
+bool drop_both_dongles(t_coder *coder);
+
+bool is_the_dongle_cold(t_dongle *dongle, long time_cooldown);
+bool is_dongle_ready(t_dongle *dongle, long time_to_cooldown);
+bool are_dongles_available(t_coder *coder);
+
+bool init_dongles(t_representer *representer);
+void make_dongles_unavailable(t_dongle *dongle);
+void dongles_destroyer(t_dongle **dongles, int counter);
+
+
+// ============= Initializer ====================>
+bool init_representer_mutexs_conds(t_representer *representer);
+bool initialize_representer_struct(t_representer *representer, int ac, char **av);
+
+// ============= Monitor ====================>
+bool monitor_creator(t_representer *representer);
+void monitor_joiner(pthread_t *monitor);
+void *monitor_home(void *args) ;
+bool wait_for_coders_to_start(t_representer *representer);
+
+
+// ============= Mutexs ====================>
+bool init_mutex_cond(t_mutex_cond *mutex_cond);
+void destroy_mutex_cond(pthread_mutex_t *mutex, pthread_cond_t *cond);
+void destroy_mutex_coders(t_coder **coders, int n);
+bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders);
+
+
+// ============= Parser ====================>
+int ft_strcmp(char *s1, char *s2);
+bool parser(int ac, char **args, t_representer *representer);
+
+// ============= Queue ====================>
+void shift_queue_up(t_queue *queue, int index);
+void swap_coders(t_coder *parent_coder, t_coder *child_coder);
+void shift_queue_down(t_queue *queue, int i);
+bool pop_coder_from_queue(t_representer *representer, int i);
+void insert_coder_in_queue(t_coder *coder, t_queue *queue);
+
+
+long timeval_to_ms(struct timeval time);
+long get_time_ms();
+int timeval_less(struct timeval a, struct timeval b);
+
+
+
+
+
+
+
+#endif

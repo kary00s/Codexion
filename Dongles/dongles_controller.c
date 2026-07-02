@@ -1,6 +1,6 @@
 
 
-#include"codexion.h"
+#include"../codexion.h"
 static void drop_dongle(t_dongle *dongle);
 static void hold_dongle(t_dongle *dongle);
 
@@ -14,11 +14,12 @@ bool hold_both_dongles(t_coder *coder)
     return true;
 }
 
-void drop_both_dongles(t_coder *coder)
+bool drop_both_dongles(t_coder *coder)
 {
 	
     drop_dongle(coder->right_dongle);
 	drop_dongle(coder->left_dongle);
+    return true;
 }
 
 static void hold_dongle(t_dongle *dongle)

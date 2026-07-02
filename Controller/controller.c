@@ -1,5 +1,5 @@
 
-#include "codexion.h"
+#include "../codexion.h"
 
 void *controller_home(void *args);
 bool controller_creator(t_representer *representer) 
@@ -9,7 +9,7 @@ bool controller_creator(t_representer *representer)
   return true;
 }
 
-void controller_joiner(pthread_t *controller) 
+void controller_joiner(pthread_t *controller)
 {
   pthread_join(*controller, NULL);
   return;
