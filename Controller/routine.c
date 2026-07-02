@@ -10,13 +10,22 @@ static void refactoring(t_coder *coder);
 
 static void compiling(t_coder *coder, t_queue *queue)
 {
-// fix  this shit
-  if(!hold_both_dongles(coder))
-  pthread_mutex_lock(coder->print_mutex);
-  printf("coder %d is compiling\n", coder->coder_id);
-  coder->coder_state = DEBUGING;
-  pthread_mutex_unlock(coder->print_mutex);
-  drop_both_dongles(coder);
+  if(coder->coder_state == COMPILING)
+  {
+    hold_both_dongles(coder);
+    
+    pthread_mutex_lock(coder->print_mutex);
+    printf("coder %d is compiling\n", coder->coder_id);
+    pthread_mutex_unlock(coder->print_mutex);
+    
+    
+    action_simulator(coder, coder->coder_state);
+    pthread_mutex_lock(&coder->mutex_cond.mutex);
+    coder->coder_state = DEBUGING;
+    pthread_mutex_unlock(&coder->mutex_cond.mutex);
+
+    drop_both_dongles(coder);
+  }
 }
 
 static void refactoring(t_coder *coder)
@@ -25,8 +34,13 @@ static void refactoring(t_coder *coder)
   {
     pthread_mutex_lock(coder->print_mutex);
     printf("coder %d is refactoring\n", coder->coder_id);
-    coder->coder_state = WAITING;
     pthread_mutex_unlock(coder->print_mutex);
+
+    pthread_mutex_lock(&coder->mutex_cond.mutex);
+    coder->coder_state = WAITING;
+    pthread_mutex_unlock(&coder->mutex_cond.mutex);
+
+    action_simulator(coder, coder->coder_state);
   }
 }
 
@@ -38,15 +52,44 @@ static void debuging(t_coder *coder)
     printf("coder %d is debuging\n", coder->coder_id);
     pthread_mutex_unlock(coder->print_mutex);
 
+    action_simulator(coder, coder->coder_state);
+    
     pthread_mutex_lock(&coder->mutex_cond.mutex);
     coder->coder_state = REFACTORING;
     pthread_mutex_unlock(&coder->mutex_cond.mutex);
-
   }
 }
 
 
+void action_simulator(t_coder *coder, t_coder_state state)
+{
+  t_timespec time_spec;
+  long time_action;
+  long right_now;
+  right_now = get_time_ms();
+  pthread_mutex_lock(&coder->mutex_cond.mutex);
+  
+  if (state == COMPILING)
+  {
+    time_action = right_now +  coder->config->time_to_compile;
+    ms_to_timespec(&time_spec, time_action);
+    pthread_cond_timedwait(&coder->mutex_cond.cond, &coder->mutex_cond.mutex, &time_spec);
+  }
+  else if (state == DEBUGING)
+  {
+    time_action = right_now +  coder->config->time_to_debug;
+    ms_to_timespec(&time_spec, time_action);
+    pthread_cond_timedwait(&coder->mutex_cond.cond, &coder->mutex_cond.mutex, &time_spec);
+  }
+  else if (state == REFACTORING)
+  {
+    time_action = right_now +  coder->config->time_to_refactor;
+    ms_to_timespec(&time_spec, time_action);
+    pthread_cond_timedwait(&coder->mutex_cond.cond, &coder->mutex_cond.mutex, &time_spec);
+  }
 
+  pthread_mutex_unlock(&coder->mutex_cond.mutex);
+}
 
 
 void *routine_all_the_coders(void *arg)

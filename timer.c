@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:57:37 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/02 06:01:38 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/02 13:57:28 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,11 @@ int timeval_less(struct timeval a, struct timeval b)
     if (a.tv_sec != b.tv_sec)
         return (a.tv_sec < b.tv_sec);
     return (a.tv_usec < b.tv_usec);
+}
+
+
+void	ms_to_timespec(t_timespec *timespec, long time_ms)
+{
+	timespec->tv_sec = time_ms / 1000;
+	timespec->tv_nsec = (time_ms % 1000) * 1000000L;
 }

@@ -11,10 +11,13 @@
 #include <stdbool.h>
 typedef struct s_controller t_controller;
 
+typedef struct timespec t_timespec;
+typedef struct timeval t_timeval;
 typedef struct s_dongle t_dongle;
 typedef struct s_coder t_coder;
 typedef struct s_representer  t_representer;
 typedef struct s_config t_config;
+
 
 typedef struct s_mutex_cond {
   pthread_mutex_t mutex;
@@ -37,7 +40,8 @@ typedef struct s_dongle
     long          last_reste;
     bool          is_available;
     bool          is_cold;
-    struct timeval cooldown_timer;
+    // t_timeval cooldown_timer;
+    t_timespec time_reste;
    	t_mutex_cond   dongle_m_c;
 } t_dongle;
 
@@ -125,7 +129,9 @@ void free_previous_coders(t_coder **coders, int n);
 bool coders_creator(t_representer *representer); 
 bool init_coders(t_representer *representer);
 t_coder **coders_allocater(int number_of_coders);
+
 void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles, int number_of_coders);
+bool	coder_waiting_dongles(t_coder *coder);
 
 // ============= Controller ====================>
 bool controller_creator(t_representer *representer);
@@ -136,6 +142,7 @@ t_coder *catch_coder(t_representer *representer);
 void *routine_all_the_coders(void *arg);
 bool wait_for_simulation_to_start(t_coder *coder);
 void coders_joiner(t_representer *representer);
+void action_simulator(t_coder *coder, t_coder_state state);
 
 // ============= Dongles ====================>
 bool hold_both_dongles(t_coder *coder);
@@ -178,14 +185,11 @@ bool pop_coder_from_queue(t_representer *representer, int i);
 void insert_coder_in_queue(t_coder *coder, t_queue *queue);
 
 
+// ============= timer ====================>
 long timeval_to_ms(struct timeval time);
 long get_time_ms();
 int timeval_less(struct timeval a, struct timeval b);
-
-
-
-
-
+void	ms_to_timespec(t_timespec *timespec, long time_ms);
 
 
 #endif
