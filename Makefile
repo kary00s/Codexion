@@ -2,13 +2,13 @@ NAME = codexion
 FLAGS = -pthread
 CC = cc
 
-SRC = codexion.c\
+SRC = ./Main/codexion.c\
+	timer.c\
 	./Parser/parser.c\
 	./Dongles/dongles.c\
 	./Monitor/monitor.c\
 	./Coders/coders.c\
 	./Cleaner/cleaner.c\
-	timer.c\
 	./Queue/queue.c\
 	./Controller/routine.c\
 	./Dongles/dongles_controller.c \
@@ -21,7 +21,7 @@ OBG = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBG)
-	$(CC) $(FLAGS) $(OBG) -o $(NAME)  -pthread 
+	$(CC) $(FLAGS) $(OBG) -o $(NAME) 
 #-fsanitize=thread -g3
 
 %.o: %.c codexion.h

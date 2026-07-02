@@ -117,6 +117,7 @@ typedef struct s_representer
 // ============= Cleaner ====================>
 void free_dongles(t_representer *representer);
 void free_coders(t_representer *representer) ;
+void clean_initialize_representer_struct(t_representer *representer);
 
 
 // ============= Coders ====================>
