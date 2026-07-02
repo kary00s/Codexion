@@ -1,11 +1,10 @@
 
 #include "../codexion.h"
 
-void free_previous_coders(t_coder **coders, int n) ;
-void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles, int number_of_coders);
+bool init_coders(t_representer *representer);
 t_coder **coders_allocater(int number_of_coders);
 static void initialize_coders_struct(t_representer *representer);
-bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders);
+bool coders_creator(t_representer *representer);
 
 
 bool init_coders(t_representer *representer) 
@@ -67,28 +66,6 @@ static void initialize_coders_struct(t_representer *representer)
 
 }
 
-void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
-                                       int number_of_coders) {
-  int i;
-  i = 0;
-  while (i < number_of_coders) {
-    coders[i]->left_dongle = dongles[i];
-    coders[i]->right_dongle = dongles[(i + 1) % number_of_coders];
-    i++;
-  }
-}
-
-void free_previous_coders(t_coder **coders, int n) 
-{
-  int i;
-
-  i = 0;
-  while (i < n) {
-    free(coders[i]);
-    i++;
-  }
-  free(coders);
-}
 
 bool coders_creator(t_representer *representer) 
 {
@@ -104,3 +81,4 @@ bool coders_creator(t_representer *representer)
   }
   return true;
 }
+

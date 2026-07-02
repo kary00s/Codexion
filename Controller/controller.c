@@ -25,7 +25,6 @@ void *controller_home(void *args)
   {
     coder = catch_coder(representer);
     if (coder != NULL && coder->coder_state == WAITING) { 
-      printf("coder picked \n");
       pthread_mutex_lock(&coder->mutex_cond.mutex);
       coder->coder_state = COMPILING;
       pthread_cond_broadcast(&coder->mutex_cond.cond);

@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 21:57:37 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/01 06:01:35 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/02 06:01:38 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,19 @@ long timeval_to_ms(struct timeval time)
 }
 
 
-// purge this shit
-//    long time_calculator(struct timeval start)
-
-
 long get_time_ms()
 {
     struct timeval time;
 	gettimeofday(&time, NULL);
 	return timeval_to_ms(time);
 }
+
+long time_dongle_get_cold(long time_cooldown)
+{
+    long right_now;
+    right_now = get_time_ms();
+    return right_now + time_cooldown;
+} 
 
 int timeval_less(struct timeval a, struct timeval b)
 {

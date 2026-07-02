@@ -8,6 +8,7 @@ SRC = ./Main/codexion.c\
 	./Dongles/dongles.c\
 	./Monitor/monitor.c\
 	./Coders/coders.c\
+	./Coders/coders_controller.c\
 	./Cleaner/cleaner.c\
 	./Queue/queue.c\
 	./Controller/routine.c\

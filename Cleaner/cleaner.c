@@ -1,5 +1,11 @@
 #include "../codexion.h"
 
+void free_dongles(t_representer *representer);
+void free_coders(t_representer *representer) ;
+void clean_initialize_representer_struct(t_representer *representer);
+void free_previous_coders(t_coder **coders, int n) ;
+
+
 void free_dongles(t_representer *representer) 
 {
   int i;
@@ -29,4 +35,17 @@ void clean_initialize_representer_struct(t_representer *representer)
   destroy_mutex_coders(&(*representer->coders), representer->config.number_of_coders);
   free_coders(representer);
   free_dongles(representer);
+}
+
+void free_previous_coders(t_coder **coders, int n) 
+{
+  int i;
+
+  i = 0;
+  while (i < n) 
+  {
+    free(coders[i]);
+    i++;
+  }
+  free(coders);
 }

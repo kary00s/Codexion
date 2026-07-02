@@ -121,11 +121,11 @@ void clean_initialize_representer_struct(t_representer *representer);
 
 
 // ============= Coders ====================>
-bool coders_creator(t_representer *representer) ; 
-bool init_coders(t_representer *representer) ;
+void free_previous_coders(t_coder **coders, int n);
+bool coders_creator(t_representer *representer); 
+bool init_coders(t_representer *representer);
 t_coder **coders_allocater(int number_of_coders);
 void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles, int number_of_coders);
-void free_previous_coders(t_coder **coders, int n) ;
 
 // ============= Controller ====================>
 bool controller_creator(t_representer *representer);
@@ -140,10 +140,8 @@ void coders_joiner(t_representer *representer);
 // ============= Dongles ====================>
 bool hold_both_dongles(t_coder *coder);
 bool drop_both_dongles(t_coder *coder);
-
-bool is_the_dongle_cold(t_dongle *dongle, long time_cooldown);
-bool is_dongle_ready(t_dongle *dongle, long time_to_cooldown);
 bool are_dongles_available(t_coder *coder);
+bool wait_dongles_to_cold(t_dongle *dongle, long time_to_get_cold);
 
 bool init_dongles(t_representer *representer);
 void make_dongles_unavailable(t_dongle *dongle);
