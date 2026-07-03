@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 14:52:28 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/02 03:05:12 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/03 09:44:27 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ bool initialize_representer_struct(t_representer *representer, int ac, char **av
   if (!init_representer_mutexs_conds(representer))
     return false;
   representer->coders_counter = 0;
+  representer->all_good = true;
   representer->coders_are_ready = false;
   representer->is_burnouted = false;
   representer->ready_coders_counter = 0;

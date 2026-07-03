@@ -57,3 +57,15 @@ t_coder *catch_coder(t_representer *representer)
   pthread_mutex_unlock(&representer->queue->mutex_queue);
   return coder;
 }
+
+
+bool all_works_good(t_representer *representer)
+{
+  bool all_good;
+  all_good = true;
+  pthread_mutex_lock(&representer->m_c.mutex);
+  if (!representer->all_good)
+      all_good = false;
+  pthread_mutex_unlock(&representer->m_c.mutex);
+  return all_good;
+}

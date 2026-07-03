@@ -60,24 +60,28 @@ bool pop_coder_from_queue(t_representer *representer, int i)
     t_queue *queue;
     coder = representer->queue->coders[i];
     queue = representer->queue;
-
-    if (!queue || (i > queue->size) || (queue->size > queue->capacity))
-        return false;    
+  
     swap_coders(coder, queue->coders[queue->size - 1]);
     queue->size--;
     if (representer->config.scheduler == 0)
-    {
         shift_queue_down(queue, i);
-    }
     //else  edf must be here akhona
+    printf("\n\n===POPED==> in queue %d size => %d\n\n" , coder->coder_id, queue->size);
     
     return true;    
 }
 
 void insert_coder_in_queue(t_coder *coder, t_queue *queue)
 {
+
     pthread_mutex_lock(&coder->queue->mutex_queue);
+    if(queue->size == queue->capacity)
+    {
+        pthread_mutex_unlock(&coder->queue->mutex_queue);
+        return;
+    }
     queue->coders[queue->size] = coder;
     queue->size++;
+    printf("\n\nA coder just get inserted in queue %d size => %d\n\n" , coder->coder_id, queue->size);
     pthread_mutex_unlock(&coder->queue->mutex_queue);
 }

@@ -81,10 +81,10 @@ typedef struct s_coder
 {
 	int coder_id;
 	int coders_counter;
+	struct timeval last_compile;
 	pthread_mutex_t burnout_mutex;
 	pthread_t thread;
-	time_t				access;	
-	struct timeval last_compile;
+  t_representer *representer;
   t_queue *queue;
   t_config *config;
 	t_dongle *left_dongle;
@@ -107,15 +107,15 @@ typedef struct s_representer
     bool coders_are_ready;
     bool is_burnouted;
     struct timeval start_time;
+    bool all_good;
     t_queue *queue;
-    t_mutex_cond m_c;
     pthread_mutex_t print_mutex;
-    int ready_coders_counter;
     t_mutex_cond ready_coders_counter_m_c;
+    t_mutex_cond cond_mutex_monitor; 
+    t_mutex_cond m_c;
+    int ready_coders_counter;
     pthread_t monitor;
     pthread_t controller;
-    pthread_cond_t cond_monitor;    
-    pthread_mutex_t mutex_monitor; 
 } t_representer;
 
 // ============= Cleaner ====================>
@@ -139,6 +139,8 @@ bool controller_creator(t_representer *representer);
 void *controller_home(void *args) ;
 void controller_joiner(pthread_t *controller);
 t_coder *catch_coder(t_representer *representer);
+bool all_works_good(t_representer *representer);
+
 //=> routine.c
 void coders_joiner(t_representer *representer);
 void *routine_all_the_coders(void *arg);

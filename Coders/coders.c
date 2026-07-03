@@ -40,7 +40,7 @@ t_coder **coders_allocater(int number_of_coders)
       return NULL;
     }
     i++;
-  }
+  } 
   return (coders_list);
 }
 
@@ -59,7 +59,8 @@ static void initialize_coders_struct(t_representer *representer)
     coders[i]->print_mutex = &representer->print_mutex;
     coders[i]->ready_coders_counter = &representer->ready_coders_counter;
     coders[i]->ready_coders_counter_m_c =
-        &representer->ready_coders_counter_m_c;
+    &representer->ready_coders_counter_m_c;
+    coders[i]->representer =representer;
     coders[i]->coder_state = STARTING;
     i++;
   }
