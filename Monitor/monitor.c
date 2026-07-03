@@ -65,7 +65,6 @@ static void allow_coders_to_start(t_representer *representer) {
   coders = representer->coders;
   gettimeofday(&representer->start_time, NULL);
   while (i < representer->config.number_of_coders) {
-    insert_coder_in_queue(coders[i], representer->queue);
     pthread_mutex_lock(&coders[i]->mutex_cond.mutex);
     coders[i]->coder_state = WAITING;
     gettimeofday(&coders[i]->last_compile, NULL);

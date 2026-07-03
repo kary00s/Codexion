@@ -1,4 +1,6 @@
 #include "../codexion.h"
+static void shift_queue_down_fifo(t_queue *queue, int i);
+static void shift_queue_down_edf(t_queue *queue, int i);
 
 void shift_queue_up(t_queue *queue, int index)
 {
@@ -24,7 +26,7 @@ void swap_coders(t_coder *parent_coder, t_coder *child_coder)
     child_coder = swp;
 }
 
-void shift_queue_down(t_queue *queue, int i)
+static void shift_queue_down_edf(t_queue *queue, int i)
 {
 	int		right;
 	int		left;
@@ -61,27 +63,29 @@ bool pop_coder_from_queue(t_representer *representer, int i)
     coder = representer->queue->coders[i];
     queue = representer->queue;
   
-    swap_coders(coder, queue->coders[queue->size - 1]);
+    // swap_coders(coder, queue->coders[queue->size - 1]);
+    if (representer->config.scheduler ==   FIFO)
+        shift_queue_down_fifo(queue, i);
+    else
+        shift_queue_down_edf(queue, i);
     queue->size--;
-    if (representer->config.scheduler == 0)
-        shift_queue_down(queue, i);
-    //else  edf must be here akhona
-    printf("\n\n===POPED==> in queue %d size => %d\n\n" , coder->coder_id, queue->size);
     
     return true;    
 }
 
-void insert_coder_in_queue(t_coder *coder, t_queue *queue)
+static void shift_queue_down_fifo(t_queue *queue, int i)
 {
 
-    pthread_mutex_lock(&coder->queue->mutex_queue);
-    if(queue->size == queue->capacity)
+    while (i < queue->size - 1)
     {
-        pthread_mutex_unlock(&coder->queue->mutex_queue);
-        return;
+        queue->coders[i] = queue->coders[i+1];
+        i++;
     }
+}
+void insert_coder_in_queue(t_coder *coder, t_queue *queue)
+{
+    pthread_mutex_lock(&coder->queue->mutex_queue);
     queue->coders[queue->size] = coder;
     queue->size++;
-    printf("\n\nA coder just get inserted in queue %d size => %d\n\n" , coder->coder_id, queue->size);
     pthread_mutex_unlock(&coder->queue->mutex_queue);
 }

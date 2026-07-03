@@ -20,11 +20,12 @@ void *controller_home(void *args)
   t_representer *representer;
   representer = (t_representer *)args;
   t_coder *coder;
-
+  int i = 0;
   while (1) 
   {
+
     coder = catch_coder(representer);
-    if (coder != NULL && coder->coder_state == WAITING) { 
+    if (coder != NULL) { 
       pthread_mutex_lock(&coder->mutex_cond.mutex);
       coder->coder_state = COMPILING;
       pthread_cond_broadcast(&coder->mutex_cond.cond);
@@ -48,6 +49,9 @@ t_coder *catch_coder(t_representer *representer)
     if (are_dongles_available(representer->coders[i])) 
     {
       coder = representer->coders[i];
+      make_dongles_unavailable(coder->right_dongle);
+      make_dongles_unavailable(coder->left_dongle);
+
       pop_coder_from_queue(representer, i);
       pthread_mutex_unlock(&representer->queue->mutex_queue);
       return coder;

@@ -10,30 +10,28 @@ static void refactoring(t_coder *coder);
 
 static void compiling(t_coder *coder, t_queue *queue)
 {
-  if(coder->coder_state == COMPILING)
-  {
-    if(hold_both_dongles(coder))
-    {
-      insert_coder_in_queue(coder, coder->queue);
-      print_action(coder);
-      action_simulator(coder, coder->coder_state);
-      
-      pthread_mutex_lock(&coder->mutex_cond.mutex);
-      coder->coder_state = DEBUGING;
-      pthread_mutex_unlock(&coder->mutex_cond.mutex);
-      gettimeofday(&coder->last_compile, NULL);
-      drop_both_dongles(coder);
-    }
-  }
+
+  insert_coder_in_queue(coder, coder->queue);
+  coder_waiting_dongles(coder);
+  gettimeofday(&coder->last_compile, NULL);
+
+  // print_action(coder);
+  usleep(500);
+  // action_simulator(coder, coder->coder_state);
+  
+  pthread_mutex_lock(&coder->mutex_cond.mutex);
+  coder->coder_state = DEBUGING;
+  pthread_mutex_unlock(&coder->mutex_cond.mutex);
+  
+  drop_both_dongles(coder);
 }
-
-
 static void refactoring(t_coder *coder)
 {
   if (coder->coder_state == REFACTORING)
   {
-    print_action(coder);
-    action_simulator(coder, coder->coder_state);
+    // print_action(coder);
+    // action_simulator(coder, coder->coder_state);
+      usleep(3000);
 
     pthread_mutex_lock(&coder->mutex_cond.mutex);
     coder->coder_state = WAITING;
@@ -46,8 +44,9 @@ static void debuging(t_coder *coder)
 {
   if (coder->coder_state == DEBUGING)
   {
-    print_action(coder);
-    action_simulator(coder, coder->coder_state);
+    // print_action(coder);
+    // action_simulator(coder, coder->coder_state);
+    usleep(500);
     
     pthread_mutex_lock(&coder->mutex_cond.mutex);
     coder->coder_state = REFACTORING;
@@ -92,15 +91,14 @@ void *routine_all_the_coders(void *arg)
   t_coder *coder;
   coder = (t_coder *)arg;
   wait_for_simulation_to_start(coder);
+  if (coder->coder_id % 2 == 0)
+    usleep(400);
   while (1)
   {
-    if(coder_waiting_dongles(coder))
-     {
-      compiling(coder, coder->queue);
-      debuging(coder);
-      refactoring(coder);
-    }
- }
+    compiling(coder, coder->queue);
+    debuging(coder);
+    refactoring(coder);
+  }
   return NULL;
 }
 

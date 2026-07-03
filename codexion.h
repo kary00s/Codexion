@@ -81,7 +81,7 @@ typedef struct s_coder
 {
 	int coder_id;
 	int coders_counter;
-	struct timeval last_compile;
+	struct timeval  last_compile;
 	pthread_mutex_t burnout_mutex;
 	pthread_t thread;
   t_representer *representer;
@@ -184,7 +184,6 @@ bool parser(int ac, char **args, t_representer *representer);
 // ============= Queue ====================>
 void shift_queue_up(t_queue *queue, int index);
 void swap_coders(t_coder *parent_coder, t_coder *child_coder);
-void shift_queue_down(t_queue *queue, int i);
 bool pop_coder_from_queue(t_representer *representer, int i);
 void insert_coder_in_queue(t_coder *coder, t_queue *queue);
 
