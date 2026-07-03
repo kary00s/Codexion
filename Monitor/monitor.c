@@ -16,7 +16,6 @@
 bool wait_for_coders_to_start(t_representer *representer);
 static void allow_coders_to_start(t_representer *representer);
 
-
 bool monitor_creator(t_representer *representer) {
   if (pthread_create(&representer->monitor, NULL, &monitor_home, representer))
     return false;
@@ -31,30 +30,22 @@ void monitor_joiner(pthread_t *monitor) {
 void *monitor_home(void *args) {
   t_representer *representer;
   representer = (t_representer *)args;
-  
-  if (representer->coders_are_ready == false)
-  {
-    
-    wait_for_coders_to_start(representer);
-    allow_coders_to_start(representer);
 
-  }
-  
+  wait_for_coders_to_start(representer);
+  allow_coders_to_start(representer);
+
   return NULL;
 }
 
-bool wait_for_coders_to_start(t_representer *representer)
- {
+bool wait_for_coders_to_start(t_representer *representer) {
   pthread_mutex_lock(&representer->ready_coders_counter_m_c.mutex);
   while (representer->ready_coders_counter !=
-         representer->config.number_of_coders) 
-      {
-        pthread_cond_wait(&representer->ready_coders_counter_m_c.cond,
-            &representer->ready_coders_counter_m_c.mutex);
-      }
+         representer->config.number_of_coders) {
+    pthread_cond_wait(&representer->ready_coders_counter_m_c.cond,
+                      &representer->ready_coders_counter_m_c.mutex);
+  }
   pthread_mutex_unlock(&representer->ready_coders_counter_m_c.mutex);
-  return true;\
-
+  return true;
 }
 
 static void allow_coders_to_start(t_representer *representer) {
@@ -70,7 +61,7 @@ static void allow_coders_to_start(t_representer *representer) {
     gettimeofday(&coders[i]->last_compile, NULL);
     pthread_cond_broadcast(&coders[i]->mutex_cond.cond);
     pthread_mutex_unlock(&coders[i]->mutex_cond.mutex);
-  
+
     i++;
   }
   representer->coders_are_ready = true;
