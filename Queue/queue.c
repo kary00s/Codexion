@@ -55,11 +55,14 @@ static void shift_queue_down_edf(t_queue *queue, int i) {
 bool pop_coder_from_queue(t_representer *representer, int i) {
   t_queue *queue;
   queue = representer->queue;
-
+  if (representer->queue->coders[i] == NULL)
+    return false;
+  
   if (representer->config.scheduler == FIFO)
     shift_queue_down_fifo(queue, i);
-  else
+  else if  (representer->config.scheduler == EDF)
     shift_queue_down_edf(queue, i);
+  
   queue->size--;
 
   return true;
@@ -72,13 +75,10 @@ static void shift_queue_down_fifo(t_queue *queue, int i) {
     i++;
   }
 }
+
 void insert_coder_in_queue(t_coder *coder, t_queue *queue) {
   pthread_mutex_lock(&coder->queue->mutex_queue);
   queue->coders[queue->size] = coder;
   queue->size++;
   pthread_mutex_unlock(&coder->queue->mutex_queue);
-  // for (int i = 0; i < queue->size; i++) {
-  //   printf("coder %d", queue->coders[i]->coder_id);
-  // }
-  // printf("\n");
 }

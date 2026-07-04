@@ -12,20 +12,26 @@ static void compiling(t_coder *coder, t_queue *queue) {
   coder_waiting_dongles(coder);
   gettimeofday(&coder->last_compile, NULL);
 
+  add_to_number_required_compilation(coder->representer);
   print_action(coder);
-  sleep(2);
-  // action_simulator(coder, coder->coder_state);
-
+  action_simulator(coder, coder->coder_state);
+  
   drop_both_dongles(coder);
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   coder->coder_state = DEBUGING;
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
 }
 
+void add_to_number_required_compilation(t_representer *representer)
+{
+  pthread_mutex_lock(&representer->required_numbers_compilation_m_c.mutex);
+  representer->required_numbers_compilation++;
+  pthread_mutex_unlock(&representer->required_numbers_compilation_m_c.mutex);
+}
+
 static void debuging(t_coder *coder) {
   print_action(coder);
-  // action_simulator(coder, coder->coder_state);
-  sleep(2);
+  action_simulator(coder, coder->coder_state);
 
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   coder->coder_state = REFACTORING;
@@ -34,8 +40,7 @@ static void debuging(t_coder *coder) {
 
 static void refactoring(t_coder *coder) {
   print_action(coder);
-  // action_simulator(coder, coder->coder_state);
-  sleep(2);
+  action_simulator(coder, coder->coder_state);
 
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   coder->coder_state = WAITING;
@@ -44,8 +49,8 @@ static void refactoring(t_coder *coder) {
 
 void action_simulator(t_coder *coder, t_coder_state state) {
   t_timespec time_spec;
-  long time_action;
-  long right_now;
+  unsigned long time_action;
+  unsigned long right_now;
   right_now = get_time_ms();
   pthread_mutex_lock(&coder->mutex_cond.mutex);
 
@@ -73,10 +78,12 @@ void *routine_all_the_coders(void *arg) {
   t_coder *coder;
   coder = (t_coder *)arg;
   wait_for_simulation_to_start(coder);
+
   if (coder->coder_id % 2 != 0)
     usleep(2000);
 
   while (1) {
+    if ()
     compiling(coder, coder->queue);
     debuging(coder);
     refactoring(coder);
@@ -110,15 +117,15 @@ void print_action(t_coder *coder) {
   pthread_mutex_lock(coder->print_mutex);
 
   if (coder->coder_state == REFACTORING)
-    printf("%d coder is refactoring\n", coder->coder_id);
+    printf("=====  3  =======> %d coder is refactoring\n", coder->coder_id);
 
   if (coder->coder_state == DEBUGING)
-    printf("%d coder is debuging\n", coder->coder_id);
+    printf("=====  2  =======> %d coder is debuging\n", coder->coder_id);
 
   if (coder->coder_state == COMPILING) {
-    printf("%d coder is compiling\n", coder->coder_id);
-    printf("%d has taken a dongle\n", coder->coder_id);
-    printf("%d has taken a dongle\n", coder->coder_id);
+    printf("=====  1  =======> %d coder is compiling\n", coder->coder_id);
+    // printf("%d has taken a dongle\n", coder->coder_id);
+    // printf("%d has taken a dongle\n", coder->coder_id);
   }
 
   pthread_mutex_unlock(coder->print_mutex);

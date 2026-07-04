@@ -22,41 +22,34 @@ void *controller_home(void *args) {
   representer = (t_representer *)args;
   while (1) {
     coder = catch_coder(representer);
-    // pthread_mutex_lock(&representer->queue->mutex_queue);
-    // for (int i = 0; i < representer->queue->size; i++)
-    //   printf("%d ", representer->queue->coders[i]->coder_id);
-    // printf("\n");
-    // pthread_mutex_unlock(&representer->queue->mutex_queue);
     if (coder) {
       pthread_mutex_lock(&coder->mutex_cond.mutex);
       coder->coder_state = COMPILING;
       pthread_cond_broadcast(&coder->mutex_cond.cond);
       pthread_mutex_unlock(&coder->mutex_cond.mutex);
-    } else
+    }
+    else
       usleep(1000);
   }
   return NULL;
 }
 
-t_coder *catch_coder(t_representer *representer) {
+t_coder *catch_coder(t_representer *representer)
+{
   t_coder *coder;
   int i = 0;
   coder = NULL;
 
   pthread_mutex_lock(&representer->queue->mutex_queue);
-  while (i < representer->queue->size) {
-    if (are_dongles_available(representer->coders[i])) {
-      coder = representer->coders[i];
+  while (i < representer->queue->size) 
+  {
+    if (are_dongles_available(representer->queue->coders[i])) 
+    {
+      coder = representer->queue->coders[i];
+      pop_coder_from_queue(representer, i);
       break;
     }
     i++;
-  }
-  if (coder != NULL) {
-    while (i < representer->queue->size - 1) {
-      representer->queue->coders[i] = representer->queue->coders[i + 1];
-      i++;
-    }
-    representer->queue->size--;
   }
   pthread_mutex_unlock(&representer->queue->mutex_queue);
   return coder;

@@ -1,9 +1,9 @@
 #include "../codexion.h"
 
-static long ft_atol(char *str) {
+static unsigned long ft_atol(char *str) {
   int i;
   i = 0;
-  long res;
+  unsigned long res;
   res = 0;
   if (!str)
     return 42;

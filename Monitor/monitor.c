@@ -34,6 +34,13 @@ void *monitor_home(void *args) {
   wait_for_coders_to_start(representer);
   allow_coders_to_start(representer);
 
+  // while (1)
+  // {
+    // if (representer.num)
+    // if(are_one_of_coders_burnout(representer))
+      // stop_the_representation(representer);
+  // }
+  
   return NULL;
 }
 
@@ -64,5 +71,6 @@ static void allow_coders_to_start(t_representer *representer) {
 
     i++;
   }
+  representer->ready_coders_counter = 0;
   representer->coders_are_ready = true;
 }

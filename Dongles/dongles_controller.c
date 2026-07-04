@@ -4,14 +4,13 @@
 
 bool drop_both_dongles(t_coder *coder);
 bool are_dongles_available(t_coder *coder);
-bool wait_dongles_to_cold(t_dongle *dongle, long time_to_get_cold);
+bool wait_dongles_to_cold(t_dongle *dongle, unsigned long time_to_get_cold);
 
 static void drop_dongle(t_dongle *dongle);
-static bool is_the_dongle_cold(t_dongle *dongle, long time_cooldown);
-static bool is_dongle_ready(t_dongle *dongle, long time_to_cooldown);
+static bool is_the_dongle_cold(t_dongle *dongle, unsigned long time_cooldown);
+static bool is_dongle_ready(t_dongle *dongle, unsigned long time_to_cooldown);
 
-// printf("coder id: %d size %d \n", coder->coder_id,
-// representer->queue->size);
+
 bool drop_both_dongles(t_coder *coder) {
 
   pthread_mutex_lock(&coder->left_dongle->dongle_m_c.mutex);
@@ -35,7 +34,7 @@ bool are_dongles_available(t_coder *coder) {
   return false;
 }
 
-bool wait_dongles_to_cold(t_dongle *dongle, long time_to_get_cold) {
+bool wait_dongles_to_cold(t_dongle *dongle, unsigned long time_to_get_cold) {
   t_timespec colding_time;
   time_to_get_cold = dongle->last_reste + time_to_get_cold;
   pthread_mutex_lock(&dongle->dongle_m_c.mutex);
@@ -61,10 +60,10 @@ static void drop_dongle(t_dongle *dongle) {
   pthread_mutex_unlock(&dongle->dongle_m_c.mutex);
 }
 
-static bool is_the_dongle_cold(t_dongle *dongle, long time_cooldown) {
-  long right_now;
-  long time_usage;
-  long time_get_cold;
+static bool is_the_dongle_cold(t_dongle *dongle, unsigned long time_cooldown) {
+  unsigned long right_now;
+  unsigned long time_usage;
+  unsigned long time_get_cold;
   right_now = get_time_ms();
   time_get_cold = dongle->last_reste + time_cooldown;
   if (right_now > time_get_cold)
@@ -72,7 +71,7 @@ static bool is_the_dongle_cold(t_dongle *dongle, long time_cooldown) {
   return false;
 }
 
-static bool is_dongle_ready(t_dongle *dongle, long time_to_cooldown) {
+static bool is_dongle_ready(t_dongle *dongle, unsigned long time_to_cooldown) {
   bool its_ready;
   its_ready = false;
 

@@ -37,7 +37,7 @@ typedef struct s_queue
 typedef struct s_dongle
 {
     int           dongle_id;
-    long          last_reste;
+    unsigned long          last_reste;
     bool          is_available;
     bool          is_cold;
     // t_timeval cooldown_timer;
@@ -60,7 +60,6 @@ typedef enum e_coder_state
     COMPILING,
     DEBUGING,
     REFACTORING,
-    FINISHING
 }   t_coder_state;
 
 // REPRESENTER structs :
@@ -114,6 +113,10 @@ typedef struct s_representer
     t_mutex_cond cond_mutex_monitor; 
     t_mutex_cond m_c;
     int ready_coders_counter;
+
+    t_mutex_cond required_numbers_compilation_m_c;
+    int required_numbers_compilation;
+  
     pthread_t monitor;
     pthread_t controller;
 } t_representer;
@@ -132,6 +135,7 @@ t_coder **coders_allocater(int number_of_coders);
 
 void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles, int number_of_coders);
 bool	coder_waiting_dongles(t_coder *coder);
+bool are_one_of_coders_burnout(t_representer *representer);
 
 // ============= Controller ====================>
 //=> controller.c
@@ -147,12 +151,13 @@ void *routine_all_the_coders(void *arg);
 bool wait_for_simulation_to_start(t_coder *coder);
 void action_simulator(t_coder *coder, t_coder_state state);
 void print_action(t_coder *coder);
+void add_to_number_required_compilation(t_representer *representer);
 
 // ============= Dongles ====================>
 bool hold_both_dongles(t_coder *coder);
 bool drop_both_dongles(t_coder *coder);
 bool are_dongles_available(t_coder *coder);
-bool wait_dongles_to_cold(t_dongle *dongle, long time_to_get_cold);
+bool wait_dongles_to_cold(t_dongle *dongle, unsigned long time_to_get_cold);
 
 bool init_dongles(t_representer *representer);
 void make_dongles_unavailable(t_dongle *dongle);
@@ -189,10 +194,9 @@ void insert_coder_in_queue(t_coder *coder, t_queue *queue);
 
 
 // ============= timer ====================>
-long timeval_to_ms(struct timeval time);
-long get_time_ms();
+unsigned long timeval_to_ms(struct timeval time);
+unsigned long get_time_ms();
 int timeval_less(struct timeval a, struct timeval b);
-void	ms_to_timespec(t_timespec *timespec, long time_ms);
-
+void	ms_to_timespec(t_timespec *timespec, unsigned long time_ms);
 
 #endif

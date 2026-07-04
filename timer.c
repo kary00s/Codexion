@@ -13,22 +13,22 @@
 
 #include"codexion.h"
 
-long timeval_to_ms(struct timeval time)
+unsigned long timeval_to_ms(struct timeval time)
 {
     return (time.tv_sec * 1000L) + (time.tv_usec / 1000L);
 }
 
 
-long get_time_ms()
+unsigned long get_time_ms()
 {
     struct timeval time;
 	gettimeofday(&time, NULL);
 	return timeval_to_ms(time);
 }
 
-long time_dongle_get_cold(long time_cooldown)
+unsigned long time_dongle_get_cold(unsigned long time_cooldown)
 {
-    long right_now;
+    unsigned long right_now;
     right_now = get_time_ms();
     return right_now + time_cooldown;
 } 
@@ -41,7 +41,7 @@ int timeval_less(struct timeval a, struct timeval b)
 }
 
 
-void	ms_to_timespec(t_timespec *timespec, long time_ms)
+void	ms_to_timespec(t_timespec *timespec, unsigned long time_ms)
 {
 	timespec->tv_sec = time_ms / 1000;
 	timespec->tv_nsec = (time_ms % 1000) * 1000000L;
