@@ -32,13 +32,22 @@ bool are_one_of_coders_burnout(t_representer *representer)
 {
   int i ;
   i = 0;
+  bool burnouted;
+  burnouted = false;
   while (i < representer->config.number_of_coders)
   {
     if(is_coder_burnouted(representer->coders[i]))
-      return true;
+    {
+      pthread_mutex_lock(&representer->coders[i]->burnout_mutex);
+      burnouted = true;
+      representer->coders[i]->is_burnouted = true;
+      pthread_mutex_unlock(&representer->coders[i]->burnout_mutex);
+      return burnouted;
+    }
     i++;
   }
-  return false;
+
+  return burnouted;
 }
 
 static bool is_coder_burnouted(t_coder *coder)

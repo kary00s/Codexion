@@ -37,9 +37,9 @@ bool parser(int ac, char **args, t_representer *representer)
   t_config config;
   if (ac == 9) {
     config.number_of_coders = ft_atol(args[1]);
-    config.time_to_debug = ft_atol(args[4]);
     config.time_to_burnout = ft_atol(args[2]);
     config.time_to_compile = ft_atol(args[3]);
+    config.time_to_debug = ft_atol(args[4]);
     config.time_to_refactor = ft_atol(args[5]);
     config.number_of_compiles_required = ft_atol(args[6]);
     config.dongle_cooldown = ft_atol(args[7]);

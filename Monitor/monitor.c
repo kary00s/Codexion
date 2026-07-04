@@ -43,7 +43,7 @@ void *monitor_home(void *args) {
   
   return NULL;
 }
-
+  
 bool wait_for_coders_to_start(t_representer *representer) {
   pthread_mutex_lock(&representer->ready_coders_counter_m_c.mutex);
   while (representer->ready_coders_counter !=

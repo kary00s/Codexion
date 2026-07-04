@@ -40,7 +40,6 @@ bool initialize_representer_struct(t_representer *representer, int ac, char **av
   
   if (!init_representer_mutexs_conds(representer))
     return false;
-  representer->coders_counter = 0;
   representer->all_good = true;
   representer->coders_are_ready = false;
   representer->is_burnouted = false;

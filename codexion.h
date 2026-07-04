@@ -79,7 +79,6 @@ typedef struct s_config
 typedef struct s_coder
 {
 	int coder_id;
-	int coders_counter;
 	struct timeval  last_compile;
 	pthread_mutex_t burnout_mutex;
 	pthread_t thread;
@@ -99,26 +98,26 @@ typedef struct s_coder
 
 typedef struct s_representer
 {
-    int coders_counter;
-    t_config config;
-    t_dongle **dongles;
-    t_coder **coders;
-    bool coders_are_ready;
-    bool is_burnouted;
-    struct timeval start_time;
-    bool all_good;
-    t_queue *queue;
-    pthread_mutex_t print_mutex;
-    t_mutex_cond ready_coders_counter_m_c;
-    t_mutex_cond cond_mutex_monitor; 
-    t_mutex_cond m_c;
-    int ready_coders_counter;
-
-    t_mutex_cond required_numbers_compilation_m_c;
-    int required_numbers_compilation;
+  t_config config;
+  t_dongle **dongles;
+  t_coder **coders;
+  bool coders_are_ready;
+  bool is_burnouted;
+  struct timeval start_time;
+  bool all_good;
+  t_queue *queue;
+  pthread_mutex_t print_mutex;
+  t_mutex_cond ready_coders_counter_m_c;
+  t_mutex_cond cond_mutex_monitor; 
+  t_mutex_cond m_c;
+  t_mutex_cond required_numbers_compilation_m_c;
   
-    pthread_t monitor;
-    pthread_t controller;
+  int ready_coders_counter;
+  int required_numbers_compilation;
+  // int coders_counter;
+  
+  pthread_t monitor;
+  pthread_t controller;
 } t_representer;
 
 // ============= Cleaner ====================>
@@ -152,6 +151,7 @@ bool wait_for_simulation_to_start(t_coder *coder);
 void action_simulator(t_coder *coder, t_coder_state state);
 void print_action(t_coder *coder);
 void add_to_number_required_compilation(t_representer *representer);
+bool are_required_numbers_compilation_done(t_representer *representer);
 
 // ============= Dongles ====================>
 bool hold_both_dongles(t_coder *coder);

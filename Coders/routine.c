@@ -83,12 +83,32 @@ void *routine_all_the_coders(void *arg) {
     usleep(2000);
 
   while (1) {
-    if ()
+    if (are_one_of_coders_burnout(coder->representer))
+    {
+      printf("one of them burnouted\n");
+      break;
+    }
+    // if (are_required_numbers_compilation_done(coder->representer))
+    // {
+    //   printf("All coders compiled cleanly\n");
+    //   break;
+    // }
     compiling(coder, coder->queue);
     debuging(coder);
     refactoring(coder);
   }
   return NULL;
+}
+
+bool are_required_numbers_compilation_done(t_representer *representer)
+{
+  bool is_done;
+  is_done = false;
+  pthread_mutex_lock(&representer->required_numbers_compilation_m_c.mutex);
+  if (representer->required_numbers_compilation >= representer->config.number_of_compiles_required)
+    is_done = true;
+  pthread_mutex_unlock(&representer->required_numbers_compilation_m_c.mutex);
+  return is_done;  
 }
 
 bool wait_for_simulation_to_start(t_coder *coder) {
