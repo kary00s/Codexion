@@ -40,7 +40,6 @@ static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
   while (i < counter) {
     dongles[i]->is_available = true;
     dongles[i]->dongle_id = i;
-    dongles[i]->last_reste = 0;
     if (pthread_mutex_init(&dongles[i]->dongle_m_c.mutex, NULL)) {
       dongles_destroyer(dongles, i);
       printf("dongle error \n");

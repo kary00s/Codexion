@@ -46,3 +46,13 @@ void	ms_to_timespec(t_timespec *timespec, unsigned long time_ms)
 	timespec->tv_sec = time_ms / 1000;
 	timespec->tv_nsec = (time_ms % 1000) * 1000000L;
 }
+
+long time_elapsed_until_now(struct timeval elapsed_time)
+{
+    long  time_taken;
+    long rn = get_time_ms();
+    time_taken = timeval_to_ms(elapsed_time);
+    time_taken = rn - time_taken;
+    // printf("====> %ld\n", time_taken);
+    return time_taken;
+}

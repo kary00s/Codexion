@@ -34,12 +34,19 @@ void *monitor_home(void *args) {
   wait_for_coders_to_start(representer);
   allow_coders_to_start(representer);
 
-  // while (1)
-  // {
+  while (1)
+  {
+    if (are_one_of_coders_burnout(representer))
+    {
+      printf("one of them burnouted\n");
+    } 
+    else {
+      usleep(100);
+    }
+  }
     // if (representer.num)
     // if(are_one_of_coders_burnout(representer))
       // stop_the_representation(representer);
-  // }
   
   return NULL;
 }
@@ -61,16 +68,14 @@ static void allow_coders_to_start(t_representer *representer) {
 
   i = 0;
   coders = representer->coders;
-  gettimeofday(&representer->start_time, NULL);
+  gettimeofday(&representer->begining_time, NULL);
   while (i < representer->config.number_of_coders) {
     pthread_mutex_lock(&coders[i]->mutex_cond.mutex);
-    coders[i]->coder_state = WAITING;
     gettimeofday(&coders[i]->last_compile, NULL);
+    coders[i]->coder_state = WAITING;
     pthread_cond_broadcast(&coders[i]->mutex_cond.cond);
     pthread_mutex_unlock(&coders[i]->mutex_cond.mutex);
-
     i++;
   }
-  representer->ready_coders_counter = 0;
   representer->coders_are_ready = true;
 }

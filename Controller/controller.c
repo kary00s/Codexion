@@ -29,7 +29,7 @@ void *controller_home(void *args) {
       pthread_mutex_unlock(&coder->mutex_cond.mutex);
     }
     else
-      usleep(1000);
+      usleep(400);
   }
   return NULL;
 }
@@ -45,6 +45,8 @@ t_coder *catch_coder(t_representer *representer)
   {
     if (are_dongles_available(representer->queue->coders[i])) 
     {
+      // check just the availablity of dongeles and let the coder wait for the coldness of dongles
+
       coder = representer->queue->coders[i];
       pop_coder_from_queue(representer, i);
       break;
@@ -58,9 +60,11 @@ t_coder *catch_coder(t_representer *representer)
 bool all_works_good(t_representer *representer) {
   bool all_good;
   all_good = true;
+
   pthread_mutex_lock(&representer->m_c.mutex);
   if (!representer->all_good)
     all_good = false;
   pthread_mutex_unlock(&representer->m_c.mutex);
   return all_good;
 }
+

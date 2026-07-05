@@ -7,13 +7,22 @@ static void debuging(t_coder *coder);
 static void refactoring(t_coder *coder);
 
 static void compiling(t_coder *coder, t_queue *queue) {
-
+  long last_rest_for_hotest_dongle;
   insert_coder_in_queue(coder, coder->queue);
   coder_waiting_dongles(coder);
+
+  if(!is_the_dongle_cold(coder->left_dongle, coder->config->dongle_cooldown) ||
+  !is_the_dongle_cold(coder->right_dongle, coder->config->dongle_cooldown)) {
+    last_rest_for_hotest_dongle = get_the_hotest_dongle(coder->left_dongle, coder->right_dongle);
+    wait_dongles_to_cold(coder,last_rest_for_hotest_dongle);
+  }
+  print_action(coder);
+  pthread_mutex_lock(&coder->mutex_cond.mutex);
   gettimeofday(&coder->last_compile, NULL);
+  pthread_mutex_unlock(&coder->mutex_cond.mutex);
+
 
   add_to_number_required_compilation(coder->representer);
-  print_action(coder);
   action_simulator(coder, coder->coder_state);
   
   drop_both_dongles(coder);
@@ -79,24 +88,15 @@ void *routine_all_the_coders(void *arg) {
   coder = (t_coder *)arg;
   wait_for_simulation_to_start(coder);
 
-  if (coder->coder_id % 2 != 0)
-    usleep(2000);
+  if (coder->coder_id % 2 == 0)
+    usleep(500);
 
   while (1) {
-    if (are_one_of_coders_burnout(coder->representer))
-    {
-      printf("one of them burnouted\n");
-      break;
-    }
-    // if (are_required_numbers_compilation_done(coder->representer))
-    // {
-    //   printf("All coders compiled cleanly\n");
-    //   break;
-    // }
     compiling(coder, coder->queue);
     debuging(coder);
     refactoring(coder);
   }
+  
   return NULL;
 }
 
@@ -134,19 +134,22 @@ void coders_joiner(t_representer *representer) {
 }
 
 void print_action(t_coder *coder) {
+  long time_elapsed ;
   pthread_mutex_lock(coder->print_mutex);
+  time_elapsed = time_elapsed_until_now(*coder->begining_time);
 
   if (coder->coder_state == REFACTORING)
-    printf("=====  3  =======> %d coder is refactoring\n", coder->coder_id);
+    printf("%ld %d coder is refactoring\n",time_elapsed , coder->coder_id);
 
   if (coder->coder_state == DEBUGING)
-    printf("=====  2  =======> %d coder is debuging\n", coder->coder_id);
+    printf("%ld %d coder is debuging\n",time_elapsed , coder->coder_id);
 
   if (coder->coder_state == COMPILING) {
-    printf("=====  1  =======> %d coder is compiling\n", coder->coder_id);
-    // printf("%d has taken a dongle\n", coder->coder_id);
-    // printf("%d has taken a dongle\n", coder->coder_id);
+    printf("%ld %d coder is compiling\n",time_elapsed , coder->coder_id);
+    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
+    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
   }
 
   pthread_mutex_unlock(coder->print_mutex);
 }
+

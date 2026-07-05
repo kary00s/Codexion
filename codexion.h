@@ -9,6 +9,9 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <stdbool.h>
+#include <errno.h>
+
+
 typedef struct s_controller t_controller;
 
 typedef struct timespec t_timespec;
@@ -37,7 +40,7 @@ typedef struct s_queue
 typedef struct s_dongle
 {
     int           dongle_id;
-    unsigned long          last_reste;
+    struct timeval   last_reste;
     bool          is_available;
     bool          is_cold;
     // t_timeval cooldown_timer;
@@ -89,10 +92,11 @@ typedef struct s_coder
 	t_dongle *right_dongle;
 	t_coder_state coder_state;
   t_mutex_cond mutex_cond;
-	bool is_burnouted;
+	bool *is_burnouted;
   pthread_mutex_t *print_mutex;
   int *ready_coders_counter;
   t_mutex_cond *ready_coders_counter_m_c;
+  struct timeval *begining_time; 
 }	t_coder;
 
 
@@ -102,20 +106,19 @@ typedef struct s_representer
   t_dongle **dongles;
   t_coder **coders;
   bool coders_are_ready;
-  bool is_burnouted;
-  struct timeval start_time;
-  bool all_good;
   t_queue *queue;
   pthread_mutex_t print_mutex;
   t_mutex_cond ready_coders_counter_m_c;
   t_mutex_cond cond_mutex_monitor; 
   t_mutex_cond m_c;
+  bool all_good;
   t_mutex_cond required_numbers_compilation_m_c;
   
   int ready_coders_counter;
   int required_numbers_compilation;
   // int coders_counter;
   
+  struct timeval begining_time;
   pthread_t monitor;
   pthread_t controller;
 } t_representer;
@@ -157,7 +160,10 @@ bool are_required_numbers_compilation_done(t_representer *representer);
 bool hold_both_dongles(t_coder *coder);
 bool drop_both_dongles(t_coder *coder);
 bool are_dongles_available(t_coder *coder);
-bool wait_dongles_to_cold(t_dongle *dongle, unsigned long time_to_get_cold);
+void wait_dongles_to_cold(t_coder *coder, long cooldown_time);
+bool is_the_dongle_cold(t_dongle *dongle, unsigned long time_cooldown);
+long get_the_hotest_dongle(t_dongle *left_dongle, t_dongle *right_dongle);
+
 
 bool init_dongles(t_representer *representer);
 void make_dongles_unavailable(t_dongle *dongle);
@@ -198,5 +204,7 @@ unsigned long timeval_to_ms(struct timeval time);
 unsigned long get_time_ms();
 int timeval_less(struct timeval a, struct timeval b);
 void	ms_to_timespec(t_timespec *timespec, unsigned long time_ms);
+long time_elapsed_until_now(struct timeval elapsed_time);
+
 
 #endif

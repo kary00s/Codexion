@@ -42,9 +42,10 @@ bool initialize_representer_struct(t_representer *representer, int ac, char **av
     return false;
   representer->all_good = true;
   representer->coders_are_ready = false;
-  representer->is_burnouted = false;
+  representer->all_good = true;
   representer->ready_coders_counter = 0;
   representer->required_numbers_compilation = 0;
+  
 
   if (!initializer_queue(representer) || !init_queue_mutexs_conds(representer)) 
   {
@@ -53,6 +54,7 @@ bool initialize_representer_struct(t_representer *representer, int ac, char **av
                         &representer->ready_coders_counter_m_c.cond);
     return false;
   }
+
   if (!init_dongles(representer)) {
     pthread_mutex_destroy(&representer->print_mutex);
     pthread_mutex_destroy(&representer->queue->mutex_queue);
@@ -71,10 +73,8 @@ bool initialize_representer_struct(t_representer *representer, int ac, char **av
     return false;
   }
   linker_coders_with_dongles(representer->coders, representer->dongles, representer->config.number_of_coders);
-
   return true;
 }
-
 
 static bool init_queue_mutexs_conds(t_representer *representer) 
 {

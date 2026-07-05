@@ -54,7 +54,7 @@ static void initialize_coders_struct(t_representer *representer)
   while (i < representer->config.number_of_coders) {
     coders[i]->config = &representer->config;
     coders[i]->coder_id = i;
-    coders[i]->is_burnouted = false;
+    coders[i]->is_burnouted = &representer->all_good;
     coders[i]->queue = representer->queue;
     coders[i]->print_mutex = &representer->print_mutex;
     coders[i]->ready_coders_counter = &representer->ready_coders_counter;
@@ -62,6 +62,7 @@ static void initialize_coders_struct(t_representer *representer)
     &representer->ready_coders_counter_m_c;
     coders[i]->representer = representer;
     coders[i]->coder_state = STARTING;
+    coders[i]->begining_time = &representer->begining_time;
     i++;
   }
 
