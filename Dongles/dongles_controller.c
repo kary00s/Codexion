@@ -111,3 +111,13 @@ static bool is_dongle_ready(t_dongle *dongle, unsigned long time_to_cooldown) {
   pthread_mutex_unlock(&dongle->dongle_m_c.mutex);
   return its_ready;
 }
+
+void check_dongles_coldness(t_coder *coder)
+{
+  long last_rest_for_hotest_dongle;
+  if(!is_the_dongle_cold(coder->left_dongle, coder->config->dongle_cooldown) ||
+  !is_the_dongle_cold(coder->right_dongle, coder->config->dongle_cooldown)) {
+    last_rest_for_hotest_dongle = get_the_hotest_dongle(coder->left_dongle, coder->right_dongle);
+    wait_dongles_to_cold(coder,last_rest_for_hotest_dongle);
+  }
+}

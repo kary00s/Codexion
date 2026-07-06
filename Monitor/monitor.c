@@ -37,20 +37,28 @@ void *monitor_home(void *args) {
   while (1)
   {
     if (are_one_of_coders_burnout(representer))
-    {
-      printf("one of them burnouted\n");
-    } 
+      break;
     else {
       usleep(100);
     }
   }
-    // if (representer.num)
-    // if(are_one_of_coders_burnout(representer))
-      // stop_the_representation(representer);
-  
   return NULL;
 }
-  
+
+void exit_representation(t_representer *representer)
+{
+  int i;
+
+  i = 0;
+  while (i < representer->config.number_of_coders)
+  {
+    pthread_mutex_lock(&representer->coders[i]->mutex_cond.mutex);
+    representer->coders[i]->coder_state = EXIT;
+    (* representer->coders[i]->is_burnouted) = true;
+    pthread_cond_broadcast(&representer->coders[i]->mutex_cond.cond);
+    pthread_mutex_unlock(&representer->coders[i]->mutex_cond.mutex);
+  }
+}
 bool wait_for_coders_to_start(t_representer *representer) {
   pthread_mutex_lock(&representer->ready_coders_counter_m_c.mutex);
   while (representer->ready_coders_counter !=
@@ -72,7 +80,7 @@ static void allow_coders_to_start(t_representer *representer) {
   while (i < representer->config.number_of_coders) {
     pthread_mutex_lock(&coders[i]->mutex_cond.mutex);
     gettimeofday(&coders[i]->last_compile, NULL);
-    coders[i]->coder_state = WAITING;
+    coders[i]->coder_state = WAIT;
     pthread_cond_broadcast(&coders[i]->mutex_cond.cond);
     pthread_mutex_unlock(&coders[i]->mutex_cond.mutex);
     i++;

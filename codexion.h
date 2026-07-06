@@ -58,11 +58,12 @@ typedef enum enum_scheduer
 // CODER_STATE enum :
 typedef enum e_coder_state
 {
-    STARTING,
-    WAITING,
+    START,
+    WAIT,
     COMPILING,
     DEBUGING,
     REFACTORING,
+    EXIT,
 }   t_coder_state;
 
 // REPRESENTER structs :
@@ -96,7 +97,9 @@ typedef struct s_coder
   pthread_mutex_t *print_mutex;
   int *ready_coders_counter;
   t_mutex_cond *ready_coders_counter_m_c;
-  struct timeval *begining_time; 
+  struct timeval *begining_time;
+  // t_mutex_cond required_numbers_compilation;
+  // int required_numbers_compilation;
 }	t_coder;
 
 
@@ -111,12 +114,11 @@ typedef struct s_representer
   t_mutex_cond ready_coders_counter_m_c;
   t_mutex_cond cond_mutex_monitor; 
   t_mutex_cond m_c;
-  bool all_good;
+  bool is_burnout;
+
   t_mutex_cond required_numbers_compilation_m_c;
-  
-  int ready_coders_counter;
   int required_numbers_compilation;
-  // int coders_counter;
+  int ready_coders_counter;
   
   struct timeval begining_time;
   pthread_t monitor;
@@ -146,14 +148,13 @@ void *controller_home(void *args) ;
 void controller_joiner(pthread_t *controller);
 t_coder *catch_coder(t_representer *representer);
 bool all_works_good(t_representer *representer);
+bool is_coder_in_exit_state(t_coder *coder);
 
 //=> routine.c
 void coders_joiner(t_representer *representer);
 void *routine_all_the_coders(void *arg);
 bool wait_for_simulation_to_start(t_coder *coder);
-void action_simulator(t_coder *coder, t_coder_state state);
 void print_action(t_coder *coder);
-void add_to_number_required_compilation(t_representer *representer);
 bool are_required_numbers_compilation_done(t_representer *representer);
 
 // ============= Dongles ====================>
@@ -163,6 +164,7 @@ bool are_dongles_available(t_coder *coder);
 void wait_dongles_to_cold(t_coder *coder, long cooldown_time);
 bool is_the_dongle_cold(t_dongle *dongle, unsigned long time_cooldown);
 long get_the_hotest_dongle(t_dongle *left_dongle, t_dongle *right_dongle);
+void check_dongles_coldness(t_coder *coder);
 
 
 bool init_dongles(t_representer *representer);
@@ -179,6 +181,7 @@ bool monitor_creator(t_representer *representer);
 void monitor_joiner(pthread_t *monitor);
 void *monitor_home(void *args) ;
 bool wait_for_coders_to_start(t_representer *representer);
+void exit_representation(t_representer *representer);
 
 
 // ============= Mutexs ====================>

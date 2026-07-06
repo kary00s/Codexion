@@ -5,33 +5,30 @@ bool wait_for_simulation_to_start(t_coder *coder);
 static void compiling(t_coder *coder, t_queue *queue);
 static void debuging(t_coder *coder);
 static void refactoring(t_coder *coder);
+static void add_to_number_required_compilation(t_representer *representer);
+static void action_simulator(t_coder *coder, t_coder_state state);
 
-static void compiling(t_coder *coder, t_queue *queue) {
-  long last_rest_for_hotest_dongle;
+static void compiling(t_coder *coder, t_queue *queue) 
+{
   insert_coder_in_queue(coder, coder->queue);
   coder_waiting_dongles(coder);
-
-  if(!is_the_dongle_cold(coder->left_dongle, coder->config->dongle_cooldown) ||
-  !is_the_dongle_cold(coder->right_dongle, coder->config->dongle_cooldown)) {
-    last_rest_for_hotest_dongle = get_the_hotest_dongle(coder->left_dongle, coder->right_dongle);
-    wait_dongles_to_cold(coder,last_rest_for_hotest_dongle);
-  }
+  check_dongles_coldness(coder);
   print_action(coder);
+
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   gettimeofday(&coder->last_compile, NULL);
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
-
-
+  
   add_to_number_required_compilation(coder->representer);
   action_simulator(coder, coder->coder_state);
-  
   drop_both_dongles(coder);
+  
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   coder->coder_state = DEBUGING;
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
 }
 
-void add_to_number_required_compilation(t_representer *representer)
+static void add_to_number_required_compilation(t_representer *representer)
 {
   pthread_mutex_lock(&representer->required_numbers_compilation_m_c.mutex);
   representer->required_numbers_compilation++;
@@ -52,11 +49,12 @@ static void refactoring(t_coder *coder) {
   action_simulator(coder, coder->coder_state);
 
   pthread_mutex_lock(&coder->mutex_cond.mutex);
-  coder->coder_state = WAITING;
+  coder->coder_state = WAIT;
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
 }
 
-void action_simulator(t_coder *coder, t_coder_state state) {
+static void action_simulator(t_coder *coder, t_coder_state state) 
+{
   t_timespec time_spec;
   unsigned long time_action;
   unsigned long right_now;
@@ -79,7 +77,6 @@ void action_simulator(t_coder *coder, t_coder_state state) {
     pthread_cond_timedwait(&coder->mutex_cond.cond, &coder->mutex_cond.mutex,
                            &time_spec);
   }
-
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
 }
 
@@ -95,8 +92,12 @@ void *routine_all_the_coders(void *arg) {
     compiling(coder, coder->queue);
     debuging(coder);
     refactoring(coder);
-  }
-  
+      // if(are_required_numbers_compilation_done(coder->representer))
+      // {
+        // printf("All coders compiled succefully\n");
+        // break;
+      // }
+    }
   return NULL;
 }
 
@@ -118,7 +119,7 @@ bool wait_for_simulation_to_start(t_coder *coder) {
   pthread_mutex_unlock(&coder->ready_coders_counter_m_c->mutex);
 
   pthread_mutex_lock(&coder->mutex_cond.mutex);
-  while (coder->coder_state == STARTING)
+  while (coder->coder_state == START)
     pthread_cond_wait(&coder->mutex_cond.cond, &coder->mutex_cond.mutex);
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
   return true;
