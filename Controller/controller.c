@@ -9,6 +9,11 @@ bool controller_creator(t_representer *representer) {
   return true;
 }
 
+bool is_representation_works_well(t_representer *representer)
+{
+  // here i must change the burnout representer from is burnout
+}
+
 void controller_joiner(pthread_t *controller) {
   pthread_join(*controller, NULL);
   return;
@@ -20,7 +25,7 @@ void *controller_home(void *args) {
   int i = 0;
 
   representer = (t_representer *)args;
-  while (1)
+  while (!is_represontation_done(representer))
   {
     coder = catch_coder(representer);
     if (coder) {
@@ -32,6 +37,9 @@ void *controller_home(void *args) {
     else
       usleep(400);
   }
+  pthread_mutex_lock(&representer->print_mutex);
+  printf("From controller im out\n");
+  pthread_mutex_unlock(&representer->print_mutex);
 
   return NULL;
 }

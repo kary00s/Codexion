@@ -98,8 +98,8 @@ typedef struct s_coder
   int *ready_coders_counter;
   t_mutex_cond *ready_coders_counter_m_c;
   struct timeval *begining_time;
-  // t_mutex_cond required_numbers_compilation;
-  // int required_numbers_compilation;
+  t_mutex_cond numbers_compilation_m_c;
+  int numbers_compilation;
 }	t_coder;
 
 
@@ -115,11 +115,9 @@ typedef struct s_representer
   t_mutex_cond cond_mutex_monitor; 
   t_mutex_cond m_c;
   bool is_burnout;
-
-  t_mutex_cond required_numbers_compilation_m_c;
-  int required_numbers_compilation;
+  t_mutex_cond required_numbers_compilation_is_completed_m_c;
+  int required_numbers_compilation_is_completed;
   int ready_coders_counter;
-  
   struct timeval begining_time;
   pthread_t monitor;
   pthread_t controller;
@@ -155,7 +153,8 @@ void coders_joiner(t_representer *representer);
 void *routine_all_the_coders(void *arg);
 bool wait_for_simulation_to_start(t_coder *coder);
 void print_action(t_coder *coder);
-bool are_required_numbers_compilation_done(t_representer *representer);
+bool are_required_numbers_compilation_done(t_coder *coder);
+bool is_represontation_done(t_representer * representer);
 
 // ============= Dongles ====================>
 bool hold_both_dongles(t_coder *coder);

@@ -1,42 +1,45 @@
 #include "../codexion.h"
-#include <pthread.h>
 
 bool wait_for_simulation_to_start(t_coder *coder);
-static void compiling(t_coder *coder, t_queue *queue);
+static bool compiling(t_coder *coder, t_queue *queue);
 static void debuging(t_coder *coder);
 static void refactoring(t_coder *coder);
-static void add_to_number_required_compilation(t_representer *representer);
+static void add_to_number_required_compilation(t_coder *coder);
 static void action_simulator(t_coder *coder, t_coder_state state);
+static void change_numbers_required_for_representer(t_representer *representer);
 
-static void compiling(t_coder *coder, t_queue *queue) 
+
+static bool compiling(t_coder *coder, t_queue *queue) 
 {
   insert_coder_in_queue(coder, coder->queue);
-  coder_waiting_dongles(coder);
+  if (!coder_waiting_dongles(coder))
+    return false;
   check_dongles_coldness(coder);
   print_action(coder);
 
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   gettimeofday(&coder->last_compile, NULL);
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
-  
-  add_to_number_required_compilation(coder->representer);
+
+  add_to_number_required_compilation(coder);
   action_simulator(coder, coder->coder_state);
   drop_both_dongles(coder);
   
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   coder->coder_state = DEBUGING;
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
+  return true;
 }
 
-static void add_to_number_required_compilation(t_representer *representer)
+static void add_to_number_required_compilation(t_coder *coder)
 {
-  pthread_mutex_lock(&representer->required_numbers_compilation_m_c.mutex);
-  representer->required_numbers_compilation++;
-  pthread_mutex_unlock(&representer->required_numbers_compilation_m_c.mutex);
+  pthread_mutex_lock(&coder->numbers_compilation_m_c.mutex);
+  coder->numbers_compilation++;
+  pthread_mutex_unlock(&coder->numbers_compilation_m_c.mutex);
 }
 
 static void debuging(t_coder *coder) {
-  print_action(coder);
+  // print_action(coder);
   action_simulator(coder, coder->coder_state);
 
   pthread_mutex_lock(&coder->mutex_cond.mutex);
@@ -45,7 +48,7 @@ static void debuging(t_coder *coder) {
 }
 
 static void refactoring(t_coder *coder) {
-  print_action(coder);
+  // print_action(coder);
   action_simulator(coder, coder->coder_state);
 
   pthread_mutex_lock(&coder->mutex_cond.mutex);
@@ -88,27 +91,31 @@ void *routine_all_the_coders(void *arg) {
   if (coder->coder_id % 2 == 0)
     usleep(500);
 
-  while (1) {
+  while (!are_required_numbers_compilation_done(coder)) 
+  {
     compiling(coder, coder->queue);
     debuging(coder);
     refactoring(coder);
-      // if(are_required_numbers_compilation_done(coder->representer))
-      // {
-        // printf("All coders compiled succefully\n");
-        // break;
-      // }
-    }
+  }
+  change_numbers_required_for_representer(coder->representer);
   return NULL;
 }
+static void   change_numbers_required_for_representer(t_representer *representer)
+{
+  pthread_mutex_lock(&representer->required_numbers_compilation_is_completed_m_c.mutex);
+  representer->required_numbers_compilation_is_completed++;
+  pthread_mutex_unlock(&representer->required_numbers_compilation_is_completed_m_c.mutex);
+}
 
-bool are_required_numbers_compilation_done(t_representer *representer)
+bool are_required_numbers_compilation_done(t_coder *coder)
 {
   bool is_done;
   is_done = false;
-  pthread_mutex_lock(&representer->required_numbers_compilation_m_c.mutex);
-  if (representer->required_numbers_compilation >= representer->config.number_of_compiles_required)
+  pthread_mutex_lock(&coder->numbers_compilation_m_c.mutex);
+  if (coder->numbers_compilation >= coder->representer->config.number_of_compiles_required)
     is_done = true;
-  pthread_mutex_unlock(&representer->required_numbers_compilation_m_c.mutex);
+  pthread_mutex_unlock(&coder->numbers_compilation_m_c.mutex);
+  
   return is_done;  
 }
 
@@ -147,8 +154,8 @@ void print_action(t_coder *coder) {
 
   if (coder->coder_state == COMPILING) {
     printf("%ld %d coder is compiling\n",time_elapsed , coder->coder_id);
-    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
-    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
+    // printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
+    // printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
   }
 
   pthread_mutex_unlock(coder->print_mutex);

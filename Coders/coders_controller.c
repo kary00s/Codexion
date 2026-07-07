@@ -24,8 +24,16 @@ bool coder_waiting_dongles(t_coder *coder) {
     pthread_cond_wait(&coder->mutex_cond.cond, &coder->mutex_cond.mutex);
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
 
+  if(is_coder_burnouted(coder))
+  {
+    pthread_mutex_lock(&coder->representer->m_c.mutex);
+    coder->representer->is_burnout = true;
+    done = false;
+    pthread_mutex_unlock(&coder->representer->m_c.mutex);
+  }
   return (done);
 }
+
 
 bool are_one_of_coders_burnout(t_representer *representer)
 {

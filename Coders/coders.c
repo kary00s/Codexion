@@ -62,6 +62,7 @@ static void initialize_coders_struct(t_representer *representer)
     &representer->ready_coders_counter_m_c;
     coders[i]->representer = representer;
     coders[i]->coder_state = START;
+    coders[i]->numbers_compilation = 0;
     coders[i]->begining_time = &representer->begining_time;
     i++;
   }

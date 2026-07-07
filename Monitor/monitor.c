@@ -36,15 +36,29 @@ void *monitor_home(void *args) {
 
   while (1)
   {
-    if (are_one_of_coders_burnout(representer))
+    if (is_represontation_done(representer) || are_one_of_coders_burnout(representer))
       break;
     else {
       usleep(100);
     }
   }
+  pthread_mutex_lock(&representer->print_mutex);
+  printf("Monitor is out\n");
+  pthread_mutex_unlock(&representer->print_mutex);
+
   return NULL;
 }
 
+bool is_represontation_done(t_representer * representer)
+{
+  bool is_done ;
+  is_done = false;
+  pthread_mutex_lock(&representer->required_numbers_compilation_is_completed_m_c.mutex);
+  if (representer->required_numbers_compilation_is_completed != 0)
+    is_done = true; 
+  pthread_mutex_unlock(&representer->required_numbers_compilation_is_completed_m_c.mutex);
+  return is_done;
+}
 void exit_representation(t_representer *representer)
 {
   int i;
