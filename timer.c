@@ -53,6 +53,5 @@ long time_elapsed_until_now(struct timeval elapsed_time)
     long rn = get_time_ms();
     time_taken = timeval_to_ms(elapsed_time);
     time_taken = rn - time_taken;
-    // printf("====> %ld\n", time_taken);
     return time_taken;
 }

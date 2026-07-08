@@ -82,3 +82,32 @@ void insert_coder_in_queue(t_coder *coder, t_queue *queue) {
   queue->size++;
   pthread_mutex_unlock(&coder->queue->mutex_queue);
 }
+
+bool initializer_queue(t_representer *representer) 
+{
+  t_queue *queue;
+
+  queue = malloc(sizeof(t_queue));
+  if (queue == NULL)
+    return false;
+  queue->capacity = representer->config.number_of_coders;
+  queue->size = 0;
+  queue->coders = coders_allocater(queue->capacity);
+  if (queue->coders == NULL) {
+    free(queue);
+    return false;
+  }
+  representer->queue = queue;
+  return true;
+}
+
+bool init_queue_mutexs_conds(t_representer *representer) 
+{
+  if (pthread_mutex_init(&representer->queue->mutex_queue, NULL) != 0) {
+    pthread_mutex_destroy(&representer->print_mutex);
+    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex
+                        , &representer->ready_coders_counter_m_c.cond);
+    return false;
+  }
+  return true;
+}

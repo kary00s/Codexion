@@ -134,9 +134,10 @@ void free_previous_coders(t_coder **coders, int n);
 bool coders_creator(t_representer *representer); 
 bool init_coders(t_representer *representer);
 t_coder **coders_allocater(int number_of_coders);
+bool   is_coder_burnouted(t_coder *coder);
 
 void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles, int number_of_coders);
-bool	coder_waiting_dongles(t_coder *coder);
+void	coder_waiting_dongles(t_coder *coder);
 bool are_one_of_coders_burnout(t_representer *representer);
 
 // ============= Controller ====================>
@@ -145,8 +146,8 @@ bool controller_creator(t_representer *representer);
 void *controller_home(void *args) ;
 void controller_joiner(pthread_t *controller);
 t_coder *catch_coder(t_representer *representer);
-bool all_works_good(t_representer *representer);
 bool is_coder_in_exit_state(t_coder *coder);
+bool is_representation_works_well(t_representer *representer);
 
 //=> routine.c
 void coders_joiner(t_representer *representer);
@@ -199,6 +200,8 @@ void shift_queue_up(t_queue *queue, int index);
 void swap_coders(t_coder *parent_coder, t_coder *child_coder);
 bool pop_coder_from_queue(t_representer *representer, int i);
 void insert_coder_in_queue(t_coder *coder, t_queue *queue);
+bool initializer_queue(t_representer *representer) ;
+bool init_queue_mutexs_conds(t_representer *representer) ;
 
 
 // ============= timer ====================>

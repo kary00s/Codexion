@@ -1,9 +1,9 @@
 #include "../codexion.h"
-static bool   is_coder_burnouted(t_coder *coder);
+bool   is_coder_burnouted(t_coder *coder);
 
 void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
                                 int number_of_coders);
-bool coder_waiting_dongles(t_coder *coder);
+void coder_waiting_dongles(t_coder *coder);
 void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
                                 int number_of_coders) {
   int i;
@@ -15,23 +15,12 @@ void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
   }
 }
 
-bool coder_waiting_dongles(t_coder *coder) {
-  bool done;
+void coder_waiting_dongles(t_coder *coder) {
 
-  done = true;
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   while (coder->coder_state == WAIT)
     pthread_cond_wait(&coder->mutex_cond.cond, &coder->mutex_cond.mutex);
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
-
-  if(is_coder_burnouted(coder))
-  {
-    pthread_mutex_lock(&coder->representer->m_c.mutex);
-    coder->representer->is_burnout = true;
-    done = false;
-    pthread_mutex_unlock(&coder->representer->m_c.mutex);
-  }
-  return (done);
 }
 
 
@@ -57,7 +46,7 @@ bool are_one_of_coders_burnout(t_representer *representer)
   return burnouted;
 }
 
-static bool is_coder_burnouted(t_coder *coder)
+bool is_coder_burnouted(t_coder *coder)
 {
   bool is_burnouted;
   is_burnouted = false;
@@ -68,6 +57,7 @@ static bool is_coder_burnouted(t_coder *coder)
   {
     is_burnouted = true;
     printf("==========> %ld %d coder burnouted\n", time_esplited ,coder->coder_id);
+    coder->coder_state = EXIT;
   }
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
 

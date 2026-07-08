@@ -11,7 +11,13 @@ bool controller_creator(t_representer *representer) {
 
 bool is_representation_works_well(t_representer *representer)
 {
-  // here i must change the burnout representer from is burnout
+  bool works_well;
+  works_well = true;
+  pthread_mutex_lock(&representer->m_c.mutex);
+  if (representer->is_burnout == true)
+     works_well = false;  
+  pthread_mutex_unlock(&representer->m_c.mutex);
+  return works_well;
 }
 
 void controller_joiner(pthread_t *controller) {
@@ -35,12 +41,8 @@ void *controller_home(void *args) {
       pthread_mutex_unlock(&coder->mutex_cond.mutex);
     }
     else
-      usleep(400);
+      usleep(200);
   }
-  pthread_mutex_lock(&representer->print_mutex);
-  printf("From controller im out\n");
-  pthread_mutex_unlock(&representer->print_mutex);
-
   return NULL;
 }
 
@@ -56,6 +58,8 @@ t_coder *catch_coder(t_representer *representer)
     if (are_dongles_available(representer->queue->coders[i])) 
     {
       coder = representer->queue->coders[i];
+      if (!is_representation_works_well(representer))
+        return NULL;
       pop_coder_from_queue(representer, i);
       break;
     }
@@ -74,17 +78,5 @@ bool is_coder_in_exit_state(t_coder *coder)
     is_it = true;
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
 
-  return true;
+  return is_it;
 }
-bool all_works_good(t_representer *representer)
-{
-  bool burnout;
-  burnout = false;
-  
-  pthread_mutex_lock(&representer->m_c.mutex);
-  if (!representer->is_burnout)
-    burnout = true;
-  pthread_mutex_unlock(&representer->m_c.mutex);
-  return burnout;
-}
-

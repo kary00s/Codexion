@@ -4,7 +4,7 @@ bool wait_for_simulation_to_start(t_coder *coder);
 static bool compiling(t_coder *coder, t_queue *queue);
 static void debuging(t_coder *coder);
 static void refactoring(t_coder *coder);
-static void add_to_number_required_compilation(t_coder *coder);
+static bool add_to_number_required_compilation(t_coder *coder);
 static void action_simulator(t_coder *coder, t_coder_state state);
 static void change_numbers_required_for_representer(t_representer *representer);
 
@@ -12,30 +12,36 @@ static void change_numbers_required_for_representer(t_representer *representer);
 static bool compiling(t_coder *coder, t_queue *queue) 
 {
   insert_coder_in_queue(coder, coder->queue);
-  if (!coder_waiting_dongles(coder))
+  coder_waiting_dongles(coder);
+
+  if(is_coder_burnouted(coder))
     return false;
   check_dongles_coldness(coder);
   print_action(coder);
-
+  
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   gettimeofday(&coder->last_compile, NULL);
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
+  if(add_to_number_required_compilation(coder))
+    change_numbers_required_for_representer(coder->representer);
 
-  add_to_number_required_compilation(coder);
   action_simulator(coder, coder->coder_state);
   drop_both_dongles(coder);
-  
+
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   coder->coder_state = DEBUGING;
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
   return true;
 }
 
-static void add_to_number_required_compilation(t_coder *coder)
-{
+static bool add_to_number_required_compilation(t_coder *coder)
+{  
   pthread_mutex_lock(&coder->numbers_compilation_m_c.mutex);
+  if (coder->numbers_compilation  == coder->config->number_of_compiles_required)
+    return false;
   coder->numbers_compilation++;
   pthread_mutex_unlock(&coder->numbers_compilation_m_c.mutex);
+  return true;
 }
 
 static void debuging(t_coder *coder) {
@@ -83,6 +89,7 @@ static void action_simulator(t_coder *coder, t_coder_state state)
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
 }
 
+
 void *routine_all_the_coders(void *arg) {
   t_coder *coder;
   coder = (t_coder *)arg;
@@ -93,11 +100,13 @@ void *routine_all_the_coders(void *arg) {
 
   while (!are_required_numbers_compilation_done(coder)) 
   {
-    compiling(coder, coder->queue);
+    if(is_coder_in_exit_state(coder))
+      break;
+    if(!compiling(coder, coder->queue))
+      break;
     debuging(coder);
-    refactoring(coder);
+    refactoring(coder);  
   }
-  change_numbers_required_for_representer(coder->representer);
   return NULL;
 }
 static void   change_numbers_required_for_representer(t_representer *representer)
