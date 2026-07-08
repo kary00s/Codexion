@@ -43,7 +43,7 @@ static bool add_to_number_required_compilation(t_coder *coder)
 }
 
 static void debuging(t_coder *coder) {
-  // print_action(coder);
+  print_action(coder);
   action_simulator(coder, coder->coder_state);
 
   pthread_mutex_lock(&coder->mutex_cond.mutex);
@@ -52,7 +52,7 @@ static void debuging(t_coder *coder) {
 }
 
 static void refactoring(t_coder *coder) {
-  // print_action(coder);
+  print_action(coder);
   action_simulator(coder, coder->coder_state);
 
   pthread_mutex_lock(&coder->mutex_cond.mutex);
@@ -86,15 +86,17 @@ static void action_simulator(t_coder *coder, t_coder_state state)
   }
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
 }
-
+static void sleep_odd_coders(t_coder *coder)
+{
+  if (coder->coder_id % 2 == 0)
+    usleep(500);
+}
 
 void *routine_all_the_coders(void *arg) {
   t_coder *coder;
   coder = (t_coder *)arg;
   wait_for_simulation_to_start(coder);
-
-  if (coder->coder_id % 2 == 0)
-    usleep(500);
+  sleep_odd_coders(coder);
 
   while (!are_required_numbers_compilation_done(coder)) 
   {
