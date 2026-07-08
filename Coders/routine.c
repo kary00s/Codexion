@@ -13,17 +13,15 @@ static bool compiling(t_coder *coder, t_queue *queue)
 {
   insert_coder_in_queue(coder, coder->queue);
   coder_waiting_dongles(coder);
-
-  if(is_coder_burnouted(coder))
-    return false;
   check_dongles_coldness(coder);
-  print_action(coder);
   
+  if(!add_to_number_required_compilation(coder)) 
+    change_numbers_required_for_representer(coder->representer);
+  
+  print_action(coder);
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   gettimeofday(&coder->last_compile, NULL);
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
-  if(add_to_number_required_compilation(coder))
-    change_numbers_required_for_representer(coder->representer);
 
   action_simulator(coder, coder->coder_state);
   drop_both_dongles(coder);
