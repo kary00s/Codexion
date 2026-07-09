@@ -18,7 +18,7 @@ int main(int ac, char *av[]) {
     clean_initialize_representer_struct(&representer);
     return 0;
   }
-  controller_joiner(&representer.controller);
   monitor_joiner(&representer.monitor);
   coders_joiner(&representer);
+  controller_joiner(&representer.controller);
 }

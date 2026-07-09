@@ -12,64 +12,59 @@
 
 #include "../codexion.h"
 
-
-bool init_representer_mutexs_conds(t_representer *representer)
-{
+bool init_representer_mutexs_conds(t_representer *representer) {
   if (pthread_mutex_init(&representer->print_mutex, NULL) != 0)
     return false;
-  if (!init_mutex_cond(&representer->ready_coders_counter_m_c))
-  {
+  if (!init_mutex_cond(&representer->ready_coders_counter_m_c)) {
     pthread_mutex_destroy(&representer->print_mutex);
     return false;
   }
-  if(!init_mutex_cond(&representer->required_numbers_compilation_is_completed_m_c))
-  {
-    pthread_mutex_destroy(&representer->ready_coders_counter_m_c.mutex);
+  if (pthread_mutex_init(&representer->finished_coders_mutex, NULL) != 0) {
     pthread_mutex_destroy(&representer->print_mutex);
     return false;
+  }
+  if (pthread_mutex_init(&representer->is_burnout_mutex, NULL)) {
+    // TODO: destroy predefined mutexes and conds
   }
   return true;
 }
 
-bool initialize_representer_struct(t_representer *representer, int ac, char **av) 
-{
-  if(!parser(ac, av, representer))
+bool initialize_representer_struct(t_representer *representer, int ac,
+                                   char **av) {
+  if (!parser(ac, av, representer))
     return false;
-  
+
   if (!init_representer_mutexs_conds(representer))
     return false;
   representer->is_burnout = false;
-  representer->coders_are_ready = false;
   representer->ready_coders_counter = 0;
-  representer->required_numbers_compilation_is_completed = false;
-  
-
-  if (!initializer_queue(representer) || (!init_queue_mutexs_conds(representer))) 
-  {
+  representer->finshed_coders = 0;
+  if (!initializer_queue(representer) ||
+      (!init_queue_mutexs_conds(representer))) {
     pthread_mutex_destroy(&representer->print_mutex);
-    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex, 
-                        &representer->ready_coders_counter_m_c.cond);
+    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex,
+                       &representer->ready_coders_counter_m_c.cond);
     return false;
   }
 
   if (!init_dongles(representer)) {
     pthread_mutex_destroy(&representer->print_mutex);
     pthread_mutex_destroy(&representer->queue->mutex_queue);
-    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex, 
-                        &representer->ready_coders_counter_m_c.cond);
+    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex,
+                       &representer->ready_coders_counter_m_c.cond);
     free(representer->queue);
     return false;
   }
-  
+
   if (!init_coders(representer)) {
     free_dongles(representer);
     pthread_mutex_destroy(&representer->print_mutex);
     pthread_mutex_destroy(&representer->queue->mutex_queue);
-    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex, 
-                        &representer->ready_coders_counter_m_c.cond);
+    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex,
+                       &representer->ready_coders_counter_m_c.cond);
     return false;
   }
-  linker_coders_with_dongles(representer->coders, representer->dongles, representer->config.number_of_coders);
+  linker_coders_with_dongles(representer->coders, representer->dongles,
+                             representer->config.number_of_coders);
   return true;
 }
-

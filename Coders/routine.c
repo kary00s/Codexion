@@ -2,92 +2,118 @@
 
 bool wait_for_simulation_to_start(t_coder *coder);
 static bool compiling(t_coder *coder, t_queue *queue);
-static void debuging(t_coder *coder);
-static void refactoring(t_coder *coder);
+static bool debuging(t_coder *coder);
+static bool refactoring(t_coder *coder);
 static bool add_to_number_required_compilation(t_coder *coder);
-static void action_simulator(t_coder *coder, t_coder_state state);
-static void change_numbers_required_for_representer(t_representer *representer);
+static bool action_simulator(t_coder *coder, t_coder_state state);
+static void change_numbers_required_for_representer(t_coder *coder);
+static void add_coder_to_finished_coders(t_coder *coder);
 
-
-static bool compiling(t_coder *coder, t_queue *queue) 
-{
+static bool compiling(t_coder *coder, t_queue *queue) {
   insert_coder_in_queue(coder, coder->queue);
-  coder_waiting_dongles(coder);
-  check_dongles_coldness(coder);
-  
-  if(!add_to_number_required_compilation(coder)) 
-    change_numbers_required_for_representer(coder->representer);
-  
+  if (!coder_waiting_dongles(coder))
+    return false;
+  if (!check_dongles_coldness(coder))
+    return false;
   print_action(coder);
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   gettimeofday(&coder->last_compile, NULL);
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
-
-  action_simulator(coder, coder->coder_state);
+  add_coder_to_finished_coders(coder);
+  if (!action_simulator(coder, coder->coder_state))
+    return false;
   drop_both_dongles(coder);
-
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   coder->coder_state = DEBUGING;
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
   return true;
 }
 
-static bool add_to_number_required_compilation(t_coder *coder)
-{  
+static bool is_coder_finished(t_coder *coder) {
+  bool is_finished;
+
+  is_finished = false;
+  pthread_mutex_lock(&coder->mutex_cond.mutex);
+  if (coder->config->number_of_compiles_required == coder->numbers_compilation)
+    is_finished = true;
+  coder->numbers_compilation++;
+  pthread_mutex_unlock(&coder->mutex_cond.mutex);
+  return is_finished;
+}
+
+static void add_coder_to_finished_coders(t_coder *coder) {
+  bool is_finished;
+  is_finished = is_coder_finished(coder);
+  if (is_finished) {
+    pthread_mutex_lock(coder->finished_coders_mutex);
+    (*coder->finished_coders)++;
+    pthread_mutex_unlock(coder->finished_coders_mutex);
+  }
+}
+
+static bool add_to_number_required_compilation(t_coder *coder) {
   pthread_mutex_lock(&coder->numbers_compilation_m_c.mutex);
-  if (coder->numbers_compilation  == coder->config->number_of_compiles_required)
+  if (coder->numbers_compilation == coder->config->number_of_compiles_required)
     return false;
   coder->numbers_compilation++;
   pthread_mutex_unlock(&coder->numbers_compilation_m_c.mutex);
   return true;
 }
 
-static void debuging(t_coder *coder) {
+static bool debuging(t_coder *coder) {
   print_action(coder);
-  action_simulator(coder, coder->coder_state);
-
+  if (!action_simulator(coder, coder->coder_state))
+    return false;
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   coder->coder_state = REFACTORING;
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
+  return is_representation_works_well(coder->is_burnout_mutex,
+                                      coder->is_burnout);
 }
 
-static void refactoring(t_coder *coder) {
+static bool refactoring(t_coder *coder) {
   print_action(coder);
-  action_simulator(coder, coder->coder_state);
-
+  if (!action_simulator(coder, coder->coder_state))
+    return false;
   pthread_mutex_lock(&coder->mutex_cond.mutex);
   coder->coder_state = WAIT;
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
+  return is_representation_works_well(coder->is_burnout_mutex,
+                                      coder->is_burnout);
 }
 
-static void action_simulator(t_coder *coder, t_coder_state state) 
-{
+bool wait(pthread_mutex_t *mutex, pthread_cond_t *cond, unsigned long time) {
   t_timespec time_spec;
+  bool is_ok;
+
+  is_ok = true;
+  pthread_mutex_lock(mutex);
+  ms_to_timespec(&time_spec, time);
+  if (pthread_cond_timedwait(cond, mutex, &time_spec) != ETIMEDOUT)
+    is_ok = false;
+  pthread_mutex_unlock(mutex);
+  return is_ok;
+}
+
+static bool action_simulator(t_coder *coder, t_coder_state state) {
   unsigned long time_action;
   unsigned long right_now;
-  right_now = get_time_ms();
-  pthread_mutex_lock(&coder->mutex_cond.mutex);
 
-  if (state == COMPILING) {
-    time_action = right_now + coder->config->time_to_compile;
-    ms_to_timespec(&time_spec, time_action);
-    pthread_cond_timedwait(&coder->mutex_cond.cond, &coder->mutex_cond.mutex,
-                           &time_spec);
-  } else if (state == DEBUGING) {
-    time_action = right_now + coder->config->time_to_debug;
-    ms_to_timespec(&time_spec, time_action);
-    pthread_cond_timedwait(&coder->mutex_cond.cond, &coder->mutex_cond.mutex,
-                           &time_spec);
-  } else if (state == REFACTORING) {
-    time_action = right_now + coder->config->time_to_refactor;
-    ms_to_timespec(&time_spec, time_action);
-    pthread_cond_timedwait(&coder->mutex_cond.cond, &coder->mutex_cond.mutex,
-                           &time_spec);
-  }
-  pthread_mutex_unlock(&coder->mutex_cond.mutex);
+  right_now = get_time_ms();
+
+  time_action = right_now;
+  if (state == COMPILING)
+    time_action += coder->config->time_to_compile;
+  else if (state == DEBUGING)
+    time_action += coder->config->time_to_debug;
+  else if (state == REFACTORING)
+    time_action += coder->config->time_to_refactor;
+  if (!wait(&coder->mutex_cond.mutex, &coder->mutex_cond.cond, time_action))
+    return is_representation_works_well(coder->is_burnout_mutex,
+                                        coder->is_burnout);
+  return true;
 }
-static void sleep_odd_coders(t_coder *coder)
-{
+static void sleep_odd_coders(t_coder *coder) {
   if (coder->coder_id % 2 == 0)
     usleep(500);
 }
@@ -98,35 +124,19 @@ void *routine_all_the_coders(void *arg) {
   wait_for_simulation_to_start(coder);
   sleep_odd_coders(coder);
 
-  while (!are_required_numbers_compilation_done(coder)) 
-  {
-    if(is_coder_in_exit_state(coder))
+  while (is_representation_works_well(coder->is_burnout_mutex,
+                                      coder->is_burnout)) {
+    if (!compiling(coder, coder->queue))
       break;
-    if(!compiling(coder, coder->queue))
+    if (!debuging(coder))
       break;
-    debuging(coder);
-    refactoring(coder);  
+    if (!refactoring(coder))
+      break;
   }
+  printf("coder %d exit\n", coder->coder_id);
   return NULL;
 }
-static void   change_numbers_required_for_representer(t_representer *representer)
-{
-  pthread_mutex_lock(&representer->required_numbers_compilation_is_completed_m_c.mutex);
-  representer->required_numbers_compilation_is_completed++;
-  pthread_mutex_unlock(&representer->required_numbers_compilation_is_completed_m_c.mutex);
-}
-
-bool are_required_numbers_compilation_done(t_coder *coder)
-{
-  bool is_done;
-  is_done = false;
-  pthread_mutex_lock(&coder->numbers_compilation_m_c.mutex);
-  if (coder->numbers_compilation >= coder->representer->config.number_of_compiles_required)
-    is_done = true;
-  pthread_mutex_unlock(&coder->numbers_compilation_m_c.mutex);
-  
-  return is_done;  
-}
+static void change_numbers_required_for_representer(t_coder *coder) {}
 
 bool wait_for_simulation_to_start(t_coder *coder) {
   pthread_mutex_lock(&coder->ready_coders_counter_m_c->mutex);
@@ -151,22 +161,21 @@ void coders_joiner(t_representer *representer) {
 }
 
 void print_action(t_coder *coder) {
-  long time_elapsed ;
+  long time_elapsed;
   pthread_mutex_lock(coder->print_mutex);
   time_elapsed = time_elapsed_until_now(*coder->begining_time);
 
   if (coder->coder_state == REFACTORING)
-    printf("%ld %d coder is refactoring\n",time_elapsed , coder->coder_id);
+    printf("%ld %d coder is refactoring\n", time_elapsed, coder->coder_id);
 
   if (coder->coder_state == DEBUGING)
-    printf("%ld %d coder is debuging\n",time_elapsed , coder->coder_id);
+    printf("%ld %d coder is debuging\n", time_elapsed, coder->coder_id);
 
   if (coder->coder_state == COMPILING) {
-    printf("%ld %d coder is compiling\n",time_elapsed , coder->coder_id);
+    printf("%ld %d coder is compiling\n", time_elapsed, coder->coder_id);
     // printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
     // printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
   }
 
   pthread_mutex_unlock(coder->print_mutex);
 }
-

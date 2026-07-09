@@ -57,12 +57,12 @@ bool pop_coder_from_queue(t_representer *representer, int i) {
   queue = representer->queue;
   if (representer->queue->coders[i] == NULL)
     return false;
-  
+
   if (representer->config.scheduler == FIFO)
     shift_queue_down_fifo(queue, i);
-  else if  (representer->config.scheduler == EDF)
+  else if (representer->config.scheduler == EDF)
     shift_queue_down_edf(queue, i);
-  
+
   queue->size--;
 
   return true;
@@ -83,8 +83,7 @@ void insert_coder_in_queue(t_coder *coder, t_queue *queue) {
   pthread_mutex_unlock(&coder->queue->mutex_queue);
 }
 
-bool initializer_queue(t_representer *representer) 
-{
+bool initializer_queue(t_representer *representer) {
   t_queue *queue;
 
   queue = malloc(sizeof(t_queue));
@@ -101,12 +100,11 @@ bool initializer_queue(t_representer *representer)
   return true;
 }
 
-bool init_queue_mutexs_conds(t_representer *representer) 
-{
+bool init_queue_mutexs_conds(t_representer *representer) {
   if (pthread_mutex_init(&representer->queue->mutex_queue, NULL) != 0) {
     pthread_mutex_destroy(&representer->print_mutex);
-    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex
-                        , &representer->ready_coders_counter_m_c.cond);
+    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex,
+                       &representer->ready_coders_counter_m_c.cond);
     return false;
   }
   return true;

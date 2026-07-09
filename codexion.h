@@ -86,20 +86,22 @@ typedef struct s_coder
 	struct timeval  last_compile;
 	pthread_mutex_t burnout_mutex;
 	pthread_t thread;
-  t_representer *representer;
   t_queue *queue;
   t_config *config;
 	t_dongle *left_dongle;
 	t_dongle *right_dongle;
 	t_coder_state coder_state;
   t_mutex_cond mutex_cond;
-	bool *is_burnouted;
+	bool *is_burnout;
+  pthread_mutex_t *is_burnout_mutex;
   pthread_mutex_t *print_mutex;
   int *ready_coders_counter;
   t_mutex_cond *ready_coders_counter_m_c;
   struct timeval *begining_time;
   t_mutex_cond numbers_compilation_m_c;
   int numbers_compilation;
+  int *finished_coders;
+  pthread_mutex_t *finished_coders_mutex;
 }	t_coder;
 
 
@@ -112,15 +114,15 @@ typedef struct s_representer
   t_queue *queue;
   pthread_mutex_t print_mutex;
   t_mutex_cond ready_coders_counter_m_c;
-  t_mutex_cond cond_mutex_monitor; 
-  t_mutex_cond m_c;
+  pthread_mutex_t is_burnout_mutex;
   bool is_burnout;
-  t_mutex_cond required_numbers_compilation_is_completed_m_c;
   int required_numbers_compilation_is_completed;
   int ready_coders_counter;
   struct timeval begining_time;
   pthread_t monitor;
   pthread_t controller;
+  int finshed_coders;
+  pthread_mutex_t  finished_coders_mutex;
 } t_representer;
 
 // ============= Cleaner ====================>
@@ -137,7 +139,7 @@ t_coder **coders_allocater(int number_of_coders);
 bool   is_coder_burnouted(t_coder *coder);
 
 void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles, int number_of_coders);
-void	coder_waiting_dongles(t_coder *coder);
+bool	coder_waiting_dongles(t_coder *coder);
 bool are_one_of_coders_burnout(t_representer *representer);
 
 // ============= Controller ====================>
@@ -146,8 +148,7 @@ bool controller_creator(t_representer *representer);
 void *controller_home(void *args) ;
 void controller_joiner(pthread_t *controller);
 t_coder *catch_coder(t_representer *representer);
-bool is_coder_in_exit_state(t_coder *coder);
-bool is_representation_works_well(t_representer *representer);
+bool is_representation_works_well(pthread_mutex_t *is_burnout_mutex, bool *is_burnout);
 
 //=> routine.c
 void coders_joiner(t_representer *representer);
@@ -156,15 +157,15 @@ bool wait_for_simulation_to_start(t_coder *coder);
 void print_action(t_coder *coder);
 bool are_required_numbers_compilation_done(t_coder *coder);
 bool is_represontation_done(t_representer * representer);
+bool wait(pthread_mutex_t *mutex, pthread_cond_t *cond, unsigned long time);
 
 // ============= Dongles ====================>
 bool hold_both_dongles(t_coder *coder);
 bool drop_both_dongles(t_coder *coder);
 bool are_dongles_available(t_coder *coder);
-void wait_dongles_to_cold(t_coder *coder, long cooldown_time);
 bool is_the_dongle_cold(t_dongle *dongle, unsigned long time_cooldown);
 long get_the_hotest_dongle(t_dongle *left_dongle, t_dongle *right_dongle);
-void check_dongles_coldness(t_coder *coder);
+bool check_dongles_coldness(t_coder *coder);
 
 
 bool init_dongles(t_representer *representer);
