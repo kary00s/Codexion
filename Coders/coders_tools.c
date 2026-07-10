@@ -1,8 +1,4 @@
 #include "../codexion.h"
-bool is_coder_burnouted(t_coder *coder);
-
-void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
-                                int number_of_coders);
 void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
                                 int number_of_coders) {
   int i;
@@ -11,6 +7,15 @@ void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
   while (i < number_of_coders) {
     coders[i]->left_dongle = dongles[i];
     coders[i]->right_dongle = dongles[(i + 1) % number_of_coders];
+    i++;
+  }
+}
+
+void coders_joiner(t_representer *representer) {
+  int i;
+  i = 0;
+  while (i < representer->config.number_of_coders) {
+    pthread_join(representer->coders[i]->thread, NULL);
     i++;
   }
 }

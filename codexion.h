@@ -137,6 +137,7 @@ bool coders_creator(t_representer *representer);
 bool init_coders(t_representer *representer);
 t_coder **coders_allocater(int number_of_coders);
 bool   is_coder_burnouted(t_coder *coder);
+void coders_joiner(t_representer *representer);
 
 void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles, int number_of_coders);
 bool	coder_waiting_dongles(t_coder *coder);
@@ -150,17 +151,19 @@ void controller_joiner(pthread_t *controller);
 t_coder *catch_coder(t_representer *representer);
 bool is_representation_works_well(pthread_mutex_t *is_burnout_mutex, bool *is_burnout);
 
-//=> routine.c
-void coders_joiner(t_representer *representer);
+// ============= Routine ====================>
 void *routine_all_the_coders(void *arg);
 bool wait_for_simulation_to_start(t_coder *coder);
-void print_action(t_coder *coder);
-bool are_required_numbers_compilation_done(t_coder *coder);
 bool is_represontation_done(t_representer * representer);
 bool wait(pthread_mutex_t *mutex, pthread_cond_t *cond, unsigned long time);
+void add_coder_to_finished_coders(t_coder *coder) ;
+
+bool compiling(t_coder *coder, t_queue *queue);
+bool debuging(t_coder *coder);
+bool refactoring(t_coder *coder);
+void print_action(t_coder *coder);
 
 // ============= Dongles ====================>
-bool hold_both_dongles(t_coder *coder);
 bool drop_both_dongles(t_coder *coder);
 bool are_dongles_available(t_coder *coder);
 bool is_the_dongle_cold(t_dongle *dongle, unsigned long time_cooldown);
@@ -211,6 +214,7 @@ unsigned long get_time_ms();
 int timeval_less(struct timeval a, struct timeval b);
 void	ms_to_timespec(t_timespec *timespec, unsigned long time_ms);
 long time_elapsed_until_now(struct timeval elapsed_time);
+void register_time(struct timeval *time, pthread_mutex_t *mutex);
 
 
 #endif

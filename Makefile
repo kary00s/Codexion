@@ -7,18 +7,19 @@ SRC = ./Main/codexion.c\
 	./Parser/parser.c\
 	./Dongles/dongles_controller.c \
 	./Dongles/dongles.c\
-	./Coders/routine.c\
 	./Coders/coders.c\
-	./Coders/coders_controller.c\
+	./Coders/coders_tools.c\
 	./Controller/controller.c\
 	./Monitor/monitor.c\
 	./Cleaner/cleaner.c\
 	./Queue/queue.c\
 	./Initializer/initializer.c\
 	./Mutexs/mutex_cond_utils.c\
+	./Routine/actions.c\
+	./Routine/routine.c\
+
 
 OBG = $(SRC:.c=.o)
-
 all: $(NAME)
 
 $(NAME): $(OBG)

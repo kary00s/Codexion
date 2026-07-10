@@ -55,3 +55,10 @@ long time_elapsed_until_now(struct timeval elapsed_time)
     time_taken = rn - time_taken;
     return time_taken;
 }
+
+void register_time(struct timeval *time, pthread_mutex_t *mutex)
+{
+  pthread_mutex_lock(mutex);
+  gettimeofday(time, NULL);
+  pthread_mutex_unlock(mutex);
+}

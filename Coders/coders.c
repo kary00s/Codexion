@@ -52,8 +52,7 @@ static void initialize_coders_struct(t_representer *representer) {
     coders[i]->queue = representer->queue;
     coders[i]->print_mutex = &representer->print_mutex;
     coders[i]->ready_coders_counter = &representer->ready_coders_counter;
-    coders[i]->ready_coders_counter_m_c =
-        &representer->ready_coders_counter_m_c;
+    coders[i]->ready_coders_counter_m_c = &representer->ready_coders_counter_m_c;
     coders[i]->coder_state = START;
     coders[i]->numbers_compilation = 0;
     coders[i]->begining_time = &representer->begining_time;
