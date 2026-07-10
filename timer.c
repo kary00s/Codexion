@@ -33,12 +33,6 @@ unsigned long time_dongle_get_cold(unsigned long time_cooldown)
     return right_now + time_cooldown;
 } 
 
-int timeval_less(struct timeval a, struct timeval b)
-{
-    if (a.tv_sec != b.tv_sec)
-        return (a.tv_sec < b.tv_sec);
-    return (a.tv_usec < b.tv_usec);
-}
 
 
 void	ms_to_timespec(t_timespec *timespec, unsigned long time_ms)

@@ -42,7 +42,6 @@ void *monitor_home(void *args) {
       usleep(200);
     }
   }
-  printf("the monitor exit\n");
   exit_representation(representer);
   return NULL;
 }

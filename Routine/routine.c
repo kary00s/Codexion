@@ -21,7 +21,6 @@ void *routine_all_the_coders(void *arg)
     if (!refactoring(coder))
       break;
   }
-  printf("coder %d exit\n", coder->coder_id);
   return NULL;
 }
 
@@ -30,7 +29,7 @@ static bool is_coder_finished(t_coder *coder) {
 
   is_finished = false;
   pthread_mutex_lock(&coder->mutex_cond.mutex);
-  if (coder->config->number_of_compiles_required == coder->numbers_compilation)
+  if (coder->config->number_of_compiles_required == coder->numbers_compilation + 1)
     is_finished = true;
   coder->numbers_compilation++;
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
@@ -63,7 +62,7 @@ bool wait(pthread_mutex_t *mutex, pthread_cond_t *cond, unsigned long time) {
 
 static void sleep_odd_coders(t_coder *coder)
 {
-  if (coder->coder_id % 2 == 0)
+  if (coder->coder_id % 2 != 0)
     usleep(500);
 }
 
@@ -87,15 +86,15 @@ void print_action(t_coder *coder)
   time_elapsed = time_elapsed_until_now(*coder->begining_time);
 
   if (coder->coder_state == REFACTORING)
-    printf("%ld %d coder is refactoring\n", time_elapsed, coder->coder_id);
+    printf("%ld %d coder is refactoring\n", time_elapsed, coder->coder_id + 1);
 
   if (coder->coder_state == DEBUGING)
-    printf("%ld %d coder is debuging\n", time_elapsed, coder->coder_id);
+    printf("%ld %d coder is debuging\n", time_elapsed, coder->coder_id + 1);
 
   if (coder->coder_state == COMPILING) {
-    printf("==========> %ld %d coder is compiling\n", time_elapsed, coder->coder_id);
-    // printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
-    // printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
+    printf("%ld %d coder is compiling\n", time_elapsed, coder->coder_id + 1);
+    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
+    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
   }
 
   pthread_mutex_unlock(coder->print_mutex);

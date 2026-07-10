@@ -42,14 +42,8 @@ void *controller_home(void *args) {
     } else
       usleep(200);
   }
-  for (int i = 0; i < representer->queue->size; i++)
-    printf("test %d %d ", representer->queue->coders[i]->coder_id,
-           representer->coders[i]->coder_state);
-  printf("\n");
-  printf("the controller exit\n");
   return NULL;
 }
-
 t_coder *catch_coder(t_representer *representer) {
   t_coder *coder;
   int i = 0;

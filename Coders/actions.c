@@ -5,8 +5,7 @@ static bool action_simulator(t_coder *coder, t_coder_state state);
 
 
 bool compiling(t_coder *coder, t_queue *queue) {
-  inser
-  t_coder_in_queue(coder, coder->queue);
+  insert_coder_in_queue(coder, coder->queue);
   if (!coder_waiting_dongles(coder))
     return false;
   if (!check_dongles_coldness(coder))

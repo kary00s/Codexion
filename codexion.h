@@ -201,7 +201,7 @@ bool parser(int ac, char **args, t_representer *representer);
 
 // ============= Queue ====================>
 void shift_queue_up(t_queue *queue, int index);
-void swap_coders(t_coder *parent_coder, t_coder *child_coder);
+void swap_coders(t_coder **parent_coder, t_coder **child_coder);
 bool pop_coder_from_queue(t_representer *representer, int i);
 void insert_coder_in_queue(t_coder *coder, t_queue *queue);
 bool initializer_queue(t_representer *representer) ;
@@ -211,7 +211,6 @@ bool init_queue_mutexs_conds(t_representer *representer) ;
 // ============= timer ====================>
 unsigned long timeval_to_ms(struct timeval time);
 unsigned long get_time_ms();
-int timeval_less(struct timeval a, struct timeval b);
 void	ms_to_timespec(t_timespec *timespec, unsigned long time_ms);
 long time_elapsed_until_now(struct timeval elapsed_time);
 void register_time(struct timeval *time, pthread_mutex_t *mutex);
