@@ -1,5 +1,6 @@
 #ifndef CODEXION_H
 #define CODEXION_H
+#define LONG_MAX 9223372036854775807LL
 
 #include <bits/types/struct_timeval.h>
 #include<stdio.h>
@@ -68,13 +69,13 @@ typedef enum e_coder_state
 // REPRESENTER structs :
 typedef struct s_config
 {
-    int number_of_coders;
-    int time_to_debug;
-    int time_to_burnout;
-    int time_to_compile;
-    int time_to_refactor;
-    int number_of_compiles_required;
-    int dongle_cooldown;
+    long number_of_coders;
+    long time_to_debug;
+    long time_to_burnout;
+    long time_to_compile;
+    long time_to_refactor;
+    long number_of_compiles_required;
+    long dongle_cooldown;
     t_scheduler scheduler;
 } t_config; 
 
@@ -122,7 +123,7 @@ typedef struct s_representer
 
 // ============= Cleaner ====================>
 void free_dongles(t_representer *representer);
-void free_coders(t_representer *representer) ;
+void free_coders(t_coder **coders);
 void clean_initialize_representer_struct(t_representer *representer);
 
 
@@ -166,12 +167,13 @@ bool check_dongles_coldness(t_coder *coder);
 
 bool init_dongles(t_representer *representer);
 void make_dongles_unavailable(t_dongle *dongle);
-void dongles_destroyer(t_dongle **dongles, int counter);
+void dongles_mutexes_destroyer(t_dongle **dongles, int counter);
 
 
 // ============= Initializer ====================>
 bool init_representer_mutexs_conds(t_representer *representer);
 bool initialize_representer_struct(t_representer *representer, int ac, char **av);
+void representer_mutexes_destroyer(t_representer *representer);
 
 // ============= Monitor ====================>
 bool monitor_creator(t_representer *representer);
@@ -183,7 +185,7 @@ void exit_representation(t_representer *representer);
 
 // ============= Mutexs ====================>
 bool init_mutex_cond(t_mutex_cond *mutex_cond);
-void destroy_mutex_cond(pthread_mutex_t *mutex, pthread_cond_t *cond);
+void destroy_mutex_cond(t_mutex_cond *mutex_cond);
 void destroy_mutex_coders(t_coder **coders, int n);
 bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders);
 
@@ -199,6 +201,7 @@ bool pop_coder_from_queue(t_representer *representer, int i);
 void insert_coder_in_queue(t_coder *coder, t_queue *queue);
 bool init_queue(t_representer *representer) ;
 bool init_queue_mutexs_conds(t_representer *representer) ;
+void clean_queue(t_queue *queue);
 
 
 // ============= timer ====================>

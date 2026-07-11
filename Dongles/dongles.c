@@ -30,12 +30,16 @@ bool init_dongles(t_representer *representer)
 {
   representer->dongles = dongles_allocater(representer);
   if (!representer->dongles)
+  {
+    representer_mutexes_destroyer(representer);
     return false;
-
-  representer->dongles = initialize_dongles_struct(
-      representer->dongles, representer->config.number_of_coders);
-  if (!representer->dongles) {
-    // TODO: free dongles
+  }
+  
+  representer->dongles = initialize_dongles_struct(representer->dongles, representer->config.number_of_coders);
+  if (!representer->dongles) 
+  {
+    free_dongles(representer);
+    representer_mutexes_destroyer(representer);
     return false;
   }
   return true;
@@ -50,28 +54,24 @@ static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
   while (i < counter) {
     dongles[i]->is_available = true;
     dongles[i]->dongle_id = i;
-    if (pthread_mutex_init(&dongles[i]->dongle_m_c.mutex, NULL)) {
-      dongles_destroyer(dongles, i);
-      printf("dongle error \n");
-      return (NULL);
-    }
-    if (pthread_cond_init(&dongles[i]->dongle_m_c.cond, NULL)) {
-      dongles_destroyer(dongles, i);
-      printf("dongle error \n");
+    if (!init_mutex_cond(&dongles[i]->dongle_m_c)) 
+    {
+      dongles_mutexes_destroyer(dongles, i);
       return (NULL);
     }
     i++;
+
   }
   return (dongles);
 }
 
-
-void dongles_destroyer(t_dongle **dongles, int counter) {
+void dongles_mutexes_destroyer(t_dongle **dongles, int counter)
+{
   int i;
   i = 0;
-  while (i < counter) {
-    pthread_mutex_destroy(&dongles[i]->dongle_m_c.mutex);
-    pthread_cond_destroy(&dongles[i]->dongle_m_c.cond);
+  while (i < counter)
+  {
+    destroy_mutex_cond(&dongles[i]->dongle_m_c);
     i++;
   }
 }

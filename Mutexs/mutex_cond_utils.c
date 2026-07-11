@@ -13,10 +13,10 @@ bool init_mutex_cond(t_mutex_cond *mutex_cond)
   return true;
 }
 
-void destroy_mutex_cond(pthread_mutex_t *mutex, pthread_cond_t *cond)
+void destroy_mutex_cond(t_mutex_cond *mutex_cond)
 {
-  pthread_mutex_destroy(mutex);
-  pthread_cond_destroy(cond);
+  pthread_mutex_destroy(&mutex_cond->mutex);
+  pthread_cond_destroy(&mutex_cond->cond);
 }
 
 
@@ -26,7 +26,7 @@ void destroy_mutex_coders(t_coder **coders, int n)
 
   i = 0;
   while (i < n) {
-    destroy_mutex_cond(&coders[i]->mutex_cond.mutex , &coders[i]->mutex_cond.cond);
+    destroy_mutex_cond(&coders[i]->mutex_cond);
     i++;  
   }
   free_previous_coders(coders, n);

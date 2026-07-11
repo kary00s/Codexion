@@ -114,11 +114,20 @@ bool init_queue(t_representer *representer) {
 }
 
 bool init_queue_mutexs_conds(t_representer *representer) {
-  if (pthread_mutex_init(&representer->queue->mutex_queue, NULL) != 0) {
+  if (pthread_mutex_init(&representer->queue->mutex_queue, NULL) != 0) 
+  {
+    free(representer->queue); // frree queue struct
+    pthread_mutex_destroy(&representer->finished_coders_mutex);
     pthread_mutex_destroy(&representer->print_mutex);
-    destroy_mutex_cond(&representer->ready_coders_counter_m_c.mutex,
-                       &representer->ready_coders_counter_m_c.cond);
+    destroy_mutex_cond(&representer->ready_coders_counter_m_c);   
     return false;
   }
   return true;
+}
+
+void clean_queue(t_queue *queue)
+{
+  free_coders(queue->coders);
+  free(queue);
+  pthread_mutex_destroy(&queue->mutex_queue);
 }

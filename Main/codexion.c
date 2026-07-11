@@ -4,7 +4,6 @@ int main(int ac, char *av[]) {
   t_representer representer;
   if (!initialize_representer_struct(&representer, ac, av))
     return 0;
-
   if (!monitor_creator(&representer)) {
     clean_initialize_representer_struct(&representer);
     return 0;

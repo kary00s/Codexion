@@ -33,10 +33,22 @@ bool init_coders(t_representer *representer)
   number_of_coders = representer->config.number_of_coders;
   representer->coders = coders_allocater(number_of_coders);
   if (!representer->coders)
+  {
+    representer_mutexes_destroyer(representer);
+    clean_queue(representer->queue);
+    dongles_mutexes_destroyer(representer->dongles, representer->config.number_of_coders);
+    free_dongles(representer);
     return false;
+  }
+
   initialize_coders_struct(representer);
-  if (!init_coders_mutexes_conds(representer->coders, number_of_coders)) {
-    free_coders(representer);
+  if (!init_coders_mutexes_conds(representer->coders, number_of_coders)) 
+  {
+    free_coders(representer->coders);
+    representer_mutexes_destroyer(representer);
+    clean_queue(representer->queue);
+    dongles_mutexes_destroyer(representer->dongles, representer->config.number_of_coders);
+    free_dongles(representer);
     return false;
   }
   return true;
