@@ -39,14 +39,8 @@ bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders)
   i = 0;
   while (i < number_of_coders) 
   {
-    if (!init_mutex_cond(&coders[i]->mutex_cond) && pthread_mutex_init(&coders[i]->burnout_mutex, NULL)) 
+    if (!init_mutex_cond(&coders[i]->mutex_cond)) 
     {
-      free_previous_coders(coders, i);
-      return false;
-    }
-    if(!init_mutex_cond(&coders[i]->numbers_compilation_m_c))
-    {
-      destroy_mutex_coders(coders, i);
       free_previous_coders(coders, i);
       return false;
     }

@@ -100,5 +100,5 @@ static void allow_coders_to_start(t_representer *representer) {
     pthread_mutex_unlock(&coders[i]->mutex_cond.mutex);
     i++;
   }
-  representer->coders_are_ready = true;
+
 }

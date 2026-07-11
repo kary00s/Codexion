@@ -47,26 +47,14 @@ void add_coder_to_finished_coders(t_coder *coder)
   }
 }
 
-bool wait(pthread_mutex_t *mutex, pthread_cond_t *cond, unsigned long time) {
-  t_timespec time_spec;
-  bool is_ok;
-
-  is_ok = true;
-  pthread_mutex_lock(mutex);
-  ms_to_timespec(&time_spec, time);
-  if (pthread_cond_timedwait(cond, mutex, &time_spec) != ETIMEDOUT)
-    is_ok = false;
-  pthread_mutex_unlock(mutex);
-  return is_ok;
-}
-
 static void sleep_odd_coders(t_coder *coder)
 {
   if (coder->coder_id % 2 != 0)
     usleep(500);
 }
 
-bool wait_for_simulation_to_start(t_coder *coder) {
+bool wait_for_simulation_to_start(t_coder *coder)
+{
   pthread_mutex_lock(&coder->ready_coders_counter_m_c->mutex);
   (*coder->ready_coders_counter)++;
   pthread_cond_broadcast(&coder->ready_coders_counter_m_c->cond);
@@ -93,8 +81,8 @@ void print_action(t_coder *coder)
 
   if (coder->coder_state == COMPILING) {
     printf("%ld %d coder is compiling\n", time_elapsed, coder->coder_id + 1);
-    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
-    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id);
+    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id + 1);
+    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id + 1);
   }
 
   pthread_mutex_unlock(coder->print_mutex);

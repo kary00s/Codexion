@@ -1,16 +1,15 @@
-
 #include "../codexion.h"
 
-void *controller_home(void *args);
-bool controller_creator(t_representer *representer) {
+bool controller_creator(t_representer *representer) 
+{
   if (pthread_create(&representer->controller, NULL, &controller_home,
                      representer))
     return false;
   return true;
 }
 
-bool is_representation_works_well(pthread_mutex_t *is_burnout_mutex,
-                                  bool *is_burnout) {
+bool is_representation_works_well(pthread_mutex_t *is_burnout_mutex, bool *is_burnout) 
+{
   bool works_well;
   works_well = true;
   pthread_mutex_lock(is_burnout_mutex);
@@ -34,33 +33,28 @@ void *controller_home(void *args) {
   while (is_representation_works_well(&representer->is_burnout_mutex,
                                       &representer->is_burnout)) {
     coder = catch_coder(representer);
-    if (coder) {
+    if (coder)
+    {
       pthread_mutex_lock(&coder->mutex_cond.mutex);
       coder->coder_state = COMPILING;
       pthread_cond_broadcast(&coder->mutex_cond.cond);
       pthread_mutex_unlock(&coder->mutex_cond.mutex);
-    } else
+    }
+    else
       usleep(200);
   }
   return NULL;
 }
-t_coder *catch_coder(t_representer *representer) {
-  t_coder *coder;
-  int i = 0;
-  coder = NULL;
 
-  pthread_mutex_lock(&representer->queue->mutex_queue);
-  while (i < representer->queue->size) {
-    if (are_dongles_available(representer->queue->coders[i])) {
-      coder = representer->queue->coders[i];
-      if (!is_representation_works_well(&representer->is_burnout_mutex,
-                                        &representer->is_burnout))
-        return NULL;
-      pop_coder_from_queue(representer, i);
-      break;
-    }
-    i++;
-  }
-  pthread_mutex_unlock(&representer->queue->mutex_queue);
-  return coder;
+bool wait(pthread_mutex_t *mutex, pthread_cond_t *cond, unsigned long time) {
+  t_timespec time_spec;
+  bool is_ok;
+
+  is_ok = true;
+  pthread_mutex_lock(mutex);
+  ms_to_timespec(&time_spec, time);
+  if (pthread_cond_timedwait(cond, mutex, &time_spec) != ETIMEDOUT)
+    is_ok = false;
+  pthread_mutex_unlock(mutex);
+  return is_ok;
 }

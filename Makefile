@@ -1,11 +1,11 @@
 NAME = codexion
 FLAGS = -pthread
-CC = cc
+CC = cc 
 
 SRC = ./Main/codexion.c\
 	timer.c\
 	./Parser/parser.c\
-	./Dongles/dongles_controller.c \
+	./Dongles/dongles_tools.c \
 	./Dongles/dongles.c\
 	./Coders/coders.c\
 	./Coders/coders_tools.c\

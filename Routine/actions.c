@@ -58,7 +58,6 @@ static bool action_simulator(t_coder *coder, t_coder_state state)
   else if (state == REFACTORING)
     time_action += coder->config->time_to_refactor;
   if (!wait(&coder->mutex_cond.mutex, &coder->mutex_cond.cond, time_action))
-    return is_representation_works_well(coder->is_burnout_mutex,
-                                        coder->is_burnout);
+    return is_representation_works_well(coder->is_burnout_mutex, coder->is_burnout);
   return true;
 }

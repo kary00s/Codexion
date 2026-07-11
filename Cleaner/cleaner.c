@@ -30,7 +30,7 @@ void free_coders(t_representer *representer)
 
 
 void clean_initialize_representer_struct(t_representer *representer)
-{ 
+{
   // TODO: stop the running coders and free the resources
   destroy_mutex_coders(&(*representer->coders), representer->config.number_of_coders);
   free_coders(representer);

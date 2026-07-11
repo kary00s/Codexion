@@ -6,22 +6,8 @@ t_coder **coders_allocater(int number_of_coders);
 static void initialize_coders_struct(t_representer *representer);
 bool coders_creator(t_representer *representer);
 
-bool init_coders(t_representer *representer) {
-  int number_of_coders;
-
-  number_of_coders = representer->config.number_of_coders;
-  representer->coders = coders_allocater(number_of_coders);
-  if (!representer->coders)
-    return false;
-  initialize_coders_struct(representer);
-  if (!init_coders_mutexes_conds(representer->coders, number_of_coders)) {
-    free_coders(representer);
-    return false;
-  }
-  return true;
-}
-
-t_coder **coders_allocater(int number_of_coders) {
+t_coder **coders_allocater(int number_of_coders) 
+{
   t_coder **coders_list;
   int i;
 
@@ -38,6 +24,22 @@ t_coder **coders_allocater(int number_of_coders) {
     i++;
   }
   return (coders_list);
+}
+
+bool init_coders(t_representer *representer) 
+{
+  int number_of_coders;
+
+  number_of_coders = representer->config.number_of_coders;
+  representer->coders = coders_allocater(number_of_coders);
+  if (!representer->coders)
+    return false;
+  initialize_coders_struct(representer);
+  if (!init_coders_mutexes_conds(representer->coders, number_of_coders)) {
+    free_coders(representer);
+    return false;
+  }
+  return true;
 }
 
 static void initialize_coders_struct(t_representer *representer) {

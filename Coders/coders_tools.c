@@ -1,6 +1,7 @@
 #include "../codexion.h"
-void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
-                                int number_of_coders) {
+
+void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles, int number_of_coders)
+{
   int i;
 
   i = 0;
@@ -11,7 +12,8 @@ void linker_coders_with_dongles(t_coder **coders, t_dongle **dongles,
   }
 }
 
-void coders_joiner(t_representer *representer) {
+void coders_joiner(t_representer *representer)
+{
   int i;
   i = 0;
   while (i < representer->config.number_of_coders) {
@@ -57,4 +59,29 @@ bool is_coder_burnouted(t_coder *coder) {
   pthread_mutex_unlock(&coder->mutex_cond.mutex);
 
   return is_burnouted;
+}
+
+t_coder *catch_coder(t_representer *representer) 
+{
+  t_coder *coder;
+  int i = 0;
+  coder = NULL;
+
+  pthread_mutex_lock(&representer->queue->mutex_queue);
+  while (i < representer->queue->size) {
+    if (are_dongles_available(representer->queue->coders[i])) {
+      coder = representer->queue->coders[i];
+      if (!is_representation_works_well(&representer->is_burnout_mutex,
+                                        &representer->is_burnout))
+      {
+        pthread_mutex_unlock(&representer->queue->mutex_queue);
+        return NULL;
+      }
+      pop_coder_from_queue(representer, i);
+      break;
+    }
+    i++;
+  }
+  pthread_mutex_unlock(&representer->queue->mutex_queue);
+  return coder;
 }

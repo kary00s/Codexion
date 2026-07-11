@@ -33,6 +33,7 @@ static void shift_queue_down_edf(t_queue *queue, int i)
   unsigned long left_time;
   unsigned long right_time;
   unsigned long smallest_time;
+  
   swap_coders(&queue->coders[0], &queue->coders[i]);
   swap_coders(&queue->coders[0], &queue->coders[queue->size-1]);
 
@@ -65,8 +66,8 @@ static void shift_queue_down_edf(t_queue *queue, int i)
 bool pop_coder_from_queue(t_representer *representer, int i) {
   t_queue *queue;
   queue = representer->queue;
-  if (representer->queue->coders[i] == NULL)
-    return false;
+    if (representer->queue->coders[i] == NULL)
+      return false;
 
   if (representer->config.scheduler == FIFO)
     shift_queue_down_fifo(queue, i);
@@ -93,7 +94,7 @@ void insert_coder_in_queue(t_coder *coder, t_queue *queue) {
   pthread_mutex_unlock(&coder->queue->mutex_queue);
 }
 
-bool initializer_queue(t_representer *representer) {
+bool init_queue(t_representer *representer) {
   t_queue *queue;
 
   queue = malloc(sizeof(t_queue));
@@ -107,6 +108,8 @@ bool initializer_queue(t_representer *representer) {
     return false;
   }
   representer->queue = queue;
+  if (!init_queue_mutexs_conds(representer))
+    return false;
   return true;
 }
 
