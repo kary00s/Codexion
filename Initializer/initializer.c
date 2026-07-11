@@ -28,11 +28,9 @@ bool initialize_representer_struct(t_representer *representer, int ac, char **av
 
   if (!init_queue(representer))
     return false;
-  // printf("here is god\n");
 
   if (!init_dongles(representer)) 
     return false;
-
 
   if (!init_coders(representer)) {
     return false;

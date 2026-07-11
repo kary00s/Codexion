@@ -99,11 +99,16 @@ bool init_queue(t_representer *representer) {
 
   queue = malloc(sizeof(t_queue));
   if (queue == NULL)
+  {
+    representer_mutexes_destroyer(representer);
     return false;
+  }
   queue->capacity = representer->config.number_of_coders;
   queue->size = 0;
   queue->coders = coders_allocater(queue->capacity);
-  if (queue->coders == NULL) {
+  if (queue->coders == NULL) 
+  {
+    representer_mutexes_destroyer(representer);
     free(queue);
     return false;
   }

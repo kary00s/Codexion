@@ -32,12 +32,14 @@ bool init_dongles(t_representer *representer)
   if (!representer->dongles)
   {
     representer_mutexes_destroyer(representer);
+    clean_queue(representer->queue);
     return false;
   }
   
   representer->dongles = initialize_dongles_struct(representer->dongles, representer->config.number_of_coders);
   if (!representer->dongles) 
   {
+    clean_queue(representer->queue);
     free_dongles(representer);
     representer_mutexes_destroyer(representer);
     return false;

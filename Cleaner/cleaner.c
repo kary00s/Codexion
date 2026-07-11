@@ -30,8 +30,7 @@ void free_coders(t_coder **coders)
 
 void clean_initialize_representer_struct(t_representer *representer)
 {
-  // TODO: stop the running coders and free the resources
-  dongles_mutexes_destroyer(re);
+  dongles_mutexes_destroyer(representer->dongles, representer->config.number_of_coders);
   destroy_mutex_coders(&(*representer->coders), representer->config.number_of_coders);
   free_coders(representer->coders);
   free_dongles(representer);

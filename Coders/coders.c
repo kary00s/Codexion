@@ -44,11 +44,11 @@ bool init_coders(t_representer *representer)
   initialize_coders_struct(representer);
   if (!init_coders_mutexes_conds(representer->coders, number_of_coders)) 
   {
-    free_coders(representer->coders);
-    representer_mutexes_destroyer(representer);
     clean_queue(representer->queue);
-    dongles_mutexes_destroyer(representer->dongles, representer->config.number_of_coders);
+    free_coders(representer->coders);
     free_dongles(representer);
+    dongles_mutexes_destroyer(representer->dongles, representer->config.number_of_coders);
+    representer_mutexes_destroyer(representer);
     return false;
   }
   return true;
