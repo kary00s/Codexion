@@ -17,8 +17,9 @@ t_coder **coders_allocater(int number_of_coders)
     return (NULL);
   while (i < number_of_coders) {
     coders_list[i] = (t_coder *)malloc(sizeof(t_coder));
-    if (!coders_list[i]) {
-      free_previous_coders(coders_list, i);
+    if (!coders_list[i])
+    {
+      free_coders(coders_list, i);
       return NULL;
     }
     i++;
@@ -33,22 +34,12 @@ bool init_coders(t_representer *representer)
   number_of_coders = representer->config.number_of_coders;
   representer->coders = coders_allocater(number_of_coders);
   if (!representer->coders)
-  {
-    representer_mutexes_destroyer(representer);
-    clean_queue(representer->queue);
-    dongles_mutexes_destroyer(representer->dongles, representer->config.number_of_coders);
-    free_dongles(representer);
     return false;
-  }
 
   initialize_coders_struct(representer);
-  if (!init_coders_mutexes_conds(representer->coders, number_of_coders)) 
+  if (!init_coders_mutexes_conds(representer->coders, number_of_coders))
   {
-    clean_queue(representer->queue);
-    free_coders(representer->coders);
-    free_dongles(representer);
-    dongles_mutexes_destroyer(representer->dongles, representer->config.number_of_coders);
-    representer_mutexes_destroyer(representer);
+    free_coders(representer->coders, representer->config.number_of_coders);
     return false;
   }
   return true;
@@ -84,7 +75,9 @@ bool coders_creator(t_representer *representer) {
   while (i < representer->config.number_of_coders) {
     if (pthread_create(&representer->coders[i]->thread, NULL,
                        routine_all_the_coders, representer->coders[i]) != 0) {
-      // TODO: stop the running codders
+      exit_representation(representer);
+      representer_mutexes_destroyer(representer);
+      clean_initialize_representer_struct(representer);
       return false;
     }
     i++;

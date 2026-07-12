@@ -27,12 +27,23 @@ bool initialize_representer_struct(t_representer *representer, int ac, char **av
     return false;
 
   if (!init_queue(representer))
+  { 
+    representer_mutexes_destroyer(representer);
     return false;
+  }
 
-  if (!init_dongles(representer)) 
+  if (!init_dongles(representer))
+  { 
+    clean_queue(representer); 
+    representer_mutexes_destroyer(representer);
     return false;
+  }
 
-  if (!init_coders(representer)) {
+  if (!init_coders(representer)) 
+  {
+    clean_dongles(representer);
+    clean_queue(representer); 
+    representer_mutexes_destroyer(representer);
     return false;
   }
   linker_coders_with_dongles(representer->coders, representer->dongles, representer->config.number_of_coders);

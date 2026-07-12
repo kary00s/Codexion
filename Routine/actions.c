@@ -1,5 +1,6 @@
 #include"../codexion.h"
 
+static void change_codere_state(t_coder *coder, t_coder_state state);
 static bool action_simulator(t_coder *coder, t_coder_state state);
 
 bool compiling(t_coder *coder, t_queue *queue) {
@@ -14,9 +15,7 @@ bool compiling(t_coder *coder, t_queue *queue) {
   if (!action_simulator(coder, coder->coder_state))
     return false; 
   drop_both_dongles(coder);
-  pthread_mutex_lock(&coder->mutex_cond.mutex);
-  coder->coder_state = DEBUGING;
-  pthread_mutex_unlock(&coder->mutex_cond.mutex);
+  change_codere_state(coder, DEBUGING);
   return true;
 }
 
@@ -24,9 +23,7 @@ bool debuging(t_coder *coder) {
   print_action(coder);
   if (!action_simulator(coder, coder->coder_state))
     return false;
-  pthread_mutex_lock(&coder->mutex_cond.mutex);
-  coder->coder_state = REFACTORING;
-  pthread_mutex_unlock(&coder->mutex_cond.mutex);
+  change_codere_state(coder, REFACTORING);
   return is_representation_works_well(coder->is_burnout_mutex,
                                       coder->is_burnout);
 }
@@ -35,11 +32,8 @@ bool refactoring(t_coder *coder) {
   print_action(coder);
   if (!action_simulator(coder, coder->coder_state))
     return false;
-  pthread_mutex_lock(&coder->mutex_cond.mutex);
-  coder->coder_state = WAIT;
-  pthread_mutex_unlock(&coder->mutex_cond.mutex);
-  return is_representation_works_well(coder->is_burnout_mutex,
-                                      coder->is_burnout);
+  change_codere_state(coder, WAIT);
+  return is_representation_works_well(coder->is_burnout_mutex, coder->is_burnout);
 }
 
 
@@ -60,4 +54,11 @@ static bool action_simulator(t_coder *coder, t_coder_state state)
   if (!wait(&coder->mutex_cond.mutex, &coder->mutex_cond.cond, time_action))
     return is_representation_works_well(coder->is_burnout_mutex, coder->is_burnout);
   return true;
+}
+
+static void change_codere_state(t_coder *coder, t_coder_state state)
+{
+  pthread_mutex_lock(&coder->mutex_cond.mutex);
+  coder->coder_state = state;
+  pthread_mutex_unlock(&coder->mutex_cond.mutex);
 }

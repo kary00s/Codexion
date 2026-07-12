@@ -15,7 +15,8 @@ static t_dongle **dongles_allocater(t_representer *representer)
   i = 0;
   while (i < representer->config.number_of_coders) {
     dongles_list[i] = (t_dongle *)malloc(sizeof(t_dongle));
-    if (!dongles_list[i]) {
+    if (!dongles_list[i])
+    {
       while (i >= 0)
         free(dongles_list[i--]);
       free(dongles_list);
@@ -30,18 +31,12 @@ bool init_dongles(t_representer *representer)
 {
   representer->dongles = dongles_allocater(representer);
   if (!representer->dongles)
-  {
-    representer_mutexes_destroyer(representer);
-    clean_queue(representer->queue);
     return false;
-  }
   
   representer->dongles = initialize_dongles_struct(representer->dongles, representer->config.number_of_coders);
   if (!representer->dongles) 
   {
-    clean_queue(representer->queue);
     free_dongles(representer);
-    representer_mutexes_destroyer(representer);
     return false;
   }
   return true;
@@ -62,7 +57,6 @@ static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
       return (NULL);
     }
     i++;
-
   }
   return (dongles);
 }

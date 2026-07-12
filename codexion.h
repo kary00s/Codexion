@@ -123,12 +123,12 @@ typedef struct s_representer
 
 // ============= Cleaner ====================>
 void free_dongles(t_representer *representer);
-void free_coders(t_coder **coders);
+void free_coders(t_coder **coders, int n);
 void clean_initialize_representer_struct(t_representer *representer);
-
+void clean_dongles(t_representer *representer);
+void clean_coders(t_representer *representer);
 
 // ============= Coders ====================>
-void free_previous_coders(t_coder **coders, int n);
 bool coders_creator(t_representer *representer); 
 bool init_coders(t_representer *representer);
 t_coder **coders_allocater(int number_of_coders);
@@ -201,7 +201,7 @@ bool pop_coder_from_queue(t_representer *representer, int i);
 void insert_coder_in_queue(t_coder *coder, t_queue *queue);
 bool init_queue(t_representer *representer) ;
 bool init_queue_mutexs_conds(t_representer *representer) ;
-void clean_queue(t_queue *queue);
+void clean_queue(t_representer *representer);
 
 
 // ============= timer ====================>

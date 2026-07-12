@@ -18,7 +18,12 @@ static void allow_coders_to_start(t_representer *representer);
 
 bool monitor_creator(t_representer *representer) {
   if (pthread_create(&representer->monitor, NULL, &monitor_home, representer))
+  {
+    exit_representation(representer);
+    representer_mutexes_destroyer(representer);
+    clean_initialize_representer_struct(representer);
     return false;
+  }
   return true;
 }
 
@@ -56,6 +61,7 @@ bool is_represontation_done(t_representer *representer) {
   return is_done;
 }
 
+// destroy in thread create just
 void exit_representation(t_representer *representer) {
   int i;
   i = 0;
@@ -84,14 +90,16 @@ bool wait_for_coders_to_start(t_representer *representer) {
   return true;
 }
 
-static void allow_coders_to_start(t_representer *representer) {
+static void allow_coders_to_start(t_representer *representer)
+{
   int i;
   t_coder **coders;
 
   i = 0;
   coders = representer->coders;
   gettimeofday(&representer->begining_time, NULL);
-  while (i < representer->config.number_of_coders) {
+  while (i < representer->config.number_of_coders)
+  {
     pthread_mutex_lock(&coders[i]->mutex_cond.mutex);
     gettimeofday(&coders[i]->last_compile, NULL);
     coders[i]->coder_state = WAIT;
@@ -100,5 +108,4 @@ static void allow_coders_to_start(t_representer *representer) {
     pthread_mutex_unlock(&coders[i]->mutex_cond.mutex);
     i++;
   }
-
 }

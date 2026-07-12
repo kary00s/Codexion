@@ -4,13 +4,19 @@ bool controller_creator(t_representer *representer)
 {
   if (pthread_create(&representer->controller, NULL, &controller_home,
                      representer))
+  {
+    exit_representation(representer);
+    representer_mutexes_destroyer(representer);
+    clean_initialize_representer_struct(representer);
     return false;
+  }
   return true;
 }
 
 bool is_representation_works_well(pthread_mutex_t *is_burnout_mutex, bool *is_burnout) 
 {
   bool works_well;
+
   works_well = true;
   pthread_mutex_lock(is_burnout_mutex);
   if (*is_burnout == true)

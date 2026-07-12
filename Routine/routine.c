@@ -85,5 +85,8 @@ void print_action(t_coder *coder)
     printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id + 1);
   }
 
+  if(coder->coder_state == EXIT)
+    printf(">> %ld %d coder burnouted\n", time_elapsed, coder->coder_id);
+    
   pthread_mutex_unlock(coder->print_mutex);
 }

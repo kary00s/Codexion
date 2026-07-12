@@ -1,5 +1,5 @@
 NAME = codexion
-FLAGS = -pthread
+FLAGS = -pthread#
 CC = cc 
 
 SRC = ./Main/codexion.c\

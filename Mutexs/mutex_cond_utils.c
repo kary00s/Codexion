@@ -29,7 +29,6 @@ void destroy_mutex_coders(t_coder **coders, int n)
     destroy_mutex_cond(&coders[i]->mutex_cond);
     i++;  
   }
-  free_previous_coders(coders, n);
 }
 
 
@@ -41,7 +40,7 @@ bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders)
   {
     if (!init_mutex_cond(&coders[i]->mutex_cond)) 
     {
-      free_previous_coders(coders, i);
+      destroy_mutex_coders(coders, i);
       return false;
     }
     i++;
