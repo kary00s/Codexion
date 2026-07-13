@@ -12,86 +12,43 @@ void swap_coders(t_coder **parent_coder, t_coder **child_coder)
   *child_coder = swp;
 }
 
-static void shift_queue_down_edf(t_queue *queue, int i) 
+static void shift_queue_down_edf(t_queue *queue, int i)
 {
-  int right;
   int left;
+  int right;
   int smallest;
-  unsigned long left_time;
-  unsigned long right_time;
   unsigned long smallest_time;
-  
+  unsigned long child_time;
 
-  swap_coders(&queue->coders[0], &queue->coders[i]);
-  swap_coders(&queue->coders[0], &queue->coders[queue->size-1]);
+  left = i * 2 + 1;
+  right = i * 2 + 2;
+  smallest = i;
 
-  while (1)
+  smallest_time = timeval_to_ms(queue->coders[i]->last_compile);
+  if (left < queue->size)
   {
-    right = i * 2 + 2;
-    left = i * 2 + 1;
-    smallest = i;
-
-    smallest_time = timeval_to_ms(queue->coders[i]->last_compile);
-    
-    
-    if (left < queue->size) 
-    {    
-      left_time = timeval_to_ms(queue->coders[left]->last_compile);
-      if (left_time < smallest_time)
-        smallest = left;
-    }
-    if (right < queue->size)
+    child_time = timeval_to_ms(queue->coders[left]->last_compile);
+    if (child_time < smallest_time)
     {
-      right_time = timeval_to_ms(queue->coders[right]->last_compile);
-      if(right_time < smallest_time)
-        smallest = right;
+      smallest = left;
+      smallest_time = child_time;
     }
-    if (smallest == i)
-      break;
-
-    swap_coders(&queue->coders[i], &queue->coders[smallest]);
-    i = smallest;
   }
- }
-// static void shift_queue_down_edf(t_queue *queue, int i)
-// {
-//     int left;
-//     int right;
-//     int smallest;
-//     unsigned long smallest_time;
-//     unsigned long child_time;
-
-//     while (1)
-//     {
-//         left = i * 2 + 1;
-//         right = i * 2 + 2;
-//         smallest = i;
-//         smallest_time = timeval_to_ms(queue->coders[i]->last_compile);
-
-//         if (left < queue->size)
-//         {
-//             child_time = timeval_to_ms(queue->coders[left]->last_compile);
-//             if (child_time < smallest_time)
-//             {
-//                 smallest = left;
-//                 smallest_time = child_time;
-//             }
-//         }
-//         if (right < queue->size)
-//         {
-//             child_time = timeval_to_ms(queue->coders[right]->last_compile);
-//             if (child_time < smallest_time)
-//             {
-//                 smallest = right;
-//                 smallest_time = child_time;
-//             }
-//         }
-//         if (smallest == i)
-//             break;
-//         swap_coders(&queue->coders[i], &queue->coders[smallest]);
-//         i = smallest;
-//     }
-// }
+  if (right < queue->size)
+  {
+    child_time = timeval_to_ms(queue->coders[right]->last_compile);
+    if (child_time < smallest_time)
+    {
+      smallest = right;
+      smallest_time = child_time;
+    }
+  }
+  if (smallest != i)
+  {
+    swap_coders(&queue->coders[i], &queue->coders[smallest]);
+    shift_queue_down_edf(queue,i);
+  }
+}
 
 
 bool pop_coder_from_queue(t_representer *representer, int i) 
@@ -102,12 +59,16 @@ bool pop_coder_from_queue(t_representer *representer, int i)
     return false;
     
   if (representer->config.scheduler == FIFO)
+  {
     shift_queue_down_fifo(queue, i);
+  }
   else if (representer->config.scheduler == EDF)
+  {      
+    swap_coders(&representer->queue->coders[0], &representer->queue->coders[i]);
+    swap_coders(&queue->coders[0], &queue->coders[queue->size-1]);
     shift_queue_down_edf(queue, i);
-
+  }
   queue->size--;
-
   return true;
 }
 

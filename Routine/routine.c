@@ -49,7 +49,7 @@ void add_coder_to_finished_coders(t_coder *coder)
 
 static void sleep_odd_coders(t_coder *coder)
 {
-  if (coder->coder_id % 2 != 0)
+  if (coder->coder_id % 2 == 0)
     usleep(500);
 }
 
@@ -74,13 +74,13 @@ void print_action(t_coder *coder)
   time_elapsed = time_elapsed_until_now(*coder->begining_time);
 
   if (coder->coder_state == REFACTORING)
-    printf("%ld %d coder is refactoring\n", time_elapsed, coder->coder_id + 1);
+    printf("%ld %d is refactoring\n", time_elapsed, coder->coder_id + 1);
 
   if (coder->coder_state == DEBUGING)
-    printf("%ld %d coder is debuging\n", time_elapsed, coder->coder_id + 1);
+    printf("%ld %d is debuging\n", time_elapsed, coder->coder_id + 1);
 
   if (coder->coder_state == COMPILING) {
-    printf("%ld %d coder is compiling\n", time_elapsed, coder->coder_id + 1);
+    printf("%ld %d is compiling\n", time_elapsed, coder->coder_id + 1);
     printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id + 1);
     printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id + 1);
   }

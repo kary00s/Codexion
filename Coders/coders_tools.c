@@ -84,3 +84,9 @@ t_coder *catch_coder(t_representer *representer)
   pthread_mutex_unlock(&representer->queue->mutex_queue);
   return coder;
 }
+
+// t_coder catch_fifo_coder(t_representer *representer)
+// {
+//   t_coder *coder;
+  
+// }
