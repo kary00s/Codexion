@@ -1,10 +1,7 @@
 
 #include "../codexion.h"
 
-bool init_coders(t_representer *representer);
-t_coder **coders_allocater(int number_of_coders);
 static void initialize_coders_struct(t_representer *representer);
-bool coders_creator(t_representer *representer);
 
 t_coder **coders_allocater(int number_of_coders) 
 {
@@ -73,9 +70,10 @@ bool coders_creator(t_representer *representer) {
   int i = 0;
 
   while (i < representer->config.number_of_coders) {
-    if (pthread_create(&representer->coders[i]->thread, NULL,
-                       routine_all_the_coders, representer->coders[i]) != 0) {
+    if (pthread_create(&representer->coders[i]->thread, NULL, routine_all_the_coders, representer->coders[i]) != 0)
+    {
       exit_representation(representer);
+      broadcast_coders_to_exit(representer, i);
       representer_mutexes_destroyer(representer);
       clean_initialize_representer_struct(representer);
       return false;

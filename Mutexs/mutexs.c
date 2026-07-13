@@ -13,9 +13,6 @@ bool init_mutex_cond(t_mutex_cond *mutex_cond)
   return true;
 }
 
-
-
-
 bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders)
 {
   int i;

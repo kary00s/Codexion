@@ -1,9 +1,5 @@
 #include "../codexion.h"
 
-void free_dongles(t_representer *representer);
-void clean_initialize_representer_struct(t_representer *representer);
-
-
 void free_dongles(t_representer *representer) 
 {
   int i;

@@ -3,38 +3,47 @@ FLAGS = -pthread #-fsanitize=address
 CC = cc 
 
 SRC = ./Main/codexion.c\
-	timer.c\
-	./Parser/parser.c\
-	./Dongles/dongles_tools.c \
-	./Dongles/dongles.c\
-	./Coders/coders.c\
-	./Coders/coders_tools.c\
-	./Controller/controller.c\
-	./Monitor/monitor.c\
-	./Cleaner/cleaner.c\
-	./Cleaner/destroyer.c\
-	./Queue/queue.c\
-	./Initializer/initializer.c\
-	./Mutexs/mutex_cond_utils.c\
-	./Routine/actions.c\
-	./Routine/routine.c\
+		./Parser/parser.c\
+		./Dongles/dongles.c\
+		./Dongles/dongles_tools.c \
+		./Dongles/dongles_tools_sec.c \
+		./Coders/coders.c\
+		./Coders/coders_tools.c\
+		./Coders/coders_tools_sec.c\
+		./Controller/controller.c\
+		./Controller/controller_tools.c\
+		./Monitor/monitor.c\
+		./Cleaner/cleaner.c\
+		./Queue/queue.c\
+		./Queue/queue_tools.c\
+		./Initializer/initializer.c\
+		./Mutexs/mutexs.c\
+		./Mutexs/destroyer.c\
+		./Routine/actions.c\
+		./Routine/routine.c\
+		./Timer/timer.c\
 
+OBJ = $(SRC:%.c=%.o)
 
-OBG = $(SRC:.c=.o)
-all: $(NAME)
-
-$(NAME): $(OBG)
-	$(CC) $(FLAGS) $(OBG) -o $(NAME) 
-#-fsanitize=thread -g3
-
-%.o: %.c codexion.h
+%.o: %.c $(HEADER)
 	$(CC) $(FLAGS) -c $< -o $@ 
 
+$(NAME): $(OBJ) $(HEADER)
+	$(CC)  $(FLAGS) $(OBJ) -o $(NAME)
+#	-fsanitize=address 
+
+all: $(NAME)
+	
+
 clean:
-	rm -f $(OBG)
+	rm -rf $(OBJ)
 
 fclean: clean
-	rm -f $(NAME)
+	rm $(NAME)
 
-re: fclean all
+re: fclean $(NAME)
+
+.PHONY: all clean fclean 
+
+#-pthread -fsanitize=address 
 

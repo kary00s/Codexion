@@ -63,7 +63,7 @@ bool parser(int ac, char **args, t_representer *representer)
       config.scheduler = FIFO;
     else
     {
-      printf("the schudeler must be 'edf' of 'fifo' \n");
+      printf("ERROR : The schudeler must be 'edf' of 'fifo' \n");
       return false;
     }
   }

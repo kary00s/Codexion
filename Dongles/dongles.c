@@ -41,9 +41,7 @@ bool init_dongles(t_representer *representer)
   }
   return true;
 }
-
-
-
+  
 static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
   int i;
 
