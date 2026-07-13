@@ -57,18 +57,21 @@ bool pop_coder_from_queue(t_representer *representer, int i)
   queue = representer->queue;
   if (representer->queue->coders[i] == NULL)
     return false;
+
     
-  if (representer->config.scheduler == FIFO)
-  {
-    shift_queue_down_fifo(queue, i);
-  }
-  else if (representer->config.scheduler == EDF)
-  {      
+    if (representer->config.scheduler == FIFO)
+    {
+      shift_queue_down_fifo(queue, i);
+      queue->size--;
+      
+    }
+    else if (representer->config.scheduler == EDF)
+    {      
     swap_coders(&representer->queue->coders[0], &representer->queue->coders[i]);
     swap_coders(&queue->coders[0], &queue->coders[queue->size-1]);
-    shift_queue_down_edf(queue, i);
+    queue->size--;
+    shift_queue_down_edf(queue, 0);
   }
-  queue->size--;
   return true;
 }
 

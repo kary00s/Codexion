@@ -1,5 +1,5 @@
 NAME = codexion
-FLAGS = -pthread#
+FLAGS = -pthread #-fsanitize=address
 CC = cc 
 
 SRC = ./Main/codexion.c\
@@ -12,6 +12,7 @@ SRC = ./Main/codexion.c\
 	./Controller/controller.c\
 	./Monitor/monitor.c\
 	./Cleaner/cleaner.c\
+	./Cleaner/destroyer.c\
 	./Queue/queue.c\
 	./Initializer/initializer.c\
 	./Mutexs/mutex_cond_utils.c\

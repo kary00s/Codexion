@@ -61,13 +61,3 @@ static t_dongle **initialize_dongles_struct(t_dongle **dongles, int counter) {
   return (dongles);
 }
 
-void dongles_mutexes_destroyer(t_dongle **dongles, int counter)
-{
-  int i;
-  i = 0;
-  while (i < counter)
-  {
-    destroy_mutex_cond(&dongles[i]->dongle_m_c);
-    i++;
-  }
-}

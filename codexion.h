@@ -128,6 +128,12 @@ void clean_initialize_representer_struct(t_representer *representer);
 void clean_dongles(t_representer *representer);
 void clean_coders(t_representer *representer);
 
+
+void dongles_mutexes_destroyer(t_dongle **dongles, int counter);
+void representer_mutexes_destroyer(t_representer *representer);
+void destroy_mutex_cond(t_mutex_cond *mutex_cond);
+void destroy_mutex_coders(t_coder **coders, int n);
+
 // ============= Coders ====================>
 bool coders_creator(t_representer *representer); 
 bool init_coders(t_representer *representer);
@@ -167,13 +173,11 @@ bool check_dongles_coldness(t_coder *coder);
 
 bool init_dongles(t_representer *representer);
 void make_dongles_unavailable(t_dongle *dongle);
-void dongles_mutexes_destroyer(t_dongle **dongles, int counter);
 
 
 // ============= Initializer ====================>
 bool init_representer_mutexs_conds(t_representer *representer);
 bool initialize_representer_struct(t_representer *representer, int ac, char **av);
-void representer_mutexes_destroyer(t_representer *representer);
 
 // ============= Monitor ====================>
 bool monitor_creator(t_representer *representer);
@@ -185,8 +189,6 @@ void exit_representation(t_representer *representer);
 
 // ============= Mutexs ====================>
 bool init_mutex_cond(t_mutex_cond *mutex_cond);
-void destroy_mutex_cond(t_mutex_cond *mutex_cond);
-void destroy_mutex_coders(t_coder **coders, int n);
 bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders);
 
 

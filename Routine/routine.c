@@ -50,7 +50,7 @@ void add_coder_to_finished_coders(t_coder *coder)
 static void sleep_odd_coders(t_coder *coder)
 {
   if (coder->coder_id % 2 == 0)
-    usleep(500);
+    usleep(1000);
 }
 
 bool wait_for_simulation_to_start(t_coder *coder)
@@ -80,9 +80,9 @@ void print_action(t_coder *coder)
     printf("%ld %d is debuging\n", time_elapsed, coder->coder_id + 1);
 
   if (coder->coder_state == COMPILING) {
+    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id + 1);
+    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id + 1);
     printf("%ld %d is compiling\n", time_elapsed, coder->coder_id + 1);
-    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id + 1);
-    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id + 1);
   }
 
   if(coder->coder_state == EXIT)

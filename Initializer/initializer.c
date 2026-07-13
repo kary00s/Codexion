@@ -74,10 +74,3 @@ bool init_representer_mutexs_conds(t_representer *representer) {
   return true;
 }
 
-void representer_mutexes_destroyer(t_representer *representer)
-{
-  pthread_mutex_destroy(&representer->is_burnout_mutex);
-  pthread_mutex_destroy(&representer->finished_coders_mutex);
-  pthread_mutex_destroy(&representer->print_mutex);
-  destroy_mutex_cond(&representer->ready_coders_counter_m_c);
-}
