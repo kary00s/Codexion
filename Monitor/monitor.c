@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/01 06:02:45 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/13 03:04:59 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void *monitor_home(void *args) {
         are_one_of_coders_burnout(representer))
       break;
     else {
-      usleep(200);
+      usleep(500);
     }
   }
   exit_representation(representer);
