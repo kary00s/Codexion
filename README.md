@@ -135,3 +135,5 @@ communicating through unsynchronized shared memory.
 
 - `man` pages for `pthread_create`, `pthread_mutex_lock`, `pthread_cond_wait`,
   `pthread_cond_timedwait`, `gettimeofday`
+
+- [I made a summary for my project](https://www.tldraw.com/f/m-epIM9usLJ6qFnvk3shP?d=v-7460.6620.22687.13732.page)
