@@ -169,7 +169,7 @@ void *routine_all_the_coders(void *arg);
 void add_coder_to_finished_coders(t_coder *coder) ;
 void print_action(t_coder *coder);
 
-bool compiling(t_coder *coder, t_queue *queue);
+bool compiling(t_coder *coder);
 bool debuging(t_coder *coder);
 bool refactoring(t_coder *coder);
 
@@ -184,7 +184,7 @@ bool are_dongles_available(t_coder *coder);
 bool wait_dongles_to_cold(t_coder *coder, long cooldown_time);
 
 //=> dongles_tools.c
-bool is_dongle_ready(t_dongle *dongle, unsigned long time_to_cooldown);
+bool is_dongle_ready(t_dongle *dongle);
 bool check_dongles_coldness(t_coder *coder);
 
 
@@ -207,7 +207,7 @@ bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders);
 void dongles_mutexes_destroyer(t_dongle **dongles, int counter);
 void representer_mutexes_destroyer(t_representer *representer);
 void destroy_mutex_cond(t_mutex_cond *mutex_cond);
-void destroy_mutex_coders(t_coder **coders, int n);
+void coders_mutexes_destroyer(t_coder **coders, int n);
 
 // ============= Parser ====================>
 int ft_strcmp(char *s1, char *s2);

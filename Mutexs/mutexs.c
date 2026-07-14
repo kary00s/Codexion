@@ -21,7 +21,7 @@ bool init_coders_mutexes_conds(t_coder **coders, int number_of_coders)
   {
     if (!init_mutex_cond(&coders[i]->mutex_cond)) 
     {
-      destroy_mutex_coders(coders, i);
+      coders_mutexes_destroyer(coders, i);
       return false;
     }
     i++;

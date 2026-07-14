@@ -42,7 +42,7 @@ void clean_queue(t_representer *representer)
 
 void clean_coders(t_representer *representer)
 {
-  destroy_mutex_coders(representer->coders, representer->config.number_of_coders);  
+  coders_mutexes_destroyer(representer->coders, representer->config.number_of_coders);  
   free_coders(representer->coders, representer->config.number_of_coders);
 }
 

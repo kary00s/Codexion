@@ -21,7 +21,7 @@ static bool is_the_dongle_cold(t_dongle *dongle, unsigned long time_cooldown)
   return false;
 }
 
-bool is_dongle_ready(t_dongle *dongle, unsigned long time_to_cooldown) {
+bool is_dongle_ready(t_dongle *dongle) {
   bool its_ready;
   its_ready = false;
 

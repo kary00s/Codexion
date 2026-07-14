@@ -17,7 +17,7 @@ void destroy_mutex_cond(t_mutex_cond *mutex_cond)
   pthread_cond_destroy(&mutex_cond->cond);
 }
 
-void destroy_mutex_coders(t_coder **coders, int n)
+void coders_mutexes_destroyer(t_coder **coders, int n)
 {
   int i;
 

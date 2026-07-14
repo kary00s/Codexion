@@ -22,8 +22,6 @@ void controller_joiner(pthread_t *controller) {
 void *controller_home(void *args) {
   t_representer *representer;
   t_coder *coder;
-  int i = 0;
-
   representer = (t_representer *)args;
   while (is_representation_works_well(&representer->is_burnout_mutex, &representer->is_burnout)) 
 {

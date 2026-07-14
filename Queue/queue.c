@@ -1,12 +1,12 @@
 #include "../codexion.h"
 
-static t_queue *queue_allocater(t_representer *representer);
+static t_queue *queue_allocater();
 
 
 bool init_queue(t_representer *representer) {
   t_queue *queue;
   
-  queue = queue_allocater(representer);
+  queue = queue_allocater();
   if (queue == NULL)
     return false;
   queue->capacity = representer->config.number_of_coders;
@@ -27,7 +27,7 @@ bool init_queue(t_representer *representer) {
   return true;
 }
 
-static t_queue *queue_allocater(t_representer *representer)
+static t_queue *queue_allocater()
 {
   t_queue  *queue;
   queue = malloc(sizeof(t_queue));

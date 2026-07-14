@@ -4,8 +4,8 @@
 
 bool are_dongles_available(t_coder *coder) 
 {
-  if ((is_dongle_ready(coder->left_dongle, coder->config->dongle_cooldown)) &&
-      (is_dongle_ready(coder->right_dongle, coder->config->dongle_cooldown))) 
+  if ((is_dongle_ready(coder->left_dongle)) &&
+      (is_dongle_ready(coder->right_dongle))) 
   {
     make_dongles_unavailable(coder->right_dongle);
     make_dongles_unavailable(coder->left_dongle);

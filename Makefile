@@ -1,5 +1,5 @@
 NAME = codexion
-FLAGS = -pthread #-fsanitize=address
+FLAGS = -Wall -Wextra -Werror -pthread#-fsanitize=address
 CC = cc 
 
 SRC = ./Main/codexion.c\

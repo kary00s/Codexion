@@ -3,7 +3,7 @@
 static void change_codere_state(t_coder *coder, t_coder_state state);
 static bool action_simulator(t_coder *coder, t_coder_state state);
 
-bool compiling(t_coder *coder, t_queue *queue) {
+bool compiling(t_coder *coder) {
   insert_coder_in_queue(coder, coder->queue);
   if (!coder_waiting_dongles(coder))
     return false;

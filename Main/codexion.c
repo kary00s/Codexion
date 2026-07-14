@@ -11,12 +11,12 @@ int main(int ac, char *av[]) {
   if (!coders_creator(&representer)) 
     return 0;
     
-    if (!controller_creator(&representer)) 
+  if (!controller_creator(&representer)) 
     return 0;
     
-    monitor_joiner(&representer.monitor);
-    coders_joiner(&representer);
-    controller_joiner(&representer.controller);
-    
-    clean_initialize_representer_struct(&representer);
+  monitor_joiner(&representer.monitor);
+  coders_joiner(&representer);
+  controller_joiner(&representer.controller);
+  
+  clean_initialize_representer_struct(&representer);
 }

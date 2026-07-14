@@ -1,7 +1,6 @@
 #include "../codexion.h"
 
 static bool is_coder_finished_required_compilations(t_coder *coder);
-static bool action_simulator(t_coder *coder, t_coder_state state);
 static void sleep_odd_coders(t_coder *coder);
 
 void *routine_all_the_coders(void *arg) 
@@ -13,7 +12,7 @@ void *routine_all_the_coders(void *arg)
 
   while (is_representation_works_well(coder->is_burnout_mutex,
                                       coder->is_burnout)) {
-    if (!compiling(coder, coder->queue))
+    if (!compiling(coder))
       break;
     if (!debuging(coder))
       break;
