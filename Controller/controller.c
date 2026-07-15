@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 04:33:45 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/15 04:33:46 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/15 05:20:28 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ bool	controller_creator(t_representer *representer)
 	{
 		exit_representation(representer);
 		broadcast_coders_to_exit(representer,
-				representer->config.number_of_coders);
+			representer->config.number_of_coders);
 		representer_mutexes_destroyer(representer);
 		clean_initialize_representer_struct(representer);
 		return (false);

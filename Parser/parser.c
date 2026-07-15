@@ -1,4 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/15 05:31:21 by kanahiz           #+#    #+#             */
+/*   Updated: 2026/07/15 05:42:43 by kanahiz          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../codexion.h"
+
+static bool	parse_config(t_config *config, char **args);
+static long	ft_atol(char *str);
 
 static long	ft_atol(char *str)
 {
@@ -38,26 +53,7 @@ bool	parser(int ac, char **args, t_representer *representer)
 
 	if (ac == 9)
 	{
-		config.number_of_coders = ft_atol(args[1]);
-		if ((config.number_of_coders == LONG_MAX)
-			|| (config.number_of_coders == 0))
-			return (false);
-		config.time_to_burnout = ft_atol(args[2]);
-		if (config.time_to_burnout == LONG_MAX)
-			return (false);
-		config.time_to_compile = ft_atol(args[3]);
-		if (config.time_to_compile == LONG_MAX)
-			return (false);
-		config.time_to_debug = ft_atol(args[4]);
-		if (config.time_to_debug == LONG_MAX)
-			return (false);
-		config.time_to_refactor = ft_atol(args[5]);
-		if (config.time_to_refactor == LONG_MAX)
-			return (false);
-		config.number_of_compiles_required = ft_atol(args[6]);
-		if ((config.number_of_compiles_required == LONG_MAX)
-			|| (config.number_of_compiles_required == 0))
-			return (false);
+		parse_config(&config, args);
 		config.dongle_cooldown = ft_atol(args[7]);
 		if (config.dongle_cooldown == LONG_MAX)
 			return (false);
@@ -74,5 +70,30 @@ bool	parser(int ac, char **args, t_representer *representer)
 	else
 		return (false);
 	representer->config = config;
+	return (true);
+}
+
+static bool	parse_config(t_config *config, char **args)
+{
+	config->number_of_coders = ft_atol(args[1]);
+	if ((config->number_of_coders == LONG_MAX)
+		|| (config->number_of_coders == 0))
+		return (false);
+	config->time_to_burnout = ft_atol(args[2]);
+	if (config->time_to_burnout == LONG_MAX)
+		return (false);
+	config->time_to_compile = ft_atol(args[3]);
+	if (config->time_to_compile == LONG_MAX)
+		return (false);
+	config->time_to_debug = ft_atol(args[4]);
+	if (config->time_to_debug == LONG_MAX)
+		return (false);
+	config->time_to_refactor = ft_atol(args[5]);
+	if (config->time_to_refactor == LONG_MAX)
+		return (false);
+	config->number_of_compiles_required = ft_atol(args[6]);
+	if ((config->number_of_compiles_required == LONG_MAX)
+		|| (config->number_of_compiles_required == 0))
+		return (false);
 	return (true);
 }

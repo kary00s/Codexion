@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   queue_tools.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/15 05:52:24 by kanahiz           #+#    #+#             */
+/*   Updated: 2026/07/15 06:00:54 by kanahiz          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../codexion.h"
 
 static void	shift_queue_down_edf(t_queue *queue, int i);
@@ -53,26 +65,25 @@ static void	shift_queue_down_edf(t_queue *queue, int i)
 				smallest_time = child_time;
 			}
 		}
-		if (smallest != i)
-			swap_coders(&queue->coders[i], &queue->coders[smallest]);
-		else
+		if (smallest == i)
 			break ;
+		swap_coders(&queue->coders[i], &queue->coders[smallest]);
 	}
 }
 
 bool	pop_coder_from_queue(t_representer *representer, int i)
 {
-	t_queue *queue;
+	t_queue	*queue;
+
 	queue = representer->queue;
 	if (representer->queue->coders[i] == NULL)
 		return (false);
-
 	if (representer->config.scheduler == FIFO)
 		shift_queue_down_fifo(queue, i);
 	else if (representer->config.scheduler == EDF)
 	{
 		swap_coders(&representer->queue->coders[0],
-				&representer->queue->coders[i]);
+			&representer->queue->coders[i]);
 		swap_coders(&queue->coders[0], &queue->coders[queue->size - 1]);
 		queue->size--;
 		shift_queue_down_edf(queue, 0);

@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 04:33:12 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/15 04:33:13 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/15 05:08:49 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ t_coder	*catch_coder(t_representer *representer)
 		{
 			coder = representer->queue->coders[i];
 			if (!is_representation_works_well(&representer->is_burnout_mutex,
-												&representer->is_burnout))
+					&representer->is_burnout))
 			{
 				pthread_mutex_unlock(&representer->queue->mutex_queue);
 				return (NULL);

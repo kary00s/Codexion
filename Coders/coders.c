@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 04:33:23 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/15 04:33:24 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/15 05:14:25 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static void	initialize_coders_struct(t_representer *representer)
 		coders[i]->queue = representer->queue;
 		coders[i]->print_mutex = &representer->print_mutex;
 		coders[i]->ready_coders_counter = &representer->ready_coders_counter;
-		coders[i]->ready_coders_counter_m_c = &representer->ready_coders_counter_m_c;
+		coders[i]->ready_coders_m_c = &representer->ready_coders_m_c;
 		coders[i]->coder_state = START;
 		coders[i]->numbers_compilation = 0;
 		coders[i]->begining_time = &representer->begining_time;
@@ -79,6 +79,7 @@ static void	initialize_coders_struct(t_representer *representer)
 		i++;
 	}
 }
+
 static void	coders_joiner_failed(t_representer *representer, int counter)
 {
 	int	i;
@@ -90,6 +91,7 @@ static void	coders_joiner_failed(t_representer *representer, int counter)
 		i++;
 	}
 }
+
 bool	coders_creator(t_representer *representer)
 {
 	int	i;

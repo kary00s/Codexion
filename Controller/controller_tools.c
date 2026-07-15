@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 04:33:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/15 04:33:39 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/15 05:21:04 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,10 @@ void	exit_representation(t_representer *representer)
 
 bool	wait_for_representation_to_start(t_coder *coder)
 {
-	pthread_mutex_lock(&coder->ready_coders_counter_m_c->mutex);
+	pthread_mutex_lock(&coder->ready_coders_m_c->mutex);
 	(*coder->ready_coders_counter)++;
-	pthread_cond_broadcast(&coder->ready_coders_counter_m_c->cond);
-	pthread_mutex_unlock(&coder->ready_coders_counter_m_c->mutex);
-
+	pthread_cond_broadcast(&coder->ready_coders_m_c->cond);
+	pthread_mutex_unlock(&coder->ready_coders_m_c->mutex);
 	pthread_mutex_lock(&coder->mutex_cond.mutex);
 	while (coder->coder_state == START)
 		pthread_cond_wait(&coder->mutex_cond.cond, &coder->mutex_cond.mutex);

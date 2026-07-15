@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 00:23:38 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/15 00:52:36 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/15 05:31:00 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ bool	monitor_creator(t_representer *representer)
 	{
 		exit_representation(representer);
 		broadcast_coders_to_exit(representer,
-				representer->config.number_of_coders);
+			representer->config.number_of_coders);
 		representer_mutexes_destroyer(representer);
 		clean_initialize_representer_struct(representer);
 		return (false);
@@ -42,8 +42,8 @@ void	*monitor_home(void *args)
 	allow_coders_to_start(representer);
 	while (1)
 	{
-		if (is_represontation_done(representer) ||
-			are_one_of_coders_burnout(representer))
+		if (is_represontation_done(representer)
+			|| are_one_of_coders_burnout(representer))
 			break ;
 		else
 		{

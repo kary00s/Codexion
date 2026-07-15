@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 04:32:34 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/15 04:32:37 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/15 05:46:08 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	*routine_all_the_coders(void *arg)
 	wait_for_representation_to_start(coder);
 	sleep_odd_coders(coder);
 	while (is_representation_works_well(coder->is_burnout_mutex,
-										coder->is_burnout))
+			coder->is_burnout))
 	{
 		if (!compiling(coder))
 			break ;
@@ -32,7 +32,6 @@ void	*routine_all_the_coders(void *arg)
 		if (!refactoring(coder))
 			break ;
 	}
-	// printf("OUT coder %d \n", coder->coder_id);
 	return (NULL);
 }
 
@@ -82,9 +81,9 @@ void	print_action(t_coder *coder)
 	if (coder->coder_state == COMPILING)
 	{
 		printf("%ld %d has taken a dongle\n", time_elapsed, coder->coder_id
-				+ 1);
+			+ 1);
 		printf("%ld %d has taken a dongle\n", time_elapsed, coder->coder_id
-				+ 1);
+			+ 1);
 		printf("%ld %d is compiling\n", time_elapsed, coder->coder_id + 1);
 	}
 	if (coder->coder_state == EXIT)

@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 04:33:58 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/15 04:33:59 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/15 05:21:54 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ bool	check_dongles_coldness(t_coder *coder)
 {
 	long	last_rest_for_hotest_dongle;
 
-	if (!is_dongle_cold(coder->left_dongle, coder->config->dongle_cooldown) ||
-		!is_dongle_cold(coder->right_dongle, coder->config->dongle_cooldown))
+	if (!is_dongle_cold(coder->left_dongle, coder->config->dongle_cooldown)
+		|| !is_dongle_cold(coder->right_dongle, coder->config->dongle_cooldown))
 	{
 		last_rest_for_hotest_dongle = get_the_hotest_dongle(coder->left_dongle,
 				coder->right_dongle);

@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 04:33:04 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/15 04:33:05 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/15 05:17:30 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,16 @@
 
 bool	wait_for_coders_to_start(t_representer *representer)
 {
-	pthread_mutex_lock(&representer->ready_coders_counter_m_c.mutex);
-	while (representer->ready_coders_counter !=
-			representer->config.number_of_coders)
+	long	number_of_coders;
+
+	pthread_mutex_lock(&representer->ready_coders_m_c.mutex);
+	number_of_coders = representer->config.number_of_coders;
+	while (representer->ready_coders_counter != number_of_coders)
 	{
-		pthread_cond_wait(&representer->ready_coders_counter_m_c.cond,
-							&representer->ready_coders_counter_m_c.mutex);
+		pthread_cond_wait(&representer->ready_coders_m_c.cond,
+			&representer->ready_coders_m_c.mutex);
 	}
-	pthread_mutex_unlock(&representer->ready_coders_counter_m_c.mutex);
+	pthread_mutex_unlock(&representer->ready_coders_m_c.mutex);
 	return (true);
 }
 
@@ -61,7 +63,8 @@ void	broadcast_coders_to_exit(t_representer *representer, int counter)
 
 void	swap_coders(t_coder **parent_coder, t_coder **child_coder)
 {
-	t_coder *swp;
+	t_coder	*swp;
+
 	swp = *parent_coder;
 	*parent_coder = *child_coder;
 	*child_coder = swp;

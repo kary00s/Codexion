@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   actions.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/15 05:46:20 by kanahiz           #+#    #+#             */
+/*   Updated: 2026/07/15 06:55:12 by kanahiz          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../codexion.h"
 
 static void	change_codere_state(t_coder *coder, t_coder_state state);
@@ -26,8 +38,8 @@ bool	debuging(t_coder *coder)
 	if (!action_simulator(coder, coder->coder_state))
 		return (false);
 	change_codere_state(coder, REFACTORING);
-	return is_representation_works_well(coder->is_burnout_mutex,
-										coder->is_burnout);
+	return (is_representation_works_well(coder->is_burnout_mutex,
+			coder->is_burnout));
 }
 
 bool	refactoring(t_coder *coder)
@@ -36,8 +48,9 @@ bool	refactoring(t_coder *coder)
 	if (!action_simulator(coder, coder->coder_state))
 		return (false);
 	change_codere_state(coder, WAIT);
-	return (is_representation_works_well(coder->is_burnout_mutex,
-											coder->is_burnout));
+	return (is_representation_works_well(
+      coder->is_burnout_mutex,
+      coder->is_burnout));
 }
 
 static bool	action_simulator(t_coder *coder, t_coder_state state)

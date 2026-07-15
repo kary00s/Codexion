@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 04:34:04 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/15 04:52:54 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/15 05:23:34 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ static t_dongle	**dongles_allocater(t_representer *representer)
 	t_dongle	**dongles_list;
 	int			i;
 
-	dongles_list = (t_dongle **)malloc(sizeof(t_dongle *) *
-										representer->config.number_of_coders);
+	dongles_list = (t_dongle **)malloc(sizeof(t_dongle *)
+			* representer->config.number_of_coders);
 	if (!dongles_list)
 		return (NULL);
 	i = 0;

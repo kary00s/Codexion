@@ -6,11 +6,13 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 14:52:28 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/13 04:46:47 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/15 05:30:08 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../codexion.h"
+
+static bool	initialize_representer_struct_complete(t_representer *representer);
 
 bool	initialize_representer_struct(t_representer *representer, int ac,
 		char **av)
@@ -27,6 +29,13 @@ bool	initialize_representer_struct(t_representer *representer, int ac,
 		representer_mutexes_destroyer(representer);
 		return (false);
 	}
+	if (!initialize_representer_struct_complete(representer))
+		return (false);
+	return (true);
+}
+
+static bool	initialize_representer_struct_complete(t_representer *representer)
+{
 	if (!init_dongles(representer))
 	{
 		clean_queue(representer);
@@ -41,7 +50,7 @@ bool	initialize_representer_struct(t_representer *representer, int ac,
 		return (false);
 	}
 	linker_coders_with_dongles(representer->coders, representer->dongles,
-			representer->config.number_of_coders);
+		representer->config.number_of_coders);
 	return (true);
 }
 
@@ -49,7 +58,7 @@ bool	init_representer_mutexs_conds(t_representer *representer)
 {
 	if (pthread_mutex_init(&representer->print_mutex, NULL) != 0)
 		return (false);
-	if (!init_mutex_cond(&representer->ready_coders_counter_m_c))
+	if (!init_mutex_cond(&representer->ready_coders_m_c))
 	{
 		pthread_mutex_destroy(&representer->print_mutex);
 		return (false);
@@ -57,14 +66,14 @@ bool	init_representer_mutexs_conds(t_representer *representer)
 	if (pthread_mutex_init(&representer->finished_coders_mutex, NULL) != 0)
 	{
 		pthread_mutex_destroy(&representer->print_mutex);
-		destroy_mutex_cond(&representer->ready_coders_counter_m_c);
+		destroy_mutex_cond(&representer->ready_coders_m_c);
 		return (false);
 	}
 	if (pthread_mutex_init(&representer->is_burnout_mutex, NULL) != 0)
 	{
 		pthread_mutex_destroy(&representer->finished_coders_mutex);
 		pthread_mutex_destroy(&representer->print_mutex);
-		destroy_mutex_cond(&representer->ready_coders_counter_m_c);
+		destroy_mutex_cond(&representer->ready_coders_m_c);
 		return (false);
 	}
 	return (true);

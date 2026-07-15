@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 04:33:53 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/15 04:33:54 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/15 05:23:56 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 bool	are_dongles_available(t_coder *coder)
 {
-	if ((is_dongle_ready(coder->left_dongle)) &&
-		(is_dongle_ready(coder->right_dongle)))
+	if ((is_dongle_ready(coder->left_dongle))
+		&& (is_dongle_ready(coder->right_dongle)))
 	{
 		make_dongles_unavailable(coder->right_dongle);
 		make_dongles_unavailable(coder->left_dongle);

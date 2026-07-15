@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 04:34:28 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/15 04:34:29 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/15 05:13:20 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,5 @@ void	representer_mutexes_destroyer(t_representer *representer)
 	pthread_mutex_destroy(&representer->is_burnout_mutex);
 	pthread_mutex_destroy(&representer->finished_coders_mutex);
 	pthread_mutex_destroy(&representer->print_mutex);
-	destroy_mutex_cond(&representer->ready_coders_counter_m_c);
+	destroy_mutex_cond(&representer->ready_coders_m_c);
 }

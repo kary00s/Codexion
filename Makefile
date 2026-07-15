@@ -23,7 +23,8 @@ SRC = ./Main/codexion.c\
 		./Routine/actions.c\
 		./Routine/routine.c\
 		./Timer/timer.c\
-
+		./Timer/timer_sec.c\
+		
 OBJ = $(SRC:%.c=%.o)
 
 %.o: %.c $(HEADER)
