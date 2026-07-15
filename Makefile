@@ -1,5 +1,5 @@
 NAME = codexion
-FLAGS = -Wall -Wextra -Werror -pthread#-fsanitize=address
+FLAGS = -Wall -Wextra -Werror -g -pthread#-fsanitize=address
 CC = cc 
 
 SRC = ./Main/codexion.c\
@@ -14,6 +14,7 @@ SRC = ./Main/codexion.c\
 		./Controller/controller_tools.c\
 		./Monitor/monitor.c\
 		./Cleaner/cleaner.c\
+		./Cleaner/cleaner_sec.c\
 		./Queue/queue.c\
 		./Queue/queue_tools.c\
 		./Initializer/initializer.c\

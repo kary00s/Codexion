@@ -1,81 +1,93 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   routine.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/15 04:32:34 by kanahiz           #+#    #+#             */
+/*   Updated: 2026/07/15 04:32:37 by kanahiz          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../codexion.h"
 
-static bool is_coder_finished_required_compilations(t_coder *coder);
-static void sleep_odd_coders(t_coder *coder);
+static bool	is_coder_finished_required_compilations(t_coder *coder);
+static void	sleep_odd_coders(t_coder *coder);
 
-void *routine_all_the_coders(void *arg) 
+void	*routine_all_the_coders(void *arg)
 {
-  t_coder *coder;
-  coder = (t_coder *)arg;
-  wait_for_representation_to_start(coder);
-  sleep_odd_coders(coder);
+	t_coder	*coder;
 
-  while (is_representation_works_well(coder->is_burnout_mutex,
-                                      coder->is_burnout)) {
-    if (!compiling(coder))
-      break;
-    if (!debuging(coder))
-      break;
-    if (!refactoring(coder))
-      break;
-  }
-  return NULL;
+	coder = (t_coder *)arg;
+	wait_for_representation_to_start(coder);
+	sleep_odd_coders(coder);
+	while (is_representation_works_well(coder->is_burnout_mutex,
+										coder->is_burnout))
+	{
+		if (!compiling(coder))
+			break ;
+		if (!debuging(coder))
+			break ;
+		if (!refactoring(coder))
+			break ;
+	}
+	// printf("OUT coder %d \n", coder->coder_id);
+	return (NULL);
 }
 
-static void sleep_odd_coders(t_coder *coder)
+static void	sleep_odd_coders(t_coder *coder)
 {
-  if (coder->coder_id % 2 == 0)
-    usleep(1000);
+	if (coder->coder_id % 2 == 0)
+		usleep(1000);
 }
 
-
-
-void add_coder_to_finished_coders(t_coder *coder) 
+void	add_coder_to_finished_coders(t_coder *coder)
 {
-  bool is_finished;
-  is_finished = is_coder_finished_required_compilations(coder);
-  if (is_finished) {
-    pthread_mutex_lock(coder->finished_coders_mutex);
-    (*coder->finished_coders)++;
-    pthread_mutex_unlock(coder->finished_coders_mutex);
-  }
+	bool	is_finished;
+
+	is_finished = is_coder_finished_required_compilations(coder);
+	if (is_finished)
+	{
+		pthread_mutex_lock(coder->finished_coders_mutex);
+		(*coder->finished_coders)++;
+		pthread_mutex_unlock(coder->finished_coders_mutex);
+	}
 }
 
-static bool is_coder_finished_required_compilations(t_coder *coder) 
+static bool	is_coder_finished_required_compilations(t_coder *coder)
 {
-  bool is_finished;
+	bool	is_finished;
 
-  is_finished = false;
-  pthread_mutex_lock(&coder->mutex_cond.mutex);
-  if (coder->config->number_of_compiles_required == coder->numbers_compilation + 1)
-    is_finished = true;
-  coder->numbers_compilation++;
-  pthread_mutex_unlock(&coder->mutex_cond.mutex);
-  return is_finished;
+	is_finished = false;
+	pthread_mutex_lock(&coder->mutex_cond.mutex);
+	if (coder->config->number_of_compiles_required == coder->numbers_compilation
+		+ 1)
+		is_finished = true;
+	coder->numbers_compilation++;
+	pthread_mutex_unlock(&coder->mutex_cond.mutex);
+	return (is_finished);
 }
 
-
-
-void print_action(t_coder *coder)
+void	print_action(t_coder *coder)
 {
-  long time_elapsed;
-  pthread_mutex_lock(coder->print_mutex);
-  time_elapsed = time_elapsed_until_now(*coder->begining_time);
+	long	time_elapsed;
 
-  if (coder->coder_state == REFACTORING)
-    printf("%ld %d is refactoring\n", time_elapsed, coder->coder_id + 1);
-
-  if (coder->coder_state == DEBUGING)
-    printf("%ld %d is debuging\n", time_elapsed, coder->coder_id + 1);
-
-  if (coder->coder_state == COMPILING) {
-    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id + 1);
-    printf("%ld %d has taken a dongle\n",time_elapsed , coder->coder_id + 1);
-    printf("%ld %d is compiling\n", time_elapsed, coder->coder_id + 1);
-  }
-
-  if(coder->coder_state == EXIT)
-    printf(">> %ld %d coder burnouted\n", time_elapsed, coder->coder_id);
-    
-  pthread_mutex_unlock(coder->print_mutex);
+	pthread_mutex_lock(coder->print_mutex);
+	time_elapsed = time_elapsed_until_now(*coder->begining_time);
+	if (coder->coder_state == REFACTORING)
+		printf("%ld %d is refactoring\n", time_elapsed, coder->coder_id + 1);
+	if (coder->coder_state == DEBUGING)
+		printf("%ld %d is debuging\n", time_elapsed, coder->coder_id + 1);
+	if (coder->coder_state == COMPILING)
+	{
+		printf("%ld %d has taken a dongle\n", time_elapsed, coder->coder_id
+				+ 1);
+		printf("%ld %d has taken a dongle\n", time_elapsed, coder->coder_id
+				+ 1);
+		printf("%ld %d is compiling\n", time_elapsed, coder->coder_id + 1);
+	}
+	if (coder->coder_state == EXIT)
+		printf("%ld %d coder burnouted\n", time_elapsed, coder->coder_id);
+	pthread_mutex_unlock(coder->print_mutex);
 }

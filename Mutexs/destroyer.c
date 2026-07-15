@@ -1,38 +1,51 @@
-#include"../codexion.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   destroyer.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/15 04:34:28 by kanahiz           #+#    #+#             */
+/*   Updated: 2026/07/15 04:34:29 by kanahiz          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void dongles_mutexes_destroyer(t_dongle **dongles, int counter)
+#include "../codexion.h"
+
+void	dongles_mutexes_destroyer(t_dongle **dongles, int counter)
 {
-  int i;
-  i = 0;
-  while (i < counter)
-  {
-    destroy_mutex_cond(&dongles[i]->dongle_m_c);
-    i++;
-  }
+	int	i;
+
+	i = 0;
+	while (i < counter)
+	{
+		pthread_mutex_destroy(&dongles[i]->dongle_mutex);
+		i++;
+	}
 }
 
-void destroy_mutex_cond(t_mutex_cond *mutex_cond)
+void	destroy_mutex_cond(t_mutex_cond *mutex_cond)
 {
-  pthread_mutex_destroy(&mutex_cond->mutex);
-  pthread_cond_destroy(&mutex_cond->cond);
+	pthread_mutex_destroy(&mutex_cond->mutex);
+	pthread_cond_destroy(&mutex_cond->cond);
 }
 
-void coders_mutexes_destroyer(t_coder **coders, int n)
+void	coders_mutexes_destroyer(t_coder **coders, int n)
 {
-  int i;
+	int	i;
 
-  i = 0;
-  while (i < n) {
-    destroy_mutex_cond(&coders[i]->mutex_cond);
-    i++;  
-  }
+	i = 0;
+	while (i < n)
+	{
+		destroy_mutex_cond(&coders[i]->mutex_cond);
+		i++;
+	}
 }
 
-void representer_mutexes_destroyer(t_representer *representer)
+void	representer_mutexes_destroyer(t_representer *representer)
 {
-  pthread_mutex_destroy(&representer->is_burnout_mutex);
-  pthread_mutex_destroy(&representer->finished_coders_mutex);
-  pthread_mutex_destroy(&representer->print_mutex);
-  destroy_mutex_cond(&representer->ready_coders_counter_m_c);
+	pthread_mutex_destroy(&representer->is_burnout_mutex);
+	pthread_mutex_destroy(&representer->finished_coders_mutex);
+	pthread_mutex_destroy(&representer->print_mutex);
+	destroy_mutex_cond(&representer->ready_coders_counter_m_c);
 }
-
