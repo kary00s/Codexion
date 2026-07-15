@@ -139,3 +139,10 @@ communicating through unsynchronized shared memory.
 - [Multithreading](https://youtu.be/PgDaJEjlBuI?si=1ywhksiYQynKk64U)
 - I created a summary for this project that includes all the necessary information and the knowledge I gained 
   - [View the summary](https://www.tldraw.com/f/m-epIM9usLJ6qFnvk3shP?d=v-7460.6620.22687.13732.page)
+
+## AI Usage
+- AI tools were used to assist with:
+
+  - Structuring and organizing the README
+  - Explaining concepts — how EDF scheduling works
+  - Style/norm (i had some problems with norminette) 
