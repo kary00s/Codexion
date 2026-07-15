@@ -17,6 +17,7 @@ SRC = ./Main/codexion.c\
 		./Cleaner/cleaner_sec.c\
 		./Queue/queue.c\
 		./Queue/queue_tools.c\
+		./Queue/queue_fifo_edf.c\
 		./Initializer/initializer.c\
 		./Mutexs/mutexs.c\
 		./Mutexs/destroyer.c\

@@ -6,7 +6,7 @@
 /*   By: kanahiz <kanahiz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 06:42:08 by kanahiz           #+#    #+#             */
-/*   Updated: 2026/07/15 07:22:22 by kanahiz          ###   ########.fr       */
+/*   Updated: 2026/07/16 00:10:37 by kanahiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,5 +206,11 @@ unsigned long	get_time_ms(void);
 void			ms_to_timespec(t_timespec *timespec, unsigned long time_ms);
 long			time_elapsed_until_now(struct timeval elapsed_time);
 void			register_time(struct timeval *time, pthread_mutex_t *mutex);
+
+void			shift_queue_down_fifo(t_queue *queue, int i);
+int				check_child_edf(t_queue *queue, int idx, int smallest,
+					unsigned long *smallest_time);
+int				smallest_child_edf(t_queue *queue, int i);
+void			shift_queue_down_edf(t_queue *queue, int i);
 
 #endif
