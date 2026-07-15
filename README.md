@@ -135,5 +135,7 @@ communicating through unsynchronized shared memory.
 
 - `man` pages for `pthread_create`, `pthread_mutex_lock`, `pthread_cond_wait`,
   `pthread_cond_timedwait`, `gettimeofday`
-
-- [I made a summary for my project](https://www.tldraw.com/f/m-epIM9usLJ6qFnvk3shP?d=v-7460.6620.22687.13732.page)
+- [Heap](https://www.geeksforgeeks.org/c/heap-in-c/)
+- [Multithreading](https://youtu.be/PgDaJEjlBuI?si=1ywhksiYQynKk64U)
+- I created a summary for this project that includes all the necessary information and the knowledge I gained 
+  - [View the summary](https://www.tldraw.com/f/m-epIM9usLJ6qFnvk3shP?d=v-7460.6620.22687.13732.page)

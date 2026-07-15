@@ -12,6 +12,7 @@
 
 #include "../codexion.h"
 
+static int  smallest_child_edf(t_queue *queue, int i);
 static void	shift_queue_down_edf(t_queue *queue, int i);
 static void	shift_queue_down_fifo(t_queue *queue, int i);
 
@@ -33,44 +34,46 @@ static void	shift_queue_down_fifo(t_queue *queue, int i)
 	queue->size--;
 }
 
-static void	shift_queue_down_edf(t_queue *queue, int i)
+static int  check_child_edf(t_queue *queue, int idx, int smallest,
+        unsigned long *smallest_time)
 {
-	int				left;
-	int				right;
-	int				smallest;
-	unsigned long	smallest_time;
-	unsigned long	child_time;
+    unsigned long   child_time;
 
-	while (1)
-	{
-		left = i * 2 + 1;
-		right = i * 2 + 2;
-		smallest = i;
-		smallest_time = timeval_to_ms(queue->coders[i]->last_compile);
-		if (left < queue->size)
-		{
-			child_time = timeval_to_ms(queue->coders[left]->last_compile);
-			if (child_time < smallest_time)
-			{
-				smallest = left;
-				smallest_time = child_time;
-			}
-		}
-		if (right < queue->size)
-		{
-			child_time = timeval_to_ms(queue->coders[right]->last_compile);
-			if (child_time < smallest_time)
-			{
-				smallest = right;
-				smallest_time = child_time;
-			}
-		}
-		if (smallest == i)
-			break ;
-		swap_coders(&queue->coders[i], &queue->coders[smallest]);
-	}
+    if (idx >= queue->size)
+        return (smallest);
+    child_time = timeval_to_ms(queue->coders[idx]->last_compile);
+    if (child_time < *smallest_time)
+    {
+        *smallest_time = child_time;
+        return (idx);
+    }
+    return (smallest);
 }
 
+static int  smallest_child_edf(t_queue *queue, int i)
+{
+    int             smallest;
+    unsigned long   smallest_time;
+
+    smallest = i;
+    smallest_time = timeval_to_ms(queue->coders[i]->last_compile);
+    smallest = check_child_edf(queue, i * 2 + 1, smallest, &smallest_time);
+    smallest = check_child_edf(queue, i * 2 + 2, smallest, &smallest_time);
+    return (smallest);
+}
+
+static void    shift_queue_down_edf(t_queue *queue, int i)
+{
+    int    smallest;
+
+    while (1)
+    {
+        smallest = smallest_child_edf(queue, i);
+        if (smallest == i)
+            break ;
+        swap_coders(&queue->coders[i], &queue->coders[smallest]);
+    }
+}
 bool	pop_coder_from_queue(t_representer *representer, int i)
 {
 	t_queue	*queue;
